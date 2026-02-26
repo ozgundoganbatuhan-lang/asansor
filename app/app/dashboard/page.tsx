@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { readSession } from "@/lib/auth";
 import Link from "next/link";
