@@ -171,7 +171,7 @@ export default function MaintenancePlansPage() {
               <option value="">— Seç —</option>
               {assets.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.name} — {a.asset?.customer?.name ?? (a as any).customer?.name}
+                  {a.name} — {(a as any).customer?.name ?? ""}
                 </option>
               ))}
             </Select>
