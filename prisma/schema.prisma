@@ -1,0 +1,241 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  vertical  Vertical @default(ELEVATOR)
+  planTier  String   @default("TRIAL")
+  trialEndsAt DateTime @default(dbgenerated("NOW() + INTERVAL '30 days'"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users            User[]
+  customers        Customer[]
+  assets           Asset[]
+  workOrders       WorkOrder[]
+  technicians      Technician[]
+  parts            Part[]
+  invoices         Invoice[]
+  maintenancePlans MaintenancePlan[]
+  purchaseRequests PurchaseRequest[]
+}
+
+enum Vertical {
+  ELEVATOR
+  WHITE_GOODS
+}
+
+model User {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String?
+  email          String   @unique
+  passwordHash   String
+  role           String   @default("MEMBER") // OWNER, ADMIN, MEMBER, TECHNICIAN
+  createdAt      DateTime @default(now())
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  contactName    String?
+  phone          String?
+  email          String?
+  address        String?
+  taxId          String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  assets     Asset[]
+  workOrders WorkOrder[]
+  invoices   Invoice[]
+}
+
+model Asset {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+
+  name            String
+  category        String?
+  serialNumber    String?
+  buildingName    String?
+  doorNumber      String?
+  locationNote    String?
+  stops           Int?
+  capacityKg      Int?
+  controllerBrand String?
+  installYear     Int?
+  riskScore       Int?     @default(0)
+  lastMaintenanceAt DateTime?
+  lastInspectionAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workOrders       WorkOrder[]
+  maintenancePlans MaintenancePlan[]
+}
+
+model Technician {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  initials       String?
+  phone          String?
+  zone           String?
+  certification  String?
+  status         String?  @default("Müsait")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  workOrders WorkOrder[]
+}
+
+model WorkOrder {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  assetId        String?
+  asset          Asset?   @relation(fields: [assetId], references: [id])
+  technicianId   String?
+  technician     Technician? @relation(fields: [technicianId], references: [id])
+
+  code        String   @unique
+  type        WorkOrderType @default(FAULT)
+  status      WorkOrderStatus @default(PENDING)
+  priority    String?  @default("Normal")
+  note        String?
+  laborCost   Int      @default(0)
+  serviceFee  Int      @default(0)
+  scheduledAt DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  partsUsed PartUsage[]
+  invoice   Invoice?
+}
+
+enum WorkOrderType {
+  FAULT
+  PERIODIC_MAINTENANCE
+  ANNUAL_INSPECTION
+  REVISION
+  INSTALLATION
+}
+
+enum WorkOrderStatus {
+  PENDING
+  IN_PROGRESS
+  URGENT
+  DONE
+  CANCELED
+}
+
+model MaintenancePlan {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  assetId        String
+  asset          Asset    @relation(fields: [assetId], references: [id])
+  periodMonths   Int      @default(1)
+  lastDoneAt     DateTime?
+  nextDueAt      DateTime
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Part {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  category       String?
+  unit           String?  @default("Adet")
+  supplier       String?
+  price          Int?     // in smallest currency unit
+  stock          Int      @default(0)
+  minStock       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  usages PartUsage[]
+}
+
+model PartUsage {
+  id          String    @id @default(cuid())
+  workOrderId String
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id])
+  partId      String
+  part        Part      @relation(fields: [partId], references: [id])
+  quantity    Int       @default(1)
+  createdAt   DateTime  @default(now())
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  workOrderId    String   @unique
+  workOrder      WorkOrder @relation(fields: [workOrderId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+
+  number    String   @unique
+  status    InvoiceStatus @default(DRAFT)
+  currency  String   @default("TRY")
+  subtotal  Int      @default(0)
+  taxRate   Int      @default(2000) // 20.00% stored as 2000
+  taxAmount Int      @default(0)
+  total     Int      @default(0)
+  notes     String?
+  issuedAt  DateTime @default(now())
+  dueAt     DateTime?
+  paidAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  VOID
+}
+
+model PurchaseRequest {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  fullName       String
+  email          String
+  phone          String
+  monthlyJobs    Int?
+  technicianCount Int?
+  city           String?
+  note           String?
+  status         String   @default("PENDING")
+  createdAt      DateTime @default(now())
+}
