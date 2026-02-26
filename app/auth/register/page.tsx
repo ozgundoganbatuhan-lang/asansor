@@ -2,12 +2,20 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Vertical = "ELEVATOR" | "WHITE_GOODS";
 
-export default function RegisterClient() {
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterClient />
+    </Suspense>
+  );
+}
+
+function RegisterClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -146,14 +154,14 @@ export default function RegisterClient() {
 
           <button
             disabled={loading}
-            className="w-full rounded-lg bg-brand-500 px-4 py-2 font-semibold text-white hover:bg-brand-600 disabled:opacity-60"
+            className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
             {loading ? "Oluşturuluyor..." : "Hesap Oluştur"}
           </button>
 
           <div className="text-sm text-gray-600">
             Zaten hesabın var mı?{" "}
-            <a className="font-semibold text-brand-600 hover:underline" href="/auth/login">
+            <a className="font-semibold text-blue-600 hover:underline" href="/auth/login">
               Giriş yap
             </a>
           </div>
