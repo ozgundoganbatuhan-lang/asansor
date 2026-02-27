@@ -1,13 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Organization {
@@ -43,7 +41,7 @@ model User {
   name           String?
   email          String   @unique
   passwordHash   String
-  role           String   @default("MEMBER") // OWNER, ADMIN, MEMBER, TECHNICIAN
+  role           String   @default("MEMBER")
   createdAt      DateTime @default(now())
 }
 
@@ -175,7 +173,7 @@ model Part {
   category       String?
   unit           String?  @default("Adet")
   supplier       String?
-  price          Int?     // in smallest currency unit
+  price          Int?
   stock          Int      @default(0)
   minStock       Int      @default(0)
   createdAt      DateTime @default(now())
@@ -207,7 +205,7 @@ model Invoice {
   status    InvoiceStatus @default(DRAFT)
   currency  String   @default("TRY")
   subtotal  Int      @default(0)
-  taxRate   Int      @default(2000) // 20.00% stored as 2000
+  taxRate   Int      @default(2000)
   taxAmount Int      @default(0)
   total     Int      @default(0)
   notes     String?
