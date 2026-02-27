@@ -478,6 +478,74 @@ export default function LandingPage() {
         </div>
       </section>
 
+
+      {/* Accounting Integration */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px 96px" }}>
+        <div style={{
+          background: "linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(59,130,246,0.06) 100%)",
+          border: "1px solid rgba(99,102,241,0.2)",
+          borderRadius: 24,
+          padding: "clamp(32px, 5vw, 64px)",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 48,
+          alignItems: "center",
+        }}>
+          <div style={{ flex: "1 1 400px" }}>
+            <div className="section-label" style={{ marginBottom: 16 }}>Muhasebe Entegrasyonu</div>
+            <h2 style={{ fontSize: "clamp(24px, 4vw, 42px)", fontWeight: 900, letterSpacing: -1.5, color: "white", marginBottom: 20, lineHeight: 1.1 }}>
+              Muhasebecileriniz<br />her şeyi tek ekrandan yönetir.
+            </h2>
+            <p style={{ color: "#94a3b8", fontSize: 16, lineHeight: 1.7, marginBottom: 24 }}>
+              Servisim üzerindeki tüm iş emirleri, faturalar ve harcama kalemleri
+              muhasebe yazılımınızla doğrudan senkronize olur. Manuel veri girişi,
+              hatalı excel aktarımı ya da ay sonu panik sona erer —
+              muhasebecileriniz istediği zaman güncel, doğru ve eksiksiz verilere erişir.
+            </p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 32 }}>
+              {["Paraşüt", "Logo GO", "Mikro", "Luca", "e-Fatura", "e-Arşiv", "Özel API"].map((b) => (
+                <span key={b} style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 100,
+                  padding: "6px 16px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#c7d2fe",
+                }}>{b}</span>
+              ))}
+            </div>
+            <Link href="/auth/register" className="btn-primary" style={{ display: "inline-flex" }}>
+              Entegrasyonu Keşfet
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+          </div>
+          <div style={{ flex: "1 1 300px", display: "flex", flexDirection: "column", gap: 12 }}>
+            {[
+              { icon: "🔄", title: "Otomatik Senkronizasyon", desc: "Yeni fatura oluşturulduğunda muhasebe yazılımınıza anında iletilir." },
+              { icon: "📊", title: "Gerçek Zamanlı Raporlar", desc: "Aylık ciro, KDV özetleri ve gider raporları tek tıkla hazır." },
+              { icon: "✅", title: "GİB Uyumlu", desc: "e-Fatura ve e-Arşiv altyapısı ile yasal gereklilikleri otomatik karşılayın." },
+              { icon: "🔐", title: "Güvenli Erişim", desc: "Muhasebecilerinize sadece mali verilere özel erişim izni tanımlayın." },
+            ].map((f) => (
+              <div key={f.title} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 14,
+                padding: "16px 20px",
+                display: "flex",
+                gap: 14,
+                alignItems: "flex-start",
+              }}>
+                <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{f.icon}</span>
+                <div>
+                  <div style={{ color: "white", fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{f.title}</div>
+                  <div style={{ color: "#64748b", fontSize: 13, lineHeight: 1.5 }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* CTA */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px 96px" }}>
         <div className="cta-section">
