@@ -26,6 +26,8 @@ model Organization {
   invoices         Invoice[]
   maintenancePlans MaintenancePlan[]
   purchaseRequests PurchaseRequest[]
+  contracts        Contract[]
+  inspections      Inspection[]
 }
 
 enum Vertical {
@@ -61,6 +63,7 @@ model Customer {
   assets     Asset[]
   workOrders WorkOrder[]
   invoices   Invoice[]
+  contracts  Contract[]
 }
 
 model Asset {
@@ -71,24 +74,33 @@ model Asset {
   customer       Customer @relation(fields: [customerId], references: [id])
 
   name            String
+  elevatorIdNo    String?  // Asansör Kimlik Numarası (yönetmelik zorunlu)
   category        String?
   serialNumber    String?
+  brand           String?
   buildingName    String?
   doorNumber      String?
   locationNote    String?
   stops           Int?
   capacityKg      Int?
+  speed           Float?   // m/s
+  driveType       String?  // Elektrikli, Hidrolik
   controllerBrand String?
   installYear     Int?
+  lastRevisionYear Int?
   riskScore       Int?     @default(0)
   lastMaintenanceAt DateTime?
   lastInspectionAt  DateTime?
+  nextInspectionAt  DateTime?
+  inspectionLabel   String?  // YESIL, MAVI, SARI, KIRMIZI
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   workOrders       WorkOrder[]
   maintenancePlans MaintenancePlan[]
+  contractAssets   ContractAsset[]
+  inspections      Inspection[]
 }
 
 model Technician {
@@ -156,7 +168,14 @@ model MaintenancePlan {
   organization   Organization @relation(fields: [organizationId], references: [id])
   assetId        String
   asset          Asset    @relation(fields: [assetId], references: [id])
-  periodMonths   Int      @default(1)
+  name           String?
+  planType       String   @default("PERIODIC") // PERIODIC, ANNUAL_INSPECTION, CUSTOM
+  periodDays     Int      @default(30)  // özel gün sayısı (eski periodMonths yerine)
+  periodMonths   Int?     // geriye dönük uyumluluk
+  monthlyFee     Int      @default(0)
+  contractId     String?
+  contract       Contract? @relation(fields: [contractId], references: [id])
+  technicianId   String?
   lastDoneAt     DateTime?
   nextDueAt      DateTime
   notes          String?
@@ -235,4 +254,95 @@ model PurchaseRequest {
   note           String?
   status         String   @default("PENDING")
   createdAt      DateTime @default(now())
+}
+
+// ─── V11 ADDITIONS ─────────────────────────────────────────────────────────
+
+model Contract {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+
+  // Yasal zorunlu alanlar (Asansör İşletme ve Bakım Yönetmeliği)
+  contractNumber    String?
+  startDate         DateTime
+  endDate           DateTime?
+  autoRenew         Boolean  @default(true)
+  monthlyFee        Int      @default(0) // kuruş cinsinden
+  currency          String   @default("TRY")
+
+  // Teknik sorumlu (yönetmelik gereği sözleşmede zorunlu)
+  technicianName    String?
+  technicianCert    String?  // TSE belge no
+
+  // Şifreleme/kısıtlama beyanı (2019 yönetmeliği zorunlu kılıyor)
+  hasEncryptionDevice Boolean @default(false)
+  encryptionNote    String?
+
+  status  ContractStatus @default(ACTIVE)
+  notes   String?
+  fileUrl String?  // upload edilen PDF
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assets      ContractAsset[]
+  maintenancePlans MaintenancePlan[]
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  TERMINATED
+}
+
+// Sözleşme ↔ Asansör many-to-many (bir sözleşme birden fazla asansörü kapsayabilir)
+model ContractAsset {
+  id         String   @id @default(cuid())
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id])
+  assetId    String
+  asset      Asset    @relation(fields: [assetId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([contractId, assetId])
+}
+
+// TSE / A Tipi Muayene Kuruluşu periyodik kontrol takibi
+model Inspection {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  assetId        String
+  asset          Asset    @relation(fields: [assetId], references: [id])
+
+  inspectionDate   DateTime
+  nextDueDate      DateTime  // genellikle +1 yıl
+  inspectionBody   String?   // TSE, SZUTEST, AND Muayene vs.
+  inspectorName    String?
+  result           InspectionResult @default(UYGUNSUZLUK_YOK)
+  label            InspectionLabel  @default(YESIL)
+  deficiencies     String?   // tespit edilen eksiklikler
+  reportUrl        String?   // yüklenen PDF rapor
+  notes            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InspectionResult {
+  UYGUNSUZLUK_YOK   // Yeşil etiket
+  HAFIF_KUSURLU     // Mavi etiket
+  KUSURLU           // Sarı etiket
+  GUVENSIZ          // Kırmızı etiket
+}
+
+enum InspectionLabel {
+  YESIL   // Kusursuz
+  MAVI    // Hafif kusurlu (120 gün içinde düzeltilmeli)
+  SARI    // Kusurlu
+  KIRMIZI // Güvensiz - 30 gün içinde durdurulacak
 }

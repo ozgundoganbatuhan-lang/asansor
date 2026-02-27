@@ -27,15 +27,20 @@ export async function GET(req: NextRequest) {
 const schema = z.object({
   customerId: z.string().min(1),
   name: z.string().min(1),
+  elevatorIdNo: z.string().optional(),
   category: z.string().optional(),
+  brand: z.string().optional(),
   serialNumber: z.string().optional(),
   locationNote: z.string().optional(),
   buildingName: z.string().optional(),
   doorNumber: z.string().optional(),
   stops: z.coerce.number().int().optional(),
   capacityKg: z.coerce.number().int().optional(),
+  speed: z.coerce.number().optional(),
+  driveType: z.string().optional(),
   controllerBrand: z.string().optional(),
   installYear: z.coerce.number().int().optional(),
+  lastRevisionYear: z.coerce.number().int().optional(),
   riskScore: z.coerce.number().int().min(0).max(100).optional(),
 });
 
