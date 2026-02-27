@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json({ items: assets, ok: true });
+  try {
+    return NextResponse.json({ items: assets, ok: true });
 }
 
 const schema = z.object({
