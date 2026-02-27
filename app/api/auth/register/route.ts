@@ -14,46 +14,54 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Geçersiz form" }, { status: 400 });
+  try {
+    const body = await req.json().catch(() => null);
+    if (!body) return NextResponse.json({ error: "Geçersiz istek" }, { status: 400 });
+
+    const parsed = schema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Geçersiz form" }, { status: 400 });
+    }
+
+    const { organizationName, organizationSlug, vertical, name, email, password } = parsed.data;
+
+    const existingSlug = await prisma.organization.findUnique({ where: { slug: organizationSlug } });
+    if (existingSlug) {
+      return NextResponse.json({ error: "Bu slug kullanımda, farklı bir slug deneyin." }, { status: 409 });
+    }
+
+    const existingEmail = await prisma.user.findUnique({ where: { email } });
+    if (existingEmail) {
+      return NextResponse.json({ error: "Bu e-posta zaten kayıtlı." }, { status: 409 });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const org = await prisma.organization.create({
+      data: {
+        name: organizationName,
+        slug: organizationSlug,
+        vertical: vertical as "ELEVATOR" | "WHITE_GOODS",
+        planTier: "TRIAL",
+      },
+    });
+
+    const user = await prisma.user.create({
+      data: {
+        organizationId: org.id,
+        name: name ?? email.split("@")[0],
+        email,
+        passwordHash,
+        role: "OWNER",
+      },
+    });
+
+    const res = NextResponse.json({ ok: true }, { status: 201 });
+    setSessionCookie(res, { userId: user.id, orgId: org.id, role: user.role, email: user.email });
+    return res;
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("Register error:", msg);
+    return NextResponse.json({ error: "Kayıt başarısız: " + msg }, { status: 500 });
   }
-
-  const { organizationName, organizationSlug, vertical, name, email, password } = parsed.data;
-
-  const existingSlug = await prisma.organization.findUnique({ where: { slug: organizationSlug } });
-  if (existingSlug) {
-    return NextResponse.json({ error: "Bu slug kullanımda, farklı bir slug deneyin." }, { status: 409 });
-  }
-
-  const existingEmail = await prisma.user.findUnique({ where: { email } });
-  if (existingEmail) {
-    return NextResponse.json({ error: "Bu e-posta zaten kayıtlı." }, { status: 409 });
-  }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  const org = await prisma.organization.create({
-    data: {
-      name: organizationName,
-      slug: organizationSlug,
-      vertical: vertical as any,
-      planTier: "TRIAL",
-    },
-  });
-
-  const user = await prisma.user.create({
-    data: {
-      organizationId: org.id,
-      name: name ?? email.split("@")[0],
-      email,
-      passwordHash,
-      role: "OWNER",
-    },
-  });
-
-  const res = NextResponse.json({ ok: true }, { status: 201 });
-  setSessionCookie(res, { userId: user.id, orgId: org.id, role: user.role, email: user.email });
-  return res;
 }
