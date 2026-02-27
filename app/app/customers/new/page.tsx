@@ -55,7 +55,7 @@ export default function NewCustomerPage() {
         {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
 
         <div className="flex gap-2">
-          <button disabled={loading} className="rounded-lg bg-brand-500 px-4 py-2 font-semibold text-white hover:bg-brand-600 disabled:opacity-60">
+          <button disabled={loading} className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600 disabled:opacity-60">
             {loading ? "Kaydediliyor..." : "Kaydet"}
           </button>
           <button type="button" className="rounded-lg border bg-white px-4 py-2 font-semibold hover:bg-gray-100" onClick={() => router.back()}>

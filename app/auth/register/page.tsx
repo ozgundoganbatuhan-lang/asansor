@@ -114,12 +114,12 @@ function RegisterForm() {
 
           {error && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
 
-          <button disabled={loading} className="w-full rounded-lg bg-brand-500 px-4 py-2 font-semibold text-white hover:bg-brand-600 disabled:opacity-60">
+          <button disabled={loading} className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-600 disabled:opacity-60">
             {loading ? "Oluşturuluyor..." : "Hesap Oluştur"}
           </button>
 
           <div className="text-sm text-gray-600">
-            Zaten hesabın var mı? <a className="font-semibold text-brand-600 hover:underline" href="/auth/login">Giriş yap</a>
+            Zaten hesabın var mı? <a className="font-semibold text-blue-600 hover:underline" href="/auth/login">Giriş yap</a>
           </div>
         </form>
       </div>

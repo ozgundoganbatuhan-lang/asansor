@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { readSession } from "@/lib/auth";
 import Shell from "@/components/Shell";

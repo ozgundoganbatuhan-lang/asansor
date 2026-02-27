@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Card, Input, Select, Pill, Textarea } from "@/components/ui";
 
-type Asset = { id: string; name: string; buildingName?: string | null; customer: { name: string } };
+type Asset = { id: string; name: string; buildingName?: string | null; customerId: string; customer?: { name: string } | null };
 type Plan = {
   id: string;
   periodMonths: number;
@@ -171,7 +171,7 @@ export default function MaintenancePlansPage() {
               <option value="">— Seç —</option>
               {assets.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.name} — {(a as any).customer?.name ?? ""}
+                  (a.customer?.name ? `${a.name} — ${a.customer.name}` : a.name)
                 </option>
               ))}
             </Select>
