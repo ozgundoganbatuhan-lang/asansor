@@ -28,6 +28,10 @@ model Organization {
   purchaseRequests PurchaseRequest[]
   contracts        Contract[]
   inspections      Inspection[]
+  brands           Brand[]
+  devices          Device[]
+  serviceCalls     ServiceCall[]
+  serviceInvoices  ServiceInvoice[]
 }
 
 enum Vertical {
@@ -64,6 +68,9 @@ model Customer {
   workOrders WorkOrder[]
   invoices   Invoice[]
   contracts  Contract[]
+  devices    Device[]
+  serviceCalls ServiceCall[]
+  serviceInvoices ServiceInvoice[]
 }
 
 model Asset {
@@ -117,6 +124,7 @@ model Technician {
   updatedAt      DateTime @updatedAt
 
   workOrders WorkOrder[]
+  serviceCalls ServiceCall[] @relation("ServiceCallTechnician")
 }
 
 model WorkOrder {
@@ -198,6 +206,7 @@ model Part {
   updatedAt      DateTime @updatedAt
 
   usages PartUsage[]
+  serviceUsages ServicePartUsage[] @relation("ServicePartUsagePart")
 }
 
 model PartUsage {
@@ -345,4 +354,248 @@ enum InspectionLabel {
   MAVI    // Hafif kusurlu (120 gün içinde düzeltilmeli)
   SARI    // Kusurlu
   KIRMIZI // Güvensiz - 30 gün içinde durdurulacak
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BEYAZ EŞYA SERVİS MODÜLÜ — V12
+// Yasal Dayanak: 6502 TKHK, Garanti Belgesi Yönetmeliği, TS 12354
+// ═══════════════════════════════════════════════════════════════
+
+// Marka ve yetkili servis yetki belgesi
+model Brand {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String        // Arçelik, Bosch, Samsung...
+  authCode       String?       // Yetkili servis kodu
+  authStartDate  DateTime?     // Yetki başlangıcı
+  authEndDate    DateTime?     // Yetki bitiş (yenileme uyarısı)
+  contactName    String?       // Marka yetkili kişi
+  contactPhone   String?
+  contactEmail   String?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  devices   Device[]
+}
+
+// Beyaz eşya cihaz kaydı
+model Device {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  brandId        String?
+  brand          Brand?   @relation(fields: [brandId], references: [id])
+
+  // Cihaz kimliği
+  category       DeviceCategory
+  modelName      String?        // Model adı (WMB 91432, vb.)
+  modelCode      String?        // Model kodu
+  serialNumber   String?        // Seri no (garanti için zorunlu)
+  productionYear Int?
+  color          String?
+
+  // Kurulum
+  purchaseDate   DateTime?      // Satın alma tarihi (garanti başlangıcı)
+  purchasePlace  String?        // Satın alınan yer
+  invoiceNumber  String?        // Fatura no (garanti belgesi için)
+  installDate    DateTime?      // Kurulum tarihi
+  locationNote   String?        // Cihazın konumu: mutfak, çamaşırhane...
+
+  // Garanti takibi (6502 TKHK - min 2 yıl)
+  warrantyYears  Int      @default(2)
+  warrantyEndDate DateTime?     // Otomatik hesaplanır: purchaseDate + warrantyYears
+  extendedWarranty Boolean @default(false)
+  extendedWarrantyEnd DateTime?
+
+  // Teknik bilgiler
+  powerWatts     Int?
+  voltage        String?        // 220V, 380V
+  capacity       String?        // 8kg, 500L, vb.
+  energyClass    String?        // A+++, A++
+
+  // Servis geçmişi özeti
+  lastServiceAt  DateTime?
+  totalServiceCount Int @default(0)
+  isUnderRepair  Boolean @default(false)
+
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  serviceCalls ServiceCall[]
+}
+
+enum DeviceCategory {
+  WASHING_MACHINE       // Çamaşır Makinesi
+  DRYER                 // Kurutucu
+  WASHER_DRYER          // Kurutmalı Çamaşır
+  DISHWASHER            // Bulaşık Makinesi
+  REFRIGERATOR          // Buzdolabı
+  FREEZER               // Derin Dondurucu
+  FRIDGE_FREEZER        // Kombi
+  OVEN                  // Fırın
+  COOKTOP               // Ocak
+  RANGE_HOOD            // Davlumbaz
+  MICROWAVE             // Mikrodalga
+  AIR_CONDITIONER       // Klima
+  WATER_HEATER          // Şofben/Kombi
+  VACUUM_CLEANER        // Süpürge
+  SMALL_APPLIANCE       // Küçük Ev Aleti
+  OTHER                 // Diğer
+}
+
+// Servis çağrısı — 6502 TKHK ve TS 12354 uyumlu
+model ServiceCall {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  deviceId       String
+  device         Device   @relation(fields: [deviceId], references: [id])
+  technicianId   String?
+  technician     Technician? @relation(fields: [technicianId], references: [id], name: "ServiceCallTechnician")
+
+  // Çağrı kimliği
+  code           String   @unique  // SRV-2025-0001
+
+  // Çağrı türü ve durumu
+  callType       ServiceCallType    @default(FAULT_REPAIR)
+  status         ServiceCallStatus  @default(RECEIVED)
+  priority       ServicePriority    @default(NORMAL)
+
+  // Garanti durumu (6502 TKHK)
+  warrantyStatus WarrantyStatus @default(UNKNOWN)
+  isUnderWarranty Boolean @default(false)  // garanti kapsamında mı
+
+  // Arıza bilgisi
+  faultDescription String?   // Müşteri şikayeti
+  faultDiagnosis   String?   // Teknisyen teşhisi
+  faultCode        String?   // Hata kodu (varsa)
+  repairDescription String?  // Yapılan işlem
+
+  // Zaman takibi — 30 iş günü yasal limit (6502 TKHK Md. 13)
+  receivedAt     DateTime  @default(now())  // Çağrı alındı
+  scheduledAt    DateTime?                  // Randevu zamanı
+  technicianArrivedAt DateTime?             // Teknisyen vardı
+  repairStartedAt DateTime?                 // Tamir başladı
+  completedAt    DateTime?                  // Tamamlandı
+  workingDaysUsed Int?                      // Kullanılan iş günü
+
+  // Konum
+  visitType      VisitType @default(HOME_VISIT)  // Ev ziyareti / Atölyeye al
+  address        String?   // Adres (ev ziyareti için)
+
+  // Maliyetler
+  laborCost      Int   @default(0)  // İşçilik (kuruş)
+  transportCost  Int   @default(0)  // Yol/taşıma
+  diagnosticFee  Int   @default(0)  // Teşhis ücreti
+  isWarrantyCovered Boolean @default(false)  // Garanti kapsamı
+
+  // 6502 Yasal bildirimler
+  customerInformed Boolean @default(false)   // Müşteri bilgilendirme yapıldı mı
+  rightToReplace   Boolean @default(false)   // Değişim hakkı doğdu mu (30 gün aşıldı)
+  rightToRefund    Boolean @default(false)   // İade hakkı doğdu mu
+
+  notes          String?
+  internalNotes  String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  partsUsed      ServicePartUsage[]
+  invoice        ServiceInvoice?
+}
+
+enum ServiceCallType {
+  FAULT_REPAIR          // Arıza Tamiri
+  WARRANTY_REPAIR       // Garanti Tamiri
+  PERIODIC_MAINTENANCE  // Periyodik Bakım
+  INSTALLATION          // Kurulum/Montaj
+  UNINSTALLATION        // Söküm
+  TECHNICAL_INSPECTION  // Teknik Kontrol
+  CUSTOMER_MISUSE       // Kullanım Hatası
+  SPARE_PART_SUPPLY     // Yedek Parça Temini
+}
+
+enum ServiceCallStatus {
+  RECEIVED        // Çağrı Alındı
+  SCHEDULED       // Randevu Verildi
+  TECHNICIAN_WAY  // Teknisyen Yolda
+  IN_PROGRESS     // İşlem Devam Ediyor
+  WAITING_PARTS   // Parça Bekleniyor
+  WAITING_APPROVAL // Müşteri Onayı Bekleniyor
+  COMPLETED       // Tamamlandı
+  CANNOT_REPAIR   // Tamir Edilemez
+  CANCELED        // İptal
+}
+
+enum ServicePriority {
+  URGENT    // Acil
+  HIGH      // Yüksek
+  NORMAL    // Normal
+  LOW       // Düşük
+}
+
+enum WarrantyStatus {
+  IN_WARRANTY       // Garanti İçi
+  OUT_OF_WARRANTY   // Garanti Dışı
+  EXTENDED_WARRANTY // Uzatılmış Garanti
+  UNKNOWN           // Bilinmiyor
+}
+
+enum VisitType {
+  HOME_VISIT    // Ev/İşyeri Ziyareti
+  WORKSHOP      // Atölyeye Getirme
+  REMOTE        // Uzaktan Destek
+}
+
+// Serviste kullanılan parçalar
+model ServicePartUsage {
+  id            String   @id @default(cuid())
+  serviceCallId String
+  serviceCall   ServiceCall @relation(fields: [serviceCallId], references: [id])
+  partId        String
+  part          Part     @relation(fields: [partId], references: [id], name: "ServicePartUsagePart")
+  quantity      Int      @default(1)
+  unitPrice     Int      @default(0)   // Satış fiyatı (kuruş)
+  isWarrantyCovered Boolean @default(false)
+  createdAt     DateTime @default(now())
+}
+
+// Servis faturası (PartUsage'dan bağımsız)
+model ServiceInvoice {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  serviceCallId  String   @unique
+  serviceCall    ServiceCall @relation(fields: [serviceCallId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+
+  number         String   @unique
+  status         ServiceInvoiceStatus @default(DRAFT)
+  currency       String   @default("TRY")
+  subtotal       Int      @default(0)
+  taxRate        Int      @default(2000)  // 20.00%
+  taxAmount      Int      @default(0)
+  total          Int      @default(0)
+  notes          String?
+  issuedAt       DateTime @default(now())
+  dueAt          DateTime?
+  paidAt         DateTime?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum ServiceInvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  VOID
 }

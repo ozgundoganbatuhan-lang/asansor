@@ -9,9 +9,10 @@ export async function GET(req: NextRequest) {
   try {
     const now = new Date();
     const in7 = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const in60 = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
     const orgId = session.orgId;
 
-    const [customers, assets, workOrders, urgent, dueSoon, overdue, risky, recentWOs, overdueList] = await Promise.all([
+    const [customers, assets, workOrders, urgent, dueSoon, overdue, risky, recentWOs, overdueList, upcomingPlans] = await Promise.all([
       prisma.customer.count({ where: { organizationId: orgId } }),
       prisma.asset.count({ where: { organizationId: orgId } }),
       prisma.workOrder.count({ where: { organizationId: orgId } }),
@@ -35,12 +36,31 @@ export async function GET(req: NextRequest) {
         include: { asset: { select: { name: true, customer: { select: { name: true } } } } },
         orderBy: { nextDueAt: "asc" },
       }),
+      // Upcoming 60 days for calendar widget
+      prisma.maintenancePlan.findMany({
+        where: { organizationId: orgId, nextDueAt: { gte: now, lte: in60 } },
+        orderBy: { nextDueAt: "asc" },
+        take: 100,
+        include: {
+          asset: {
+            select: {
+              id: true, name: true, buildingName: true, elevatorIdNo: true,
+              customer: { select: { id: true, name: true, phone: true, address: true } },
+            },
+          },
+        },
+      }),
     ]);
 
-    return NextResponse.json({ ok: true, stats: { customers, assets, workOrders, urgent, dueSoon, overdue, risky }, recentWOs, overdueList });
+    return NextResponse.json({
+      ok: true,
+      stats: { customers, assets, workOrders, urgent, dueSoon, overdue, risky },
+      recentWOs,
+      overdueList,
+      upcomingPlans,
+    });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("Dashboard error:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
