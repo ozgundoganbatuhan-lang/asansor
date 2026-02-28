@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
+import OnboardingTour from "@/components/OnboardingTour";
 
 type NavItem = {
   label: string;
@@ -247,6 +248,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           </div>
         </main>
       </div>
+      <OnboardingTour />
     </div>
   );
 }
