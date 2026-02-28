@@ -1,82 +1,93 @@
-# 🚀 Asansör Servisim — Deployment Rehberi
+# Servisim — Asansör Servis Yönetim SaaS
 
-## En Hızlı Canlıya Alma: Railway (Önerilen)
+## Kurulum
 
-Railway, **PostgreSQL dahil** tam stack uygulamaları dakikalar içinde deploy etmenizi sağlar.
-
-### Adım 1 — GitHub'a Push
-
-```bash
-git init && git add . && git commit -m "initial"
-git remote add origin https://github.com/KULLANICI/asansor-servisim.git
-git push -u origin main
-```
-
-### Adım 2 — Railway Kurulumu
-
-1. [railway.app](https://railway.app) → GitHub ile kayıt
-2. **New Project** → **Deploy from GitHub repo**
-3. **Add Service** → **Database** → **PostgreSQL** ekle (DATABASE_URL otomatik gelir)
-
-### Adım 3 — Ortam Değişkenleri
-
-```env
-DATABASE_URL         = (Railway PostgreSQL'den otomatik)
-JWT_SECRET           = openssl rand -base64 32 ile üret
-NEXT_PUBLIC_SITE_URL = https://PROJE.railway.app
-```
-
-### Adım 4 — Build Komutu
-
-Railway Settings → Build Command:
-```
-npx prisma generate && npx prisma migrate deploy && npm run build
-```
-
-### Adım 5 — Seed (Railway Shell)
-
-```bash
-npx tsx prisma/seed.ts
-```
-
----
-
-## Alternatif: Vercel + Supabase
-
-1. [supabase.com](https://supabase.com) → PostgreSQL bağlantı stringini al
-2. `npm i -g vercel && vercel --prod`
-3. Ortam değişkenlerini Vercel dashboard'a ekle
-4. `npx prisma migrate deploy && npx tsx prisma/seed.ts`
-
----
-
-## Lokal Geliştirme
-
+### 1. Bağımlılıkları kur
 ```bash
 npm install
-cp .env.example .env   # DATABASE_URL ve JWT_SECRET gir
-npx prisma migrate dev --name init
-npm run db:seed
+```
+
+### 2. .env dosyasını oluştur
+```bash
+cp .env.example .env
+```
+`.env` dosyasını düzenle, Neon connection string'ini yapıştır.
+
+### 3. Veritabanı tablolarını oluştur (Neon)
+```bash
+npx prisma db push
+```
+
+### 4. Geliştirme sunucusunu başlat
+```bash
 npm run dev
 ```
 
-**Demo Giriş:** slug=`demo` | email=`demo@servisim.app` | şifre=`demo1234`
+---
+
+## Git'e Push Etme (ZIP'ten güncelleme)
+
+ZIP'i indirip dosyaları mevcut git reponuza kopyalamanız gerekir:
+
+### macOS / Linux
+```bash
+# ZIP'i Downloads'a indirdin, git repon ~/Desktop/servisim'de
+cd ~/Downloads
+unzip asansor-servisim-v11-final.zip
+
+# Git reponun içine kopyala (reponu sil değil, üstüne yaz)
+cp -r asansor-servisim-repo/. ~/Desktop/servisim/
+
+cd ~/Desktop/servisim
+git add -A
+git status
+git commit -m "feat: v11"
+git push
+```
+
+### Windows (PowerShell)
+```powershell
+# ZIP'i çıkart, sonra:
+Copy-Item -Recurse -Force "C:\Users\Sen\Downloads\asansor-servisim-repo\*" "C:\Users\Sen\Desktop\servisim\"
+
+cd C:\Users\Sen\Desktop\servisim
+git add -A
+git status
+git commit -m "feat: v11"
+git push
+```
 
 ---
 
-## Maliyet
+## Vercel Ortam Değişkenleri
 
-| Platform | Plan | Maliyet |
-|---|---|---|
-| Railway Hobby | Uygulama + DB | ~$5-10/ay |
-| Vercel Free + Supabase Free | 0$ | Küçük trafik için |
+Vercel → Settings → Environment Variables:
+
+| Değişken | Değer |
+|----------|-------|
+| `DATABASE_URL` | Neon connection string (`?sslmode=require` ile) |
+| `JWT_SECRET` | Güçlü rastgele string |
+| `NEXT_PUBLIC_SITE_URL` | https://asansor.teknix.tech |
 
 ---
 
-## Roadmap
+## Neon Veritabanı Kurulumu (ilk kurulum)
 
-- [ ] PDF fatura (react-pdf)
-- [ ] SMS bildirimi (Netgsm)
-- [ ] Drag-drop takvim (FullCalendar)
-- [ ] Stripe abonelik
-- [ ] Teknisyen mobil PWA
+1. neon.tech → New Project → Region: **Frankfurt (eu-central-1)**
+2. Connection string'i kopyala
+3. `.env` dosyasına yapıştır
+4. `npx prisma db push` çalıştır → tüm tablolar otomatik oluşur
+5. Vercel'deki `DATABASE_URL`'i güncelle → Redeploy
+
+## Vercel'de Neon Migration (tablo güncelleme)
+
+Yeni tablo/alan eklendiğinde (v11 gibi):
+```bash
+# Yerelde .env'de Neon URL varsa:
+npx prisma db push
+```
+
+Ya da Neon → SQL Editor'da çalıştır:
+```sql
+-- prisma/v11-migration.sql içeriğini buraya yapıştır
+```
