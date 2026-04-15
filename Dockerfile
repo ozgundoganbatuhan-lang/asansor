@@ -8,7 +8,6 @@ RUN npm install --legacy-peer-deps
 FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
-ENV DOCKER_BUILD=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN ./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
@@ -28,7 +27,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/startup.js ./startup.js
 
 USER nextjs

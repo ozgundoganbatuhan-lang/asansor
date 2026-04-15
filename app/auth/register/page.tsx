@@ -71,12 +71,12 @@ function RegisterForm() {
   }
 
   return (
-    <div className="auth-layout">
+    <div style={S.page}>
       <style>{AUTH_CSS}</style>
       <AuthLeft variant="register" />
 
-      <div className="auth-panel-right" style={{ alignItems: "flex-start", paddingTop: 48 }}>
-        <div className="auth-form-card auth-card" style={{ maxWidth: 440 }}>
+      <div style={S.right}>
+        <div className="auth-card" style={S.card}>
           <div style={{ marginBottom: 28, display: "none" }}><AuthBrand /></div>
 
           {/* Step progress */}
@@ -91,14 +91,14 @@ function RegisterForm() {
             </span>
           </div>
 
-          <div style={{ marginBottom: 22 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#111827", letterSpacing: "-0.03em", margin: "0 0 5px", lineHeight: 1.1 }}>{step === 1 ? "Firmanızı oluşturun" : "Hesabınızı oluşturun"}</h1>
-            <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>{step === 1 ? "Bakım yönetim sisteminizi kuralım." : "Giriş için kullanacağınız bilgiler."}</p>
+          <div style={S.hd}>
+            <h1 style={S.h1}>{step === 1 ? "Firmanızı oluşturun" : "Hesabınızı oluşturun"}</h1>
+            <p style={S.sub}>{step === 1 ? "Bakım yönetim sisteminizi kuralım." : "Giriş için kullanacağınız bilgiler."}</p>
           </div>
 
           {/* STEP 1 */}
           {step === 1 && (
-            <form onSubmit={goStep2} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <form onSubmit={goStep2} style={S.form}>
               <Field label="Firma Adı">
                 <input className="auth-inp" value={orgName} autoFocus required
                   onChange={e => { setOrgName(e.target.value); if (!orgSlug) setOrgSlug(slugify(e.target.value)); }}
@@ -125,7 +125,7 @@ function RegisterForm() {
 
           {/* STEP 2 */}
           {step === 2 && (
-            <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <form onSubmit={onSubmit} style={S.form}>
               <Field label="Ad Soyad">
                 <input className="auth-inp" value={name} autoFocus
                   onChange={e => setName(e.target.value)} placeholder="Ali Yılmaz" />
@@ -171,9 +171,9 @@ function RegisterForm() {
             </form>
           )}
 
-          <p style={{ textAlign: "center", marginTop: 20, color: "#9ca3af", fontSize: 13 }}>
+          <p style={S.sw}>
             Hesabınız var mı?{" "}
-            <Link href="/auth/login" style={{ color: "#2563eb", fontWeight: 700, textDecoration: "none" }}>Giriş yapın →</Link>
+            <Link href="/auth/login" style={S.lnk}>Giriş yapın →</Link>
           </p>
         </div>
       </div>

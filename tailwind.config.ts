@@ -11,9 +11,6 @@ const config: Config = {
         sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "system-ui", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "monospace"],
       },
-      colors: {
-        primary: "#2563eb",
-      },
     },
   },
   plugins: [],
