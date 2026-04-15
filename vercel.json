@@ -1,0 +1,8 @@
+{
+  "framework": "nextjs",
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma && npm run build",
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
+}
