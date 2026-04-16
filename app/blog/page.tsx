@@ -46,10 +46,7 @@ export default function BlogIndexPage() {
         {featured && (
           <div style={{ marginBottom:44 }}>
             <div style={{ fontSize:10, fontWeight:700, color:"#9ca3af", letterSpacing:"0.1em", textTransform:"uppercase" as const, marginBottom:12 }}>Öne çıkan yazı</div>
-            <Link href={`/blog/${featured.slug}`} style={{ textDecoration:"none", display:"grid", gridTemplateColumns:"1fr 1.1fr", background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", overflow:"hidden", boxShadow:"0 3px 16px rgba(0,0,0,0.06)", transition:"box-shadow 0.2s" }}
-              onMouseEnter={e=>(e.currentTarget as HTMLElement).style.boxShadow="0 12px 44px rgba(37,99,235,0.12)"}
-              onMouseLeave={e=>(e.currentTarget as HTMLElement).style.boxShadow="0 3px 16px rgba(0,0,0,0.06)"}
-              className="feat-link">
+            <Link href={`/blog/${featured.slug}`} style={{ textDecoration:"none", display:"grid", gridTemplateColumns:"1fr 1.1fr", background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", overflow:"hidden", boxShadow:"0 3px 16px rgba(0,0,0,0.06)", transition:"box-shadow 0.2s" }} className="feat-link">
               <div style={{ background:"linear-gradient(135deg,#111827,#1e3a8a)", display:"flex", alignItems:"center", justifyContent:"center", minHeight:220, fontSize:60 }}>📋</div>
               <div style={{ padding:"28px 32px", display:"flex", flexDirection:"column" as const, justifyContent:"center" }}>
                 <div style={{ display:"flex", gap:7, marginBottom:10, alignItems:"center" }}>
@@ -68,9 +65,7 @@ export default function BlogIndexPage() {
         )}
         <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }} className="blog-grid">
           {rest.map(post=>(
-            <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration:"none", background:"#fff", borderRadius:13, border:"1px solid #e5e7eb", overflow:"hidden", display:"flex", flexDirection:"column" as const, transition:"all 0.14s" }}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.boxShadow="0 10px 30px rgba(0,0,0,0.08)";(e.currentTarget as HTMLElement).style.transform="translateY(-2px)"}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.boxShadow="none";(e.currentTarget as HTMLElement).style.transform="none"}}>
+            <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration:"none", background:"#fff", borderRadius:13, border:"1px solid #e5e7eb", overflow:"hidden", display:"flex", flexDirection:"column" as const, transition:"all 0.14s" }}>
               <div style={{ height:106, background:"linear-gradient(135deg,#eff6ff,#dbeafe)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:34 }}>📋</div>
               <div style={{ padding:"15px 17px", flex:1, display:"flex", flexDirection:"column" as const }}>
                 <div style={{ display:"flex", gap:5, marginBottom:7 }}>

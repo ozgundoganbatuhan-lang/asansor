@@ -13,8 +13,12 @@ export const metadata: Metadata = {
   applicationName: "Servisim",
   icons: { icon: "/icon?size=192", apple: "/icon?size=192" },
   manifest: "/manifest.webmanifest",
-  themeColor: "#2563eb",
 };
+
+// Move themeColor into viewport export.  Next.js 15 no longer accepts
+// themeColor in the metadata export; it must live under a separate viewport
+// export instead.  See: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+export const viewport = { themeColor: "#2563eb" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

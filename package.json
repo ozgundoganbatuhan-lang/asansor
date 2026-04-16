@@ -16,7 +16,6 @@
     "postinstall": "prisma generate --schema=./prisma/schema.prisma"
   },
   "dependencies": {
-    "@microsoft/clarity": "^1.0.2",
     "@prisma/client": "5.22.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",

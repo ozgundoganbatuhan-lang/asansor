@@ -119,9 +119,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <div style={{ fontSize:10, fontWeight:700, color:"#9ca3af", letterSpacing:"0.1em", textTransform:"uppercase" as const, marginBottom:18 }}>İlgili yazılar</div>
             <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }} className="related-grid">
               {related.map(p=>(
-                <Link key={p.slug} href={`/blog/${p.slug}`} style={{ background:"#fff", borderRadius:12, border:"1px solid #e5e7eb", padding:"17px", textDecoration:"none", display:"block", transition:"all 0.14s" }}
-                  onMouseEnter={e=>(e.currentTarget as HTMLElement).style.boxShadow="0 6px 18px rgba(0,0,0,0.07)"}
-                  onMouseLeave={e=>(e.currentTarget as HTMLElement).style.boxShadow="none"}>
+                <Link key={p.slug} href={`/blog/${p.slug}`} style={{ background:"#fff", borderRadius:12, border:"1px solid #e5e7eb", padding:"17px", textDecoration:"none", display:"block", transition:"all 0.14s" }}>
                   <div style={{ fontSize:9.5, fontWeight:700, color:"#2563eb", textTransform:"uppercase" as const, letterSpacing:"0.08em", marginBottom:5 }}>{p.readingMinutes} dk</div>
                   <h3 style={{ fontSize:13, fontWeight:700, color:"#111827", letterSpacing:"-0.02em", lineHeight:1.35, margin:"0 0 5px" }}>{p.title}</h3>
                   <p style={{ fontSize:11.5, lineHeight:1.55, color:"#6b7280", margin:"0 0 9px" }}>{p.excerpt}</p>
