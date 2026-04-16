@@ -264,12 +264,11 @@ export default function Landing() {
               <span style={{ fontSize: 12, fontWeight: 700, color: "#1d4ed8", letterSpacing: "0.01em" }}>Asansör servis ekipleri için</span>
             </div>
             <h1 style={{ fontSize: "clamp(32px,4.5vw,50px)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.04em", color: "#111827", margin: "0 0 18px" }}>
-              Saha ekibinizi kontrol edin,{" "}
-              <span style={{ background: "linear-gradient(135deg,#2563eb,#0ea5e9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>bakım ritmini koruyun,</span>{" "}
-              müşterinizi etkileyin.
+              Asansör servis firmaları için{" "}
+              <span style={{ background: "linear-gradient(135deg,#2563eb,#0ea5e9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>uçtan uca operasyon platformu.</span>
             </h1>
             <p style={{ fontSize: 16, lineHeight: 1.75, color: "#6b7280", margin: "0 0 28px", maxWidth: 480 }}>
-              Servisim; arıza ve bakım iş emirlerini, teknisyen mobil akışını, QR tabanlı servis şeffaflığını ve sözleşme takibini tek platformda birleştirir.
+              Müşteri kayıtları, bakım planları, arıza ve iş emirleri, QR etiketleri, saha ekipleri ve müşteri portalını tek sistemde yönetin.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
               <Link href="/auth/register" style={{ background: "#2563eb", color: "#fff", fontSize: 14, fontWeight: 700, padding: "11px 22px", borderRadius: 9, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, boxShadow: "0 5px 18px rgba(37,99,235,0.32)" }}>
@@ -277,7 +276,7 @@ export default function Landing() {
                 <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
               </Link>
               <a href={WA} target="_blank" rel="noopener noreferrer" style={{ background: "#fff", border: "1.5px solid #e5e7eb", color: "#374151", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 9, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 7, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-                <WaIcon /> WhatsApp ile bilgi al
+                <WaIcon /> Demo talep et
               </a>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
@@ -300,9 +299,9 @@ export default function Landing() {
       <section style={{ background: "#f9fafb", borderTop: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb", padding: "64px 24px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ maxWidth: 520, marginBottom: 36 }}>
-            <div style={s.eyebrow}>Değer önerisi</div>
-            <h2 style={s.h2}>Servis operasyonunuzun her adımı tek sistemde.</h2>
-            <p style={s.sub}>Ofisteki koordinasyonu hızlandırır, sahayı kolaylaştırır, müşteriye güven veren şeffaflık kurar.</p>
+            <div style={s.eyebrow}>Neden Servisim</div>
+            <h2 style={s.h2}>Dağınık servis operasyonunu tek ekranda toplayın.</h2>
+            <p style={s.sub}>WhatsApp, Excel ve dağınık notlar yerine bakım, arıza, iş emri, QR geçmişi ve ekip akışını tek platformda yönetin.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }} className="lp-g4">
             {OUTCOMES.map(o => (
