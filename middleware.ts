@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Decode JWT payload without verification (signature verified server-side in route handlers)
-// Middleware only needs emailVerified flag for redirect — full verify happens in lib/auth
 function decodeJwtPayload(token: string): { emailVerified?: boolean } | null {
   try {
     const parts = token.split(".");
@@ -21,17 +20,26 @@ const PUBLIC_PREFIXES = [
   "/favicon",
   "/robots",
   "/sitemap",
+  "/manifest",
+  "/icon",
+  "/offline",
   "/api/auth",
+  "/api/public",
   "/auth",
+  "/blog",
   "/kvkk",
   "/terms",
   "/privacy",
+  "/public",
+  "/service-forms",
+  "/blog-covers",
+  "/screenshots",
 ];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Always allow static assets and public pages
+  // Always allow root (landing page) and static/public paths
   if (
     pathname === "/" ||
     PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix))
@@ -53,7 +61,6 @@ export function middleware(req: NextRequest) {
 
     // Email not verified → redirect to check-email page
     const payload = decodeJwtPayload(token);
-    // emailVerified defaults to true for old tokens that don't have the field
     const emailVerified = payload?.emailVerified !== false;
     if (!emailVerified) {
       const url = req.nextUrl.clone();
@@ -67,12 +74,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths EXCEPT:
-     * - _next/static (static files)
-     * - _next/image  (image optimization)
-     * - favicon.ico
-     */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.svg$|.*\\.jpg$|.*\\.ico$).*)",
   ],
 };

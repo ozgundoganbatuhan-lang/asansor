@@ -42,63 +42,6 @@ const FAQ = [
   { q: "Veri güvenliği nasıl sağlanıyor?", a: "Tüm veriler şifreli bağlantıyla iletilir, sunucu tarafında güvenli depolanır. Rol bazlı erişim kontrolü ile her kullanıcı sadece görmesi gereken veriyi görür." },
 ];
 
-// Fiyatlandırma paketleri.  Marketing sayfasında planlar basit şekilde gösterilir ve
-// kullanıcıları ücretsiz deneme başlatmaya veya teklif almaya yönlendirir.
-const PRICING = [
-  {
-    id: "starter",
-    name: "Başlangıç",
-    subtitle: "1–3 teknisyen",
-    price: "₺990",
-    period: "/ay",
-    highlight: false,
-    features: [
-      "Müşteri ve asansör kaydı (sınırsız)",
-      "İş emirleri ve bakım planları",
-      "Takvim ve atama",
-      "Temel raporlar (CSV)",
-      "E‑posta desteği",
-    ],
-    cta: "Ücretsiz başla",
-    href: "/auth/register",
-  },
-  {
-    id: "team",
-    name: "Ekip",
-    subtitle: "Büyüyen operasyonlar",
-    price: "₺2.490",
-    period: "/ay",
-    highlight: true,
-    features: [
-      "Başlangıç paketinin tümü",
-      "Parça ve stok yönetimi",
-      "Faturalama ve PDF çıktı",
-      "Sözleşme ve periyodik kontrol",
-      "Öncelikli destek",
-    ],
-    cta: "En popüler",  
-    href: "/auth/register",
-  },
-  {
-    id: "enterprise",
-    name: "Kurumsal",
-    subtitle: "Çok şube / büyük filolar",
-    price: "Teklif",
-    period: "",
-    highlight: false,
-    features: [
-      "Ekip paketinin tümü",
-      "Çok lokasyon & geniş filo desteği",
-      "Özel entegrasyonlar (API)",
-      "Onboarding eğitimi",
-      "SLA garantili destek & özel fiyat",
-      "e-Arşiv & e-Fatura entegrasyonu",
-    ],
-    cta: "Teklif al",
-    href: "/auth/register",
-  },
-];
-
 function Ico({ d, s = 18, c = "currentColor" }: { d: string; s?: number; c?: string }) {
   return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d={d} /></svg>;
 }
@@ -264,11 +207,12 @@ export default function Landing() {
               <span style={{ fontSize: 12, fontWeight: 700, color: "#1d4ed8", letterSpacing: "0.01em" }}>Asansör servis ekipleri için</span>
             </div>
             <h1 style={{ fontSize: "clamp(32px,4.5vw,50px)", fontWeight: 900, lineHeight: 1.06, letterSpacing: "-0.04em", color: "#111827", margin: "0 0 18px" }}>
-              Asansör servis firmaları için{" "}
-              <span style={{ background: "linear-gradient(135deg,#2563eb,#0ea5e9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>uçtan uca operasyon platformu.</span>
+              Saha ekibinizi kontrol edin,{" "}
+              <span style={{ background: "linear-gradient(135deg,#2563eb,#0ea5e9)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>bakım ritmini koruyun,</span>{" "}
+              müşterinizi etkileyin.
             </h1>
             <p style={{ fontSize: 16, lineHeight: 1.75, color: "#6b7280", margin: "0 0 28px", maxWidth: 480 }}>
-              Müşteri kayıtları, bakım planları, arıza ve iş emirleri, QR etiketleri, saha ekipleri ve müşteri portalını tek sistemde yönetin.
+              Servisim; arıza ve bakım iş emirlerini, teknisyen mobil akışını, QR tabanlı servis şeffaflığını ve sözleşme takibini tek platformda birleştirir.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
               <Link href="/auth/register" style={{ background: "#2563eb", color: "#fff", fontSize: 14, fontWeight: 700, padding: "11px 22px", borderRadius: 9, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, boxShadow: "0 5px 18px rgba(37,99,235,0.32)" }}>
@@ -276,7 +220,7 @@ export default function Landing() {
                 <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
               </Link>
               <a href={WA} target="_blank" rel="noopener noreferrer" style={{ background: "#fff", border: "1.5px solid #e5e7eb", color: "#374151", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 9, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 7, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-                <WaIcon /> Demo talep et
+                <WaIcon /> WhatsApp ile bilgi al
               </a>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
@@ -299,9 +243,9 @@ export default function Landing() {
       <section style={{ background: "#f9fafb", borderTop: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb", padding: "64px 24px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ maxWidth: 520, marginBottom: 36 }}>
-            <div style={s.eyebrow}>Neden Servisim</div>
-            <h2 style={s.h2}>Dağınık servis operasyonunu tek ekranda toplayın.</h2>
-            <p style={s.sub}>WhatsApp, Excel ve dağınık notlar yerine bakım, arıza, iş emri, QR geçmişi ve ekip akışını tek platformda yönetin.</p>
+            <div style={s.eyebrow}>Değer önerisi</div>
+            <h2 style={s.h2}>Servis operasyonunuzun her adımı tek sistemde.</h2>
+            <p style={s.sub}>Ofisteki koordinasyonu hızlandırır, sahayı kolaylaştırır, müşteriye güven veren şeffaflık kurar.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }} className="lp-g4">
             {OUTCOMES.map(o => (
@@ -478,53 +422,6 @@ export default function Landing() {
           </div>
         </section>
       )}
-
-      {/* PRICING */}
-      <section id="pricing" style={{ background: "#fff", borderTop: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb", padding: "68px 24px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ maxWidth: 520, marginBottom: 36 }}>
-            <div style={s.eyebrow}>Fiyatlandırma</div>
-            <h2 style={s.h2}>Sizin için doğru planı seçin</h2>
-            <p style={s.sub}>14 gün ücretsiz deneme — kredi kartı gerektirmez.</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }} className="lp-g3">
-            {PRICING.map((p) => (
-              <div key={p.id} style={{ position: "relative", background: p.highlight ? "#f5f3ff" : "#fff", borderRadius: 14, border: "1px solid", borderColor: p.highlight ? "#d8b4fe" : "#e5e7eb", padding: "24px 20px", display: "flex", flexDirection: "column", gap: 14, transition: "all 0.14s", boxShadow: p.highlight ? "0 10px 32px rgba(0,0,0,0.05)" : undefined }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "none";
-                  (e.currentTarget as HTMLElement).style.boxShadow = p.highlight ? "0 10px 32px rgba(0,0,0,0.05)" : "none";
-                }}
-              >
-                {p.highlight && (
-                  <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", background: "#7c3aed", color: "#fff", fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, textTransform: "uppercase" }}>Popüler</div>
-                )}
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: "#111827", marginBottom: 2 }}>{p.name}</div>
-                  <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 10 }}>{p.subtitle}</div>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: "#111827", letterSpacing: "-0.03em" }}>{p.price}<span style={{ fontSize: 14, fontWeight: 600, color: "#6b7280" }}>{p.period}</span></div>
-                </div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: "#374151" }}>
-                  {p.features.map((f) => (
-                    <li key={f} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <svg width={14} height={14} viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#2563eb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <div style={{ marginTop: "auto" }}>
-                  <Link href={p.href} style={{ display: "inline-block", marginTop: 14, background: p.highlight ? "#7c3aed" : "#2563eb", color: "#fff", fontSize: 13, fontWeight: 700, padding: "9px 16px", borderRadius: 8, textDecoration: "none", textAlign: "center", width: "100%" }}>
-                    {p.cta}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* FAQ */}
       <section id="sss" style={s.section}>

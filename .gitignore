@@ -2,3 +2,9 @@
 .env*
 next-env.d.ts
 .DS_Store
+
+node_modules/
+.next/
+.vercel/
+.env
+.env.local

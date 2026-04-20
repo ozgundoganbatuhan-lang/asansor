@@ -1,5 +1,3 @@
-const fs = require("fs");
-const path = require("path");
 const { execSync } = require("child_process");
 
 function run(command) {
@@ -18,15 +16,8 @@ function run(command) {
     }
   }
 
-  const standaloneServer = path.join(__dirname, "server.js");
-
   try {
-    if (fs.existsSync(standaloneServer)) {
-      require(standaloneServer);
-      return;
-    }
-
-    run("./node_modules/.bin/next start");
+    require("./server.js");
   } catch (err) {
     console.error("[startup] Server başlatılamadı:", err);
     process.exit(1);
