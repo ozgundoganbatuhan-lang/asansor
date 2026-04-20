@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   applicationName: "Servisim",
   icons: { icon: "/icon?size=192", apple: "/icon?size=192" },
   manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
   themeColor: "#2563eb",
 };
 

@@ -9,16 +9,34 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
   openGraph: { title: "Servisim Blog", description: "Asansör servis firmaları için pratik operasyon rehberleri.", type: "website" },
 };
+
 const WA = "https://wa.me/4915566196266?text=Servisim%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum";
 
 export default function BlogIndexPage() {
   const posts = getAllBlogPosts();
   const featured = posts[0];
   const rest = posts.slice(1);
-  const S = { fontFamily:"'Inter',-apple-system,system-ui,sans-serif", color:"#111827" } as React.CSSProperties;
+
   return (
-    <div style={{ background:"#fff", minHeight:"100vh", ...S }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');`}</style>
+    <div style={{ background:"#fff", minHeight:"100vh", fontFamily:"'Inter',-apple-system,system-ui,sans-serif", color:"#111827" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        .blog-card:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .blog-card { transition: box-shadow 0.15s, transform 0.15s; }
+        .featured-link:hover { box-shadow: 0 12px 44px rgba(37,99,235,0.12) !important; }
+        .featured-link { transition: box-shadow 0.2s; }
+        .related-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.07); }
+        .related-card { transition: box-shadow 0.15s; }
+        @media(max-width:900px){
+          .blog-grid{grid-template-columns:1fr 1fr!important}
+          .featured-link{grid-template-columns:1fr!important}
+        }
+        @media(max-width:520px){
+          .blog-grid{grid-template-columns:1fr!important}
+        }
+      `}</style>
+
+      {/* Nav */}
       <header style={{ borderBottom:"1px solid #e5e7eb", background:"#fff", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 24px", height:54, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none" }}>
@@ -34,6 +52,7 @@ export default function BlogIndexPage() {
         </div>
       </header>
 
+      {/* Hero */}
       <section style={{ background:"linear-gradient(180deg,#f9fafb 0%,#fff 100%)", borderBottom:"1px solid #e5e7eb", padding:"48px 24px 40px" }}>
         <div style={{ maxWidth:1200, margin:"0 auto" }}>
           <div style={{ display:"inline-flex", alignItems:"center", gap:6, background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:999, padding:"4px 12px", fontSize:10, fontWeight:700, color:"#2563eb", marginBottom:14, letterSpacing:"0.06em" }}>SEO İÇERİK MERKEZİ</div>
@@ -42,23 +61,22 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
+      {/* Content */}
       <main style={{ maxWidth:1200, margin:"0 auto", padding:"44px 24px 68px" }}>
+        {/* Featured */}
         {featured && (
           <div style={{ marginBottom:44 }}>
-            <div style={{ fontSize:10, fontWeight:700, color:"#9ca3af", letterSpacing:"0.1em", textTransform:"uppercase" as const, marginBottom:12 }}>Öne çıkan yazı</div>
-            <Link href={`/blog/${featured.slug}`} style={{ textDecoration:"none", display:"grid", gridTemplateColumns:"1fr 1.1fr", background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", overflow:"hidden", boxShadow:"0 3px 16px rgba(0,0,0,0.06)", transition:"box-shadow 0.2s" }}
-              onMouseEnter={e=>(e.currentTarget as HTMLElement).style.boxShadow="0 12px 44px rgba(37,99,235,0.12)"}
-              onMouseLeave={e=>(e.currentTarget as HTMLElement).style.boxShadow="0 3px 16px rgba(0,0,0,0.06)"}
-              className="feat-link">
+            <div style={{ fontSize:10, fontWeight:700, color:"#9ca3af", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:12 }}>Öne çıkan yazı</div>
+            <Link href={`/blog/${featured.slug}`} className="featured-link" style={{ textDecoration:"none", display:"grid", gridTemplateColumns:"1fr 1.1fr", background:"#fff", borderRadius:16, border:"1px solid #e5e7eb", overflow:"hidden", boxShadow:"0 3px 16px rgba(0,0,0,0.06)" }}>
               <div style={{ background:"linear-gradient(135deg,#111827,#1e3a8a)", display:"flex", alignItems:"center", justifyContent:"center", minHeight:220, fontSize:60 }}>📋</div>
-              <div style={{ padding:"28px 32px", display:"flex", flexDirection:"column" as const, justifyContent:"center" }}>
+              <div style={{ padding:"28px 32px", display:"flex", flexDirection:"column", justifyContent:"center" }}>
                 <div style={{ display:"flex", gap:7, marginBottom:10, alignItems:"center" }}>
                   <span style={{ fontSize:10, fontWeight:700, color:"#2563eb", background:"#eff6ff", padding:"2px 8px", borderRadius:5 }}>Rehber</span>
                   <span style={{ fontSize:11, color:"#9ca3af" }}>{featured.readingMinutes} dk okuma</span>
                 </div>
                 <h2 style={{ fontSize:"clamp(16px,2vw,24px)", fontWeight:800, color:"#111827", letterSpacing:"-0.03em", lineHeight:1.2, margin:"0 0 9px" }}>{featured.title}</h2>
                 <p style={{ fontSize:13, lineHeight:1.7, color:"#6b7280", margin:"0 0 16px" }}>{featured.excerpt}</p>
-                <div style={{ display:"flex", flexWrap:"wrap" as const, gap:5, marginBottom:16 }}>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:16 }}>
                   {featured.keywords.slice(0,3).map(k=><span key={k} style={{ fontSize:10, color:"#6b7280", background:"#f9fafb", border:"1px solid #e5e7eb", padding:"2px 8px", borderRadius:5 }}>{k}</span>)}
                 </div>
                 <span style={{ fontSize:13, fontWeight:700, color:"#2563eb" }}>Yazıyı oku →</span>
@@ -66,13 +84,13 @@ export default function BlogIndexPage() {
             </Link>
           </div>
         )}
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }} className="blog-grid">
-          {rest.map(post=>(
-            <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration:"none", background:"#fff", borderRadius:13, border:"1px solid #e5e7eb", overflow:"hidden", display:"flex", flexDirection:"column" as const, transition:"all 0.14s" }}
-              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.boxShadow="0 10px 30px rgba(0,0,0,0.08)";(e.currentTarget as HTMLElement).style.transform="translateY(-2px)"}}
-              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.boxShadow="none";(e.currentTarget as HTMLElement).style.transform="none"}}>
+
+        {/* Grid */}
+        <div className="blog-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+          {rest.map(post => (
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-card" style={{ textDecoration:"none", background:"#fff", borderRadius:13, border:"1px solid #e5e7eb", overflow:"hidden", display:"flex", flexDirection:"column" }}>
               <div style={{ height:106, background:"linear-gradient(135deg,#eff6ff,#dbeafe)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:34 }}>📋</div>
-              <div style={{ padding:"15px 17px", flex:1, display:"flex", flexDirection:"column" as const }}>
+              <div style={{ padding:"15px 17px", flex:1, display:"flex", flexDirection:"column" }}>
                 <div style={{ display:"flex", gap:5, marginBottom:7 }}>
                   <span style={{ fontSize:9.5, fontWeight:700, color:"#2563eb", background:"#eff6ff", padding:"2px 7px", borderRadius:5 }}>Rehber</span>
                   <span style={{ fontSize:9.5, color:"#9ca3af" }}>{post.readingMinutes} dk</span>
@@ -86,22 +104,23 @@ export default function BlogIndexPage() {
         </div>
       </main>
 
+      {/* CTA */}
       <section style={{ background:"#111827", padding:"48px 24px" }}>
-        <div style={{ maxWidth:560, margin:"0 auto", textAlign:"center" as const }}>
+        <div style={{ maxWidth:560, margin:"0 auto", textAlign:"center" }}>
           <h2 style={{ fontSize:"clamp(20px,3.5vw,30px)", fontWeight:900, letterSpacing:"-0.04em", color:"#fff", margin:"0 0 10px" }}>Servisim&apos;i 14 gün ücretsiz deneyin.</h2>
           <p style={{ fontSize:13, color:"rgba(255,255,255,0.48)", margin:"0 0 22px" }}>Kredi kartı gerekmez. Kurulum yok. Türkçe destek.</p>
-          <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" as const }}>
+          <div style={{ display:"flex", gap:10, justifyContent:"center", flexWrap:"wrap" }}>
             <Link href="/auth/register" style={{ background:"#fff", color:"#111827", fontSize:13, fontWeight:800, padding:"10px 20px", borderRadius:8, textDecoration:"none" }}>Ücretsiz başla →</Link>
             <a href={WA} target="_blank" rel="noopener noreferrer" style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", color:"#fff", fontSize:13, fontWeight:600, padding:"10px 20px", borderRadius:8, textDecoration:"none" }}>WhatsApp ile görüş</a>
           </div>
         </div>
       </section>
-      <footer style={{ background:"#111827", borderTop:"1px solid rgba(255,255,255,0.05)", padding:"20px", textAlign:"center" as const }}>
+
+      <footer style={{ background:"#111827", borderTop:"1px solid rgba(255,255,255,0.05)", padding:"20px", textAlign:"center" }}>
         <Link href="/privacy" style={{ fontSize:11, color:"rgba(255,255,255,0.25)", textDecoration:"none" }}>Gizlilik</Link>
         <span style={{ fontSize:11, color:"rgba(255,255,255,0.15)", margin:"0 8px" }}>·</span>
         <Link href="/terms" style={{ fontSize:11, color:"rgba(255,255,255,0.25)", textDecoration:"none" }}>Koşullar</Link>
       </footer>
-      <style>{`@media(max-width:900px){.blog-grid{grid-template-columns:1fr 1fr!important}.feat-link{grid-template-columns:1fr!important}}@media(max-width:520px){.blog-grid{grid-template-columns:1fr!important}}`}</style>
     </div>
   );
 }
