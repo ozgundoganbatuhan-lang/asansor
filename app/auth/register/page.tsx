@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthLeft, AuthBrand, AUTH_CSS } from "@/components/AuthLayout";
@@ -24,14 +24,6 @@ function RegisterForm() {
   const [marketing, setMarketing] = useState(false);
   const [error, setError]         = useState<string|null>(null);
   const [loading, setLoading]     = useState(false);
-  const [isMobile, setIsMobile]   = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   function slugify(v: string) {
     return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -79,13 +71,13 @@ function RegisterForm() {
   }
 
   return (
-    <div style={{ ...S.page, gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr" }}>
+    <div style={S.page}>
       <style>{AUTH_CSS}</style>
-      {!isMobile && <AuthLeft variant="register" />}
+      <AuthLeft variant="register" />
 
       <div style={S.right}>
         <div className="auth-card" style={S.card}>
-
+          <div style={{ marginBottom: 28, display: "none" }}><AuthBrand /></div>
 
           {/* Step progress */}
           <div style={{ marginBottom: 24 }}>

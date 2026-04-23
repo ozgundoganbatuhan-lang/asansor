@@ -8,14 +8,8 @@ export const metadata: Metadata = {
     default: "Servisim | Asansör Servis Operasyon Platformu",
     template: "%s | Servisim",
   },
-  description:
-    "Asansör servis firmaları için bakım planı, iş emri, QR etiket, teknisyen mobil akışı ve sözleşme yönetimi. 14 gün ücretsiz deneyin.",
-  keywords: [
-    "asansör servis yazılımı",
-    "asansör bakım takibi",
-    "asansör iş emri",
-    "servis operasyon platformu",
-  ],
+  description: "Asansör servis firmaları için bakım planı, iş emri, QR etiket, teknisyen mobil akışı ve sözleşme yönetimi. 14 gün ücretsiz deneyin.",
+  keywords: ["asansör servis yazılımı","asansör bakım takibi","asansör iş emri","servis operasyon platformu"],
   applicationName: "Servisim",
   icons: { icon: "/icon?size=192", apple: "/icon?size=192" },
   manifest: "/manifest.webmanifest",
@@ -28,6 +22,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet" />
+      </head>
       <body>
         <PWARegister />
         {children}

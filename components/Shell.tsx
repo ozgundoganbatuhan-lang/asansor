@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ReactNode, useState, useEffect, CSSProperties } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import TrialCountdown from "./TrialCountdown";
 import dynamic from "next/dynamic";
 const RoleBadge = dynamic(() => import("./RoleBadge"), { ssr: false });
@@ -28,10 +28,10 @@ const NAV_GROUPS = [
   {
     label: "Finans & Ekip",
     items: [
-      { href: "/app/invoices",    label: "Faturalar",    icon: "M12 2H2v20l4-4h14V8L12 2zm0 0v6h6" },
-      { href: "/app/reports",     label: "Raporlar",     icon: "M18 20V10M12 20V4M6 20v-6" },
-      { href: "/app/technicians", label: "Teknisyenler", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z" },
-      { href: "/app/stock",       label: "Stok",         icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" },
+      { href: "/app/invoices",     label: "Faturalar",    icon: "M12 2H2v20l4-4h14V8L12 2zm0 0v6h6" },
+      { href: "/app/reports",      label: "Raporlar",     icon: "M18 20V10M12 20V4M6 20v-6" },
+      { href: "/app/technicians",  label: "Teknisyenler", icon: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z" },
+      { href: "/app/stock",        label: "Stok",         icon: "M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" },
     ],
   },
   {
@@ -42,74 +42,31 @@ const NAV_GROUPS = [
   },
 ];
 
-const ALL_NAV   = NAV_GROUPS.flatMap(g => g.items);
+const ALL_NAV = NAV_GROUPS.flatMap(g => g.items);
 const MOBILE_NAV = ALL_NAV.slice(0, 4);
-const SIDEBAR_W  = 232;
 
 export default function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router   = useRouter();
-  const [open,     setOpen]     = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mounted,  setMounted]  = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  useEffect(() => { setOpen(false); }, [pathname]);
+  const [open, setOpen] = useState(false);
 
   const active = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const pageTitle = ALL_NAV.find(n => active(n.href))?.label ?? "Servisim";
+
+  useEffect(() => { setOpen(false); }, [pathname]);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/auth/login");
   }
 
-  /* ── Inline-style guarantees (override any CSS loading failures) ── */
-  const mobile = mounted && isMobile;
-
-  const sidebarStyle: CSSProperties = {
-    position:     "fixed",
-    top:          0,
-    left:         0,
-    width:        SIDEBAR_W,
-    height:       "100vh",
-    background:   "#0f172a",
-    borderRight:  "1px solid rgba(255,255,255,0.05)",
-    display:      "flex",
-    flexDirection:"column",
-    zIndex:       40,
-    overflowY:    "auto",
-    overflowX:    "hidden",
-    ...(mobile
-      ? {
-          transform:  open ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.22s cubic-bezier(.4,0,.2,1)",
-          boxShadow:  open ? "0 0 40px rgba(0,0,0,0.35)" : "none",
-        }
-      : {}),
-  };
-
-  const bodyStyle: CSSProperties = {
-    marginLeft:  mobile ? 0 : SIDEBAR_W,
-    minHeight:   "100vh",
-    background:  "#f9fafb",
-    paddingBottom: mobile ? 62 : 0,
-  };
-
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb" }}>
+    <div style={{ minHeight: "100vh", background: "var(--background)" }}>
 
       {/* ── SIDEBAR ── */}
-      <aside style={sidebarStyle}>
+      <aside className={`sidebar${open ? " open" : ""}`}>
         {/* Logo */}
-        <div style={{ padding: "18px 16px 14px", borderBottom: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
+        <div className="sidebar-logo">
           <Link href="/app/dashboard" style={{ display: "flex", alignItems: "center", gap: 9, textDecoration: "none" }}>
             <div style={{
               width: 32, height: 32, borderRadius: 8, flexShrink: 0,
@@ -129,60 +86,28 @@ export default function Shell({ children }: { children: ReactNode }) {
         </div>
 
         {/* Nav */}
-        <nav style={{ padding: 8, flex: 1, overflowY: "auto" }}>
+        <nav className="sidebar-nav">
           {NAV_GROUPS.map(group => (
             <div key={group.label} style={{ marginBottom: 2 }}>
-              <div style={{
-                fontSize: 9, fontWeight: 700, letterSpacing: "0.12em",
-                textTransform: "uppercase", color: "rgba(255,255,255,0.18)",
-                padding: "10px 12px 4px",
-              }}>
-                {group.label}
-              </div>
-              {group.items.map(item => {
-                const isActive = active(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    style={{
-                      display: "flex", alignItems: "center", gap: 9,
-                      padding: "8px 10px", borderRadius: 8,
-                      fontSize: 13, fontWeight: isActive ? 600 : 500,
-                      color: isActive ? "#fff" : "rgba(255,255,255,0.52)",
-                      background: isActive ? "rgba(37,99,235,0.22)" : "transparent",
-                      textDecoration: "none", transition: "all 0.12s",
-                      width: "100%",
-                    }}
-                  >
-                    <span style={{
-                      width: 15, height: 15, flexShrink: 0,
-                      color: isActive ? "#60a5fa" : "rgba(255,255,255,0.35)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <I d={item.icon} />
-                    </span>
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
+              <div className="sidebar-nav-group-label">{group.label}</div>
+              {group.items.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`sidebar-nav-item${active(item.href) ? " active" : ""}`}
+                >
+                  <span className="nav-icon"><I d={item.icon} /></span>
+                  <span>{item.label}</span>
+                </Link>
+              ))}
             </div>
           ))}
         </nav>
 
         {/* Footer / logout */}
-        <div style={{ padding: 10, borderTop: "1px solid rgba(255,255,255,0.05)", flexShrink: 0 }}>
-          <button
-            onClick={logout}
-            style={{
-              display: "flex", alignItems: "center", gap: 9,
-              padding: "8px 10px", borderRadius: 8,
-              fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.35)",
-              background: "none", border: "none", cursor: "pointer",
-              width: "100%", textAlign: "left", transition: "all 0.12s",
-            }}
-          >
-            <span style={{ width: 15, height: 15, display: "flex", alignItems: "center", flexShrink: 0 }}>
+        <div className="sidebar-footer">
+          <button onClick={logout} className="sidebar-nav-item" style={{ width: "100%", color: "rgba(255,255,255,0.35)" }}>
+            <span className="nav-icon">
               <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
               </svg>
@@ -193,45 +118,21 @@ export default function Shell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* ── OVERLAY ── */}
-      {mobile && open && (
-        <div
-          onClick={() => setOpen(false)}
-          style={{
-            position: "fixed", inset: 0,
-            background: "rgba(0,0,0,0.52)",
-            zIndex: 39, backdropFilter: "blur(3px)",
-          }}
-        />
-      )}
+      <div className={`sidebar-overlay${open ? " show" : ""}`} onClick={() => setOpen(false)} />
 
       {/* ── APP BODY ── */}
-      <div style={bodyStyle}>
+      <div className="app-body">
         {/* Topbar */}
-        <header style={{
-          position: "sticky", top: 0, zIndex: 30,
-          background: "rgba(249,250,251,0.95)",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-          backdropFilter: "blur(12px)",
-          padding: mobile ? "0 16px" : "0 24px",
-          height: 54,
-          display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
-        }}>
+        <header className="app-topbar">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {mobile && (
-              <button
-                onClick={() => setOpen(v => !v)}
-                aria-label="Menüyü aç"
-                style={{
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  width: 34, height: 34, borderRadius: 8,
-                  border: "1.5px solid rgba(0,0,0,0.08)", background: "#fff",
-                  cursor: "pointer", color: "#111827", flexShrink: 0,
-                }}
-              >
-                <I d="M4 6h16M4 12h16M4 18h16" size={16} />
-              </button>
-            )}
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#111827", letterSpacing: "-0.02em" }}>
+            <button
+              onClick={() => setOpen(v => !v)}
+              className="mobile-topbar-btn"
+              aria-label="Menüyü aç"
+            >
+              <I d="M4 6h16M4 12h16M4 18h16" size={16} />
+            </button>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)", letterSpacing: "-0.02em" }}>
               {pageTitle}
             </div>
             <RoleBadge />
@@ -242,12 +143,11 @@ export default function Shell({ children }: { children: ReactNode }) {
               href="/app/work-orders"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 5,
-                background: "#2563eb", color: "#fff",
+                background: "var(--primary)", color: "#fff",
                 fontSize: 12, fontWeight: 700,
                 padding: "7px 14px", borderRadius: 7,
                 textDecoration: "none",
                 boxShadow: "0 2px 8px rgba(37,99,235,0.25)",
-                whiteSpace: "nowrap",
               }}
             >
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -259,51 +159,43 @@ export default function Shell({ children }: { children: ReactNode }) {
         </header>
 
         {/* Main content */}
-        <main style={{ padding: mobile ? 16 : 24 }}>
+        <main className="app-content">
           {children}
         </main>
       </div>
 
       {/* ── MOBILE BOTTOM NAV ── */}
-      {mobile && (
-        <nav style={{
-          position: "fixed", bottom: 0, left: 0, right: 0,
-          height: 62, background: "#fff",
-          borderTop: "1px solid rgba(0,0,0,0.07)", zIndex: 40,
-          padding: "0 8px",
-          display: "flex", alignItems: "center", justifyContent: "space-around",
-        }}>
-          {MOBILE_NAV.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              style={{
-                flex: 1, display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center",
-                gap: 3, padding: "6px 4px", borderRadius: 8,
-                color: active(item.href) ? "#2563eb" : "#9ca3af",
-                fontSize: 9, fontWeight: 600, textDecoration: "none",
-                background: active(item.href) ? "#eff6ff" : "transparent",
-              }}
-            >
-              <I d={item.icon} size={18} />
-              <span>{item.label.split(" ")[0]}</span>
-            </Link>
-          ))}
-          <button
-            onClick={() => setOpen(true)}
+      <nav className="mobile-bottom-nav">
+        {MOBILE_NAV.map(item => (
+          <Link
+            key={item.href}
+            href={item.href}
             style={{
               flex: 1, display: "flex", flexDirection: "column",
               alignItems: "center", justifyContent: "center",
-              gap: 3, fontSize: 9, fontWeight: 600, color: "#9ca3af",
-              background: "none", border: "none", cursor: "pointer", padding: "6px 4px",
+              gap: 3, padding: "6px 4px", borderRadius: 8,
+              color: active(item.href) ? "var(--primary)" : "var(--muted-2)",
+              fontSize: 9, fontWeight: 600, textDecoration: "none",
+              background: active(item.href) ? "var(--blue-50)" : "transparent",
             }}
           >
-            <I d="M4 6h16M4 12h16M4 18h16" size={18} />
-            <span>Menü</span>
-          </button>
-        </nav>
-      )}
+            <I d={item.icon} size={18} />
+            <span>{item.label.split(" ")[0]}</span>
+          </Link>
+        ))}
+        <button
+          onClick={() => setOpen(true)}
+          style={{
+            flex: 1, display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            gap: 3, fontSize: 9, fontWeight: 600, color: "var(--muted-2)",
+            background: "none", border: "none", cursor: "pointer", padding: "6px 4px",
+          }}
+        >
+          <I d="M4 6h16M4 12h16M4 18h16" size={18} />
+          <span>Menü</span>
+        </button>
+      </nav>
 
       <TrialCountdown />
     </div>
