@@ -9,7 +9,7 @@ const NETGSM_MSGHEADER = process.env.NETGSM_MSGHEADER ?? "SERVISIM"; // Onaylı 
 async function sendSmsNetgsm(phone: string, message: string): Promise<{ ok: boolean; error?: string }> {
   if (!NETGSM_USERCODE || !NETGSM_PASSWORD) {
     // Demo mode — log and return ok
-    console.log(`[SMS DEMO] To: ${phone}\nMessage: ${message}`);
+    // SMS provider entegrasyonu buraya eklenecek
     return { ok: true };
   }
 

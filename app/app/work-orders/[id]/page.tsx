@@ -204,7 +204,7 @@ export default function WorkOrderDetailPage() {
             </div>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-white/78 md:text-[15px]">{item.customer.name} · {item.asset?.buildingName || "Bina adı yok"} · {item.asset?.name || "Asansör atanmadı"}. Saha kapanışı, fotoğraf yükleme, imza ve servis formu tek akışta yönetilir.</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[22px] border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/16">Rota aç</a>
+              {mapsUrl && <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[22px] border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/16">Rota aç</a>}
               <Link href={`/service-forms/${item.id}`} target="_blank" className="rounded-[22px] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--primary)] shadow-[var(--shadow-soft)]">Servis formu</Link>
               {item.customer.phone ? <a href={`tel:${item.customer.phone}`} className="rounded-[22px] border border-white/15 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8">Müşteriyi ara</a> : null}
             </div>
@@ -337,7 +337,7 @@ export default function WorkOrderDetailPage() {
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
               {item.customer.phone ? <a href={`tel:${item.customer.phone}`} className="rounded-[20px] border border-[color:var(--border)] bg-white px-4 py-2.5 text-sm font-semibold text-[color:var(--foreground)]">Müşteriyi ara</a> : null}
-              <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[20px] bg-[color:var(--surface-soft)] px-4 py-2.5 text-sm font-semibold text-[color:var(--primary)]">Google Maps ile git</a>
+              {mapsUrl && <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[20px] bg-[color:var(--surface-soft)] px-4 py-2.5 text-sm font-semibold text-[color:var(--primary)]">Google Maps ile git</a>}
             </div>
           </Card>
 

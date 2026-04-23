@@ -6,17 +6,18 @@ export function AuthBrand({ light = false }: { light?: boolean }) {
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <div style={{
         width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-        background: light ? "rgba(255,255,255,0.12)" : "linear-gradient(135deg,#2563eb,#1d4ed8)",
-        border: light ? "1px solid rgba(255,255,255,0.18)" : "none",
+        background: "none",
+        border: "none",
         display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: light ? "none" : "0 3px 10px rgba(37,99,235,0.28)",
       }}>
-        <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10" />
+        <svg width={32} height={32} viewBox="0 0 36 36" fill="none">
+          <rect width="36" height="36" rx="9" fill={light ? "rgba(255,255,255,0.15)" : "url(#alg)"} />
+          <defs><linearGradient id="alg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#0f1a2e" /><stop offset="100%" stopColor="#1d4ed8" /></linearGradient></defs>
+          <path d="M23 13C23 10 21 8 18 8C15 8 13 10 13 13C13 16.5 23 17 23 21C23 24 21 28 18 28C15 28 13 26 13 23" stroke="white" strokeWidth="3.6" strokeLinecap="round" fill="none" />
         </svg>
       </div>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 800, color: light ? "#fff" : "#111827", letterSpacing: "-0.03em", lineHeight: 1 }}>Servisim</div>
+        <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: "-0.05em", color: light ? "#fff" : "#0a0a0f", lineHeight: 1 }}>Servi<span style={{ color: light ? "#93c5fd" : "#2563eb" }}>sim</span></div>
         <div style={{ fontSize: 9, color: light ? "rgba(255,255,255,0.35)" : "#9ca3af", marginTop: 2, fontWeight: 500 }}>Asansör Operasyon</div>
       </div>
     </div>
@@ -107,8 +108,8 @@ export const AUTH_CSS = `
 
   .auth-inp {
     width: 100%; height: 42px; padding: 0 13px;
-    background: #fff; border: 1.5px solid #e5e7eb;
-    border-radius: 8px; font-size: 14px; color: #111827;
+    background: #fff; border: 1.5px solid #e4e4e7;
+    border-radius: 9px; font-size: 14px; color: #0a0a0f;
     font-family: inherit; box-sizing: border-box;
     transition: border-color .15s, box-shadow .15s; outline: none;
   }

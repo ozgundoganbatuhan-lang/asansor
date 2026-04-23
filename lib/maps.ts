@@ -9,30 +9,39 @@ function normalizeAddress(value?: string | null) {
   return value?.replace(/\s+/g, " ").trim() ?? "";
 }
 
-export function buildGoogleMapsDirections(destination: MapsDestination) {
-  const hasCoordinates = typeof destination.latitude === "number" && typeof destination.longitude === "number";
+/** Returns null when there is no usable destination (instead of a bare /maps link). */
+export function buildGoogleMapsDirections(destination: MapsDestination): string | null {
+  const hasCoordinates =
+    typeof destination.latitude === "number" &&
+    typeof destination.longitude === "number" &&
+    isFinite(destination.latitude) &&
+    isFinite(destination.longitude);
+
   const target = hasCoordinates
     ? `${destination.latitude},${destination.longitude}`
     : normalizeAddress(destination.address || destination.label);
 
-  if (!target) return "https://www.google.com/maps";
+  if (!target) return null;
 
   const url = new URL("https://www.google.com/maps/dir/");
   url.searchParams.set("api", "1");
   url.searchParams.set("destination", target);
-  if (destination.label && !hasCoordinates) {
-    url.searchParams.set("travelmode", "driving");
-  }
+  url.searchParams.set("travelmode", "driving");
   return url.toString();
 }
 
-export function buildGoogleMapsPlace(destination: MapsDestination) {
-  const hasCoordinates = typeof destination.latitude === "number" && typeof destination.longitude === "number";
+export function buildGoogleMapsPlace(destination: MapsDestination): string | null {
+  const hasCoordinates =
+    typeof destination.latitude === "number" &&
+    typeof destination.longitude === "number" &&
+    isFinite(destination.latitude) &&
+    isFinite(destination.longitude);
+
   const target = hasCoordinates
     ? `${destination.latitude},${destination.longitude}`
     : normalizeAddress(destination.address || destination.label);
 
-  if (!target) return "https://www.google.com/maps";
+  if (!target) return null;
 
   const url = new URL("https://www.google.com/maps/search/");
   url.searchParams.set("api", "1");

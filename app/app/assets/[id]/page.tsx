@@ -130,9 +130,9 @@ export default function AssetDetailPage() {
         } · ${asset.locationNote || "Konum notu yok"}`}
         action={
           <div className="flex flex-wrap gap-3">
-            <a href={mapsUrl} target="_blank" rel="noreferrer">
+            {mapsUrl && <a href={mapsUrl} target="_blank" rel="noreferrer">
               <Button variant="secondary">Google Maps rota</Button>
-            </a>
+            </a>}
             <Link href={`/app/assets/${asset.id}/label`}>
               <Button>QR etiketi</Button>
             </Link>
@@ -163,9 +163,29 @@ export default function AssetDetailPage() {
                   </Pill>
                 </div>
                 <div className="mt-2 text-sm text-white/75">
-                  Servis geçmişi ve saha kayıtları ile güncellenen operasyon
-                  puanı.
+                  Servis geçmişi ve saha kayıtları ile güncellenen operasyon puanı.
                 </div>
+                {latestInspection && (() => {
+                  const LCFG: Record<string, { label: string; bg: string; dot: string; color: string }> = {
+                    YESIL:   { label: "Yeşil Etiket — Kusursuz",         bg: "rgba(5,150,105,0.22)",  dot: "#6ee7b7", color: "#6ee7b7" },
+                    MAVI:    { label: "Mavi Etiket — Hafif Kusurlu",      bg: "rgba(37,99,235,0.22)",  dot: "#93c5fd", color: "#93c5fd" },
+                    SARI:    { label: "Sarı Etiket — Kusurlu",            bg: "rgba(217,119,6,0.22)",  dot: "#fcd34d", color: "#fcd34d" },
+                    KIRMIZI: { label: "🔴 KIRMIZI — GÜVENSİZ!", bg: "rgba(220,38,38,0.28)", dot: "#fca5a5", color: "#fca5a5" },
+                  };
+                  const cfg = LCFG[latestInspection.label];
+                  if (!cfg) return null;
+                  return (
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: cfg.bg, borderRadius: 999, padding: "6px 14px", marginTop: 14 }}>
+                      <span style={{ width: 9, height: 9, borderRadius: "50%", background: cfg.dot, display: "inline-block", flexShrink: 0 }} />
+                      <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color }}>{cfg.label}</span>
+                      {daysLeft !== null && (
+                        <span style={{ fontSize: 11, color: "rgba(255,255,255,0.50)", marginLeft: 4 }}>
+                          {daysLeft > 0 ? `${daysLeft} gün kaldı` : `${Math.abs(daysLeft)} gün gecikti`}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
               <StatLine
                 label="Asansör kimlik no"
