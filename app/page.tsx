@@ -8,12 +8,15 @@ export const metadata: Metadata = {
   description: "WhatsApp kaosunu, Excel tablolarını ve telefon trafiğini bitirin. Arıza yönetiminden bakım takibine — tek platform, sıfır dağınıklık.",
 };
 
+// Force this page to never be cached
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function HomePage() {
   const html = readFileSync(join(process.cwd(), "public", "landing.html"), "utf-8");
 
-  // Extract <style>…</style> blocks and body content
-  const styleMatch = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-  const bodyMatch  = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const styleMatch  = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  const bodyMatch   = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
 
   const css    = styleMatch  ? styleMatch[1]  : "";
