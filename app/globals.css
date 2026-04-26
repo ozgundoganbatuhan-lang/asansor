@@ -175,3 +175,134 @@ main, section, article, aside, header, footer { position: relative; }
 img { max-width: 100%; height: auto; }
 .text-balance { text-wrap: balance; }
 .data-grid { display: grid; gap: 1rem; }
+
+/* ════════════════════════════════════════════════════════
+   LANDING-ALIGNED OVERRIDES (uygulama içi)
+   Her sayfada uygulamanın Landing'in görsel diliyle uyumlu
+   olmasını sağlar — Plus Jakarta Sans, sade kartlar, koyu CTA
+═════════════════════════════════════════════════════════ */
+
+/* Page header eyebrow + title */
+.app-shell main h1 { letter-spacing: -0.04em; font-weight: 900; }
+
+/* Panel — Landing card stili */
+.app-shell .panel,
+.app-shell .panel-soft {
+  border-radius: 16px !important;
+  border: 1px solid #e4e4e7 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03) !important;
+  background: #fff !important;
+}
+.app-shell .panel-soft { background: linear-gradient(180deg,#fff,#f9f9fb) !important; }
+
+/* Button primary — Landing'in mavi CTA tarzı */
+.app-shell button.bg-\[color\:var\(--primary\)\],
+.app-shell a.bg-\[color\:var\(--primary\)\] {
+  background: #2563eb !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  padding: 9px 18px !important;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.28) !important;
+  letter-spacing: 0 !important;
+}
+.app-shell button.bg-\[color\:var\(--primary\)\]:hover,
+.app-shell a.bg-\[color\:var\(--primary\)\]:hover {
+  background: #1d4ed8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37,99,235,0.38) !important;
+}
+
+/* Button secondary — beyaz, ince border */
+.app-shell button[class*="border-[color:var(--border)]"]:not([class*="bg-"]) {
+  border: 1.5px solid #e4e4e7 !important;
+  background: #fff !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
+
+/* Pill — Landing chip tarzı */
+.app-shell span[class*="bg-emerald-50"],
+.app-shell span[class*="bg-amber-50"],
+.app-shell span[class*="bg-red-50"],
+.app-shell span[class*="bg-blue-50"],
+.app-shell span[class*="bg-slate-100"] {
+  border-radius: 999px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  border-width: 1px !important;
+}
+
+/* Form fields */
+.app-shell input.focus-ring,
+.app-shell select.focus-ring,
+.app-shell textarea.focus-ring {
+  border-radius: 9px !important;
+  border: 1.5px solid #e4e4e7 !important;
+  font-size: 14px !important;
+  background: #fff !important;
+}
+.app-shell input.focus-ring:focus,
+.app-shell select.focus-ring:focus,
+.app-shell textarea.focus-ring:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.10) !important;
+}
+
+/* Field label */
+.app-shell label[class*="uppercase"] {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  color: #a1a1aa !important;
+}
+
+/* MetricCard — Landing KPI tarzı */
+.app-shell .kpi-card {
+  border-radius: 18px !important;
+  padding: 20px 22px !important;
+  border: 1px solid #e4e4e7 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+.app-shell .kpi-card .metric-value {
+  font-size: 2.4rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.06em !important;
+  line-height: 1 !important;
+}
+
+/* Table */
+.app-shell .app-table thead th {
+  background: #f9f9fb !important;
+  font-size: 10.5px !important;
+  letter-spacing: 0.12em !important;
+  color: #a1a1aa !important;
+  border-bottom: 1px solid #e4e4e7 !important;
+}
+.app-shell .app-table tbody td { font-size: 13px !important; }
+.app-shell .app-table tbody tr:hover { background: #f9f9fb !important; }
+
+/* Filter chips (work orders) */
+.app-shell button.rounded-\[16px\] {
+  border-radius: 999px !important;
+  padding: 7px 14px !important;
+  font-size: 12px !important;
+}
+
+/* Empty state */
+.app-shell div[class*="border-dashed"] {
+  border-radius: 16px !important;
+  border: 1.5px dashed #e4e4e7 !important;
+  background: linear-gradient(180deg,#fff,#fafbff) !important;
+}
+
+/* Headings color */
+.app-shell h1, .app-shell h2, .app-shell h3 {
+  color: #0a0a0f !important;
+}
+
+/* Muted body text */
+.app-shell p[class*="text-[color:var(--muted)]"] {
+  color: #71717a !important;
+}
