@@ -107,12 +107,12 @@ export default function SettingsPage() {
   const isAdmin = myRole === "OWNER" || myRole === "ADMIN";
   const pl = planLabel(ent);
 
-  const TABS = [
-    { key:"org", label:"Organizasyon", icon:"🏢" },
-    { key:"users", label:"Kullanıcılar", icon:"👥", admin:true },
-    { key:"plan", label:"Abonelik", icon:"💎" },
-    { key:"security", label:"Güvenlik", icon:"🔒" },
-  ] as const;
+  const TABS: { key: "org"|"users"|"plan"|"security"; label: string; icon: string; admin?: boolean }[] = [
+    { key:"org",      label:"Organizasyon", icon:"🏢" },
+    { key:"users",    label:"Kullanıcılar", icon:"👥", admin:true },
+    { key:"plan",     label:"Abonelik",     icon:"💎" },
+    { key:"security", label:"Güvenlik",     icon:"🔒" },
+  ];
 
   const inputStyle: React.CSSProperties = { width:"100%", padding:"11px 14px", border:"1px solid #e4e4e7", borderRadius:12, fontSize:14, background:"#fff", outline:"none", fontFamily:"inherit", transition:"border-color 0.15s" };
   const btnPrimary: React.CSSProperties = { display:"inline-flex", alignItems:"center", gap:8, background:"#0a0a0f", color:"#fff", border:"none", borderRadius:12, padding:"11px 22px", fontSize:13.5, fontWeight:700, cursor:"pointer", transition:"all 0.15s", fontFamily:"inherit" };
