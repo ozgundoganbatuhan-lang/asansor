@@ -96,7 +96,7 @@ export default function AssetDetailPage() {
             )}
             <div style={{display:"flex",gap:8}}>
               <Link href={`/app/customers/${asset.customer.id}`} style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,color:"#fff",textDecoration:"none",textAlign:"center"}}>Müşteri →</Link>
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,color:"#fff",textDecoration:"none",textAlign:"center"}}>🗺 Yol</a>
+              <a href={mapsUrl ?? "#"} target="_blank" rel="noopener noreferrer" style={{flex:1,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,color:"#fff",textDecoration:"none",textAlign:"center"}}>🗺 Yol</a>
             </div>
           </div>
         </div>
