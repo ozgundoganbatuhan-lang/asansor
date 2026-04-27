@@ -2,7 +2,24 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+<style id="landing-emergency-reset">
+/* Eğer bu landing bir layout altında render olursa, her türlü Shell/sidebar/topbar'ı gizle */
+.app-shell, [class*="sidebar"]:not([class*="dash"]):not([class*="hero"]),
+aside[style*="position: fixed"], aside[style*="0f172a"],
+header[style*="position: sticky"][style*="background"]:not(.nav) {
+  display: none !important;
+}
+body, html { margin: 0 !important; padding: 0 !important; }
+</style>
+
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" href="/icon" />
+<link rel="apple-touch-icon" href="/icon" />
+<meta name="theme-color" content="#2563eb" />
+<title>Servisim — Asansör Servis Operasyon Platformu</title>
+<meta name="description" content="WhatsApp kaosunu, Excel tablolarını ve telefon trafiğini bitirin. Arıza yönetiminden bakım takibine — tek platform, sıfır dağınıklık." />
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Servisim — Asansör Servis Yönetimi</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">

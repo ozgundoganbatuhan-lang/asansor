@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import OnboardingBeacon from "@/components/OnboardingBeacon";
-import { Button, Card, EmptyState, ErrorBanner, Input, MetricCard, PageHeader, Pill, Spinner } from "@/components/ui";
 
 type Customer = {
   id: string; name: string;
@@ -14,127 +12,188 @@ type Customer = {
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading,   setLoading]   = useState(true);
-  const [error,     setError]     = useState<string | null>(null);
-  const [q,         setQ]         = useState("");
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState<string | null>(null);
+  const [q, setQ]                 = useState("");
+  const [showForm, setShowForm]   = useState(false);
+  const [name, setName]           = useState("");
+  const [contactName, setContactName] = useState("");
+  const [phone, setPhone]         = useState("");
+  const [email, setEmail]         = useState("");
+  const [saving, setSaving]       = useState(false);
 
-  useEffect(() => {
-    fetch("/api/customers")
-      .then(r => r.json())
-      .then(d => {
-        if (d.error) { setError(d.error); return; }
-        setCustomers(d.items ?? []);
-      })
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
+  async function load() {
+    setLoading(true);
+    try {
+      const r = await fetch("/api/customers");
+      const d = await r.json();
+      if (d.error) setError(d.error);
+      else setCustomers(d.items ?? []);
+    } catch (e: any) { setError(e.message); }
+    setLoading(false);
+  }
+
+  useEffect(() => { void load(); }, []);
 
   const filtered = useMemo(
-    () => customers.filter(c =>
-      !q || [c.name, c.contactName ?? "", c.phone ?? "", c.email ?? ""]
-        .join(" ").toLowerCase().includes(q.toLowerCase())
-    ),
+    () => customers.filter(c => !q || [c.name, c.contactName ?? "", c.phone ?? "", c.email ?? ""].join(" ").toLowerCase().includes(q.toLowerCase())),
     [customers, q]
   );
 
-  const totalAssets = filtered.reduce((sum, c) => sum + c._count.assets, 0);
-  const totalOrders = filtered.reduce((sum, c) => sum + c._count.workOrders, 0);
+  const totalAssets = filtered.reduce((s, c) => s + c._count.assets, 0);
+  const totalWO     = filtered.reduce((s, c) => s + c._count.workOrders, 0);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setError(null); setSaving(true);
+    const res = await fetch("/api/customers", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, contactName: contactName || undefined, phone: phone || undefined, email: email || undefined }),
+    });
+    const d = await res.json().catch(() => ({}));
+    setSaving(false);
+    if (!res.ok) { setError(d.error ?? "Müşteri oluşturulamadı"); return; }
+    setName(""); setContactName(""); setPhone(""); setEmail(""); setShowForm(false);
+    await load();
+  }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Müşteriler"
-        subtitle="Site yönetimleri, kurumsal müşteriler ve servis ilişki geçmişi tek görünümde."
-        action={
-          <div className="flex flex-wrap gap-2">
-            <Link href="/app/customers/import">
-              <Button variant="secondary">Excel yükle</Button>
-            </Link>
-            <OnboardingBeacon forStep={1} label="👆 Yeni müşteri ekleyin">
-              <Link data-tour="new-customer-btn" href="/app/customers/new">
-                <Button>Yeni müşteri</Button>
-              </Link>
-            </OnboardingBeacon>
-          </div>
-        }
-      />
-
-      {error && <ErrorBanner msg={error} />}
-
-      <section className="grid gap-4 lg:grid-cols-3">
-        <MetricCard label="Portföy"         value={filtered.length} note="Filtreye göre görünen müşteri sayısı" />
-        <MetricCard label="Bağlı asansör"   value={totalAssets}     note="Müşteri kayıtlarına bağlı aktif varlık sayısı" />
-        <MetricCard label="Açık iş hacmi"   value={totalOrders}     note="Portföy genelinde ilişkilendirilen iş emri sayısı" />
-      </section>
-
-      <Card
-        title="Müşteri listesi"
-        subtitle="Detay, irtibat ve iş yükünü aynı tablo içinde sade biçimde sunar."
-      >
-        <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="w-full max-w-xl">
-            <Input
-              label="Ara"
-              placeholder="Müşteri adı, telefon ya da ilgili kişi"
-              value={q}
-              onChange={e => setQ(e.target.value)}
-            />
-          </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a1a1aa", marginBottom: 6 }}>Portföy</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0a0a0f", lineHeight: 1.05 }}>Müşteriler</h1>
+          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#71717a", maxWidth: 560 }}>
+            Bina yöneticileri, site yönetimleri ve kurumsal müşteriler.
+          </p>
         </div>
+        <button onClick={() => setShowForm(v => !v)} style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          background: showForm ? "#fff" : "#2563eb",
+          color: showForm ? "#0a0a0f" : "#fff",
+          border: showForm ? "1.5px solid #e4e4e7" : "none",
+          fontSize: 13, fontWeight: 700, padding: "9px 18px", borderRadius: 10,
+          cursor: "pointer", fontFamily: "inherit",
+          boxShadow: showForm ? "none" : "0 4px 16px rgba(37,99,235,0.3)",
+        }}>
+          {showForm ? "Formu kapat" : (
+            <>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+              Yeni müşteri
+            </>
+          )}
+        </button>
+      </div>
 
-        {loading ? (
-          <Spinner />
-        ) : filtered.length === 0 ? (
-          <EmptyState
-            icon="👥"
-            title={q ? "Eşleşen müşteri bulunamadı" : "Henüz müşteri yok"}
-            desc={q ? "Farklı bir arama deneyin." : "İlk müşteriyi ekleyerek portföy görünümünü oluşturun."}
-            action={!q ? <Link href="/app/customers/new"><Button>Yeni müşteri ekle</Button></Link> : undefined}
-          />
-        ) : (
-          <div className="table-wrap">
-            <table className="app-table">
-              <thead>
-                <tr>
-                  <th>Müşteri</th><th>İrtibat</th><th>Telefon</th>
-                  <th>Asansör</th><th>İş emri</th><th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(customer => (
-                  <tr key={customer.id}>
-                    <td>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[linear-gradient(135deg,#1456f0,#5ca9ff)] text-xs font-black text-white shadow-[var(--shadow-xs)]">
-                          {customer.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <div className="font-bold text-[color:var(--foreground)]">{customer.name}</div>
-                          <div className="mt-1 text-xs text-[color:var(--muted-2)]">{customer.email || "E-posta yok"}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="text-[color:var(--muted)]">{customer.contactName ?? "—"}</td>
-                    <td className="text-[color:var(--muted)]">{customer.phone ?? "—"}</td>
-                    <td><Pill tone="blue">{customer._count.assets} asansör</Pill></td>
-                    <td>
-                      {customer._count.workOrders > 0
-                        ? <Pill tone="amber">{customer._count.workOrders} iş emri</Pill>
-                        : <Pill tone="gray">Kayıt yok</Pill>
-                      }
-                    </td>
-                    <td className="text-right">
-                      <Link href={`/app/customers/${customer.id}`} className="text-sm font-bold text-[color:var(--primary)] hover:underline">
-                        Detay
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {error && (
+        <div style={{ background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", padding: "12px 16px", borderRadius: 12, fontSize: 13 }}>{error}</div>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
+        {[
+          { label: "Toplam müşteri", value: customers.length, color: "#0a0a0f" },
+          { label: "Toplam asansör", value: totalAssets, color: "#2563eb" },
+          { label: "Toplam iş emri", value: totalWO, color: "#7c3aed" },
+        ].map((k, i) => (
+          <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: "18px 20px" }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#a1a1aa", marginBottom: 10 }}>{k.label}</div>
+            <div style={{ fontSize: "2.2rem", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: k.color }}>{k.value}</div>
           </div>
-        )}
-      </Card>
+        ))}
+      </div>
+
+      {showForm && (
+        <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", marginBottom: 14 }}>Yeni müşteri ekle</div>
+          <form onSubmit={submit}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
+              {[
+                { l: "Müşteri adı *", v: name, set: setName, req: true },
+                { l: "İletişim kişisi", v: contactName, set: setContactName },
+                { l: "Telefon", v: phone, set: setPhone, type: "tel" },
+                { l: "E-posta", v: email, set: setEmail, type: "email" },
+              ].map((f, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <label style={labelStyle}>{f.l}</label>
+                  <input required={f.req} type={f.type || "text"} value={f.v} onChange={e => f.set(e.target.value)} style={fieldStyle} />
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+              <button type="submit" disabled={saving} style={{ background: "#2563eb", color: "#fff", fontSize: 14, fontWeight: 700, padding: "11px 22px", borderRadius: 10, border: "none", cursor: saving ? "wait" : "pointer", fontFamily: "inherit", boxShadow: "0 4px 14px rgba(37,99,235,0.3)" }}>
+                {saving ? "Kaydediliyor..." : "Müşteriyi oluştur"}
+              </button>
+              <button type="button" onClick={() => setShowForm(false)} style={{ background: "#fff", color: "#0a0a0f", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 10, border: "1.5px solid #e4e4e7", cursor: "pointer", fontFamily: "inherit" }}>İptal</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <input type="text" placeholder="İsim, telefon, e-posta..." value={q} onChange={e => setQ(e.target.value)} style={{ ...fieldStyle, height: 44, fontSize: 14 }} />
+
+      {loading ? (
+        <div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 32, height: 32, border: "3px solid #e4e4e7", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div style={{ background: "#fff", border: "1px dashed #e4e4e7", borderRadius: 16, padding: 40, textAlign: "center" }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>👥</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0a0a0f", marginBottom: 6 }}>Müşteri bulunamadı</div>
+          <div style={{ fontSize: 13, color: "#71717a" }}>Arama kriterini değiştirin veya yeni müşteri ekleyin.</div>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+          {filtered.map(c => (
+            <Link key={c.id} href={`/app/customers/${c.id}`} className="cust-card" style={{
+              background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16,
+              padding: 18, textDecoration: "none", color: "inherit", transition: "all 0.18s",
+              display: "block",
+            }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 38, height: 38, borderRadius: "50%", background: "linear-gradient(135deg,#2563eb,#7c3aed)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: "#fff", flexShrink: 0 }}>
+                  {c.name.split(" ").slice(0, 2).map(s => s[0]).join("").toUpperCase().slice(0, 2)}
+                </div>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
+                  {c.contactName && <div style={{ fontSize: 12, color: "#71717a", marginTop: 2 }}>{c.contactName}</div>}
+                </div>
+              </div>
+              {(c.phone || c.email) && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
+                  {c.phone && <div style={{ fontSize: 12, color: "#71717a" }}>📞 {c.phone}</div>}
+                  {c.email && <div style={{ fontSize: 12, color: "#71717a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>✉ {c.email}</div>}
+                </div>
+              )}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>Asansör</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", marginTop: 2 }}>{c._count.assets}</div>
+                </div>
+                <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>İş emri</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", marginTop: 2 }}>{c._count.workOrders}</div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .cust-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.07); border-color: #c7d2fe !important; }
+        input:focus { border-color: #2563eb !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.10); }
+      `}} />
     </div>
   );
 }
+
+const fieldStyle: React.CSSProperties = {
+  width: "100%", height: 40, padding: "0 12px",
+  border: "1.5px solid #e4e4e7", borderRadius: 9,
+  fontSize: 14, fontFamily: "inherit", outline: "none",
+  background: "#fff", color: "#0a0a0f",
+};
+const labelStyle: React.CSSProperties = {
+  fontSize: 11, fontWeight: 700, color: "#71717a",
+  textTransform: "uppercase", letterSpacing: "0.12em",
+};
