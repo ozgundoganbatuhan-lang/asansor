@@ -16,6 +16,8 @@ export async function GET(req: NextRequest) {
 const schema = z.object({
   name: z.string().min(1).optional(),
   vertical: z.literal("ELEVATOR").optional(),
+  phone: z.string().optional(),
+  website: z.string().optional(),
 });
 
 export async function PATCH(req: NextRequest) {

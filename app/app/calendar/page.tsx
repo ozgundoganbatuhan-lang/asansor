@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
@@ -11,289 +10,195 @@ type WorkOrder = {
   asset?: { name: string } | null;
 };
 
-const TYPE_LABELS: Record<string, string> = {
-  FAULT: "Arıza", PERIODIC_MAINTENANCE: "Periyodik", ANNUAL_INSPECTION: "Muayene",
-  REVISION: "Revizyon", INSTALLATION: "Kurulum",
+const TYPE_L: Record<string,string> = { FAULT:"Arıza", PERIODIC_MAINTENANCE:"Periyodik", ANNUAL_INSPECTION:"Muayene", REVISION:"Revizyon", INSTALLATION:"Kurulum" };
+const S_CFG: Record<string,{bg:string;color:string;dot:string}> = {
+  URGENT:      {bg:"#fef2f2",color:"#b91c1c",dot:"#dc2626"},
+  IN_PROGRESS: {bg:"#fffbeb",color:"#b45309",dot:"#d97706"},
+  DONE:        {bg:"#f0fdf4",color:"#15803d",dot:"#22c55e"},
+  PENDING:     {bg:"#eff6ff",color:"#1d4ed8",dot:"#3b82f6"},
+  CANCELED:    {bg:"#f4f4f5",color:"#52525b",dot:"#a1a1aa"},
 };
-const STATUS_CLS: Record<string, string> = {
-  URGENT:      "bg-red-500",
-  IN_PROGRESS: "bg-amber-400",
-  DONE:        "bg-emerald-500",
-  PENDING:     "bg-blue-400",
-  CANCELED:    "bg-gray-300",
-};
-const STATUS_LABEL: Record<string, string> = {
-  URGENT: "Acil", IN_PROGRESS: "Devam", DONE: "Bitti", PENDING: "Planlı", CANCELED: "İptal",
-};
+const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const DAYS   = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
 
-const DAYS_TR = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
-const MONTHS_TR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-
-function startOfMonth(y: number, m: number) { return new Date(y, m, 1); }
-function daysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate(); }
-// Monday-first: Sun=6, Mon=0
-function dayOfWeekMon(d: Date) { return (d.getDay() + 6) % 7; }
+function toKey(d: Date) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function dow(d: Date) { return (d.getDay()+6)%7; }
+function daysInMonth(y:number,m:number) { return new Date(y,m+1,0).getDate(); }
 
 export default function CalendarPage() {
   const today = new Date();
-  const [year, setYear]  = useState(today.getFullYear());
+  const [year, setYear]   = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [view, setView]  = useState<"month" | "week">("month");
   const [items, setItems] = useState<WorkOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null); // YYYY-MM-DD
-  const [weekStart, setWeekStart] = useState<Date>(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - dayOfWeekMon(d));
-    d.setHours(0,0,0,0);
-    return d;
-  });
+  const [selected, setSelected] = useState<string>(toKey(today));
 
   useEffect(() => {
-    fetch("/api/work-orders")
-      .then(r => r.json())
-      .then(d => setItems((d.items ?? []).filter((x: WorkOrder) => x.scheduledAt)))
-      .finally(() => setLoading(false));
+    fetch("/api/work-orders").then(r=>r.json()).then(d=>{
+      setItems((d.items??[]).filter((x:WorkOrder)=>x.scheduledAt));
+    }).finally(()=>setLoading(false));
   }, []);
 
-  // Group by date string YYYY-MM-DD
   const byDate = useMemo(() => {
-    const map: Record<string, WorkOrder[]> = {};
+    const map: Record<string,WorkOrder[]> = {};
     items.forEach(w => {
       if (!w.scheduledAt) return;
-      const key = w.scheduledAt.slice(0, 10);
-      if (!map[key]) map[key] = [];
-      map[key].push(w);
+      const k = w.scheduledAt.slice(0,10);
+      if (!map[k]) map[k]=[];
+      map[k].push(w);
     });
     return map;
   }, [items]);
 
-  function prevMonth() { if (month === 0) { setYear(y => y-1); setMonth(11); } else setMonth(m => m-1); }
-  function nextMonth() { if (month === 11) { setYear(y => y+1); setMonth(0); } else setMonth(m => m+1); }
-  function prevWeek() { setWeekStart(d => { const n = new Date(d); n.setDate(n.getDate()-7); return n; }); }
-  function nextWeek() { setWeekStart(d => { const n = new Date(d); n.setDate(n.getDate()+7); return n; }); }
+  function prev() { if(month===0){setYear(y=>y-1);setMonth(11);}else setMonth(m=>m-1); }
+  function next() { if(month===11){setYear(y=>y+1);setMonth(0);}else setMonth(m=>m+1); }
 
-  const toKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-
-  // Month grid
-  const monthGrid = useMemo(() => {
-    const firstDay = startOfMonth(year, month);
-    const offset = dayOfWeekMon(firstDay);
-    const total = daysInMonth(year, month);
-    const cells: (number | null)[] = [];
-    for (let i = 0; i < offset; i++) cells.push(null);
-    for (let d = 1; d <= total; d++) cells.push(d);
-    while (cells.length % 7 !== 0) cells.push(null);
+  const grid = useMemo(() => {
+    const first = new Date(year, month, 1);
+    const offset = dow(first);
+    const days = daysInMonth(year, month);
+    const cells: (number|null)[] = [];
+    for(let i=0;i<offset;i++) cells.push(null);
+    for(let d=1;d<=days;d++) cells.push(d);
+    while(cells.length%7!==0) cells.push(null);
     return cells;
   }, [year, month]);
 
-  // Week days
-  const weekDays = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(weekStart);
-      d.setDate(d.getDate() + i);
-      return d;
-    });
-  }, [weekStart]);
-
+  const selectedWOs = byDate[selected] ?? [];
   const todayKey = toKey(today);
 
-  const selectedWOs = selectedDay ? (byDate[selectedDay] ?? []) : [];
+  const monthTotal   = Object.entries(byDate).filter(([k])=>k.startsWith(`${year}-${String(month+1).padStart(2,"0")}`)).reduce((a,[,v])=>a+v.length,0);
+  const urgentCount  = items.filter(w=>w.status==="URGENT").length;
+  const pendingCount = items.filter(w=>w.status==="PENDING").length;
+
+  const s = (st:string) => S_CFG[st] ?? {bg:"#f4f4f5",color:"#52525b",dot:"#a1a1aa"};
 
   return (
-    <div className="space-y-5">
+    <div style={{maxWidth:1100,margin:"0 auto"}}>
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",gap:16,marginBottom:24,flexWrap:"wrap"}}>
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Takvim</h1>
-          <p className="text-sm text-gray-500">Planlanan iş emirleri ve bakım takvimi</p>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.16em",textTransform:"uppercase",color:"#a1a1aa",marginBottom:6}}>Operasyon</div>
+          <h1 style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",color:"#0a0a0f",margin:0}}>Takvim</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex rounded-xl border border-gray-200 bg-white overflow-hidden text-sm font-semibold">
-            <button onClick={() => setView("month")} className={`px-4 py-2 transition-colors ${view==="month" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-50"}`}>Aylık</button>
-            <button onClick={() => setView("week")} className={`px-4 py-2 transition-colors ${view==="week" ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-50"}`}>Haftalık</button>
-          </div>
-          <Link href="/app/work-orders" className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 shadow-sm">
-            + İş Emri
-          </Link>
+        <div style={{display:"flex",gap:10}}>
+          {[{l:"Bu Ay",v:monthTotal,c:"#0a0a0f",bg:"#f4f4f6"},{l:"Acil",v:urgentCount,c:"#b91c1c",bg:"#fef2f2"},{l:"Planlı",v:pendingCount,c:"#1d4ed8",bg:"#eff6ff"}].map(k=>(
+            <div key={k.l} style={{background:k.bg,borderRadius:12,padding:"10px 16px",textAlign:"center",minWidth:72}}>
+              <div style={{fontSize:20,fontWeight:900,color:k.c,letterSpacing:"-0.04em"}}>{k.v}</div>
+              <div style={{fontSize:11,color:"#71717a",marginTop:2,fontWeight:600}}>{k.l}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Calendar */}
-        <div className="lg:col-span-2 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-          {/* Nav */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <button onClick={view==="month" ? prevMonth : prevWeek}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-600">‹</button>
-            <div className="font-bold text-gray-900">
-              {view === "month"
-                ? `${MONTHS_TR[month]} ${year}`
-                : `${weekDays[0].getDate()} ${MONTHS_TR[weekDays[0].getMonth()]} – ${weekDays[6].getDate()} ${MONTHS_TR[weekDays[6].getMonth()]} ${weekDays[6].getFullYear()}`
-              }
-            </div>
-            <button onClick={view==="month" ? nextMonth : nextWeek}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-600">›</button>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 340px",gap:20,alignItems:"start"}}>
+        {/* Calendar grid */}
+        <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,overflow:"hidden",boxShadow:"0 1px 3px rgba(0,0,0,0.05)"}}>
+          {/* Month nav */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"20px 24px",borderBottom:"1px solid #f4f4f5"}}>
+            <button onClick={prev} style={{width:36,height:36,borderRadius:9,border:"1px solid #e4e4e7",background:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontFamily:"inherit"}}>‹</button>
+            <div style={{fontSize:17,fontWeight:900,color:"#0a0a0f",letterSpacing:"-0.03em"}}>{MONTHS[month]} {year}</div>
+            <button onClick={next} style={{width:36,height:36,borderRadius:9,border:"1px solid #e4e4e7",background:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontFamily:"inherit"}}>›</button>
           </div>
-
           {/* Day headers */}
-          <div className="grid grid-cols-7 border-b border-gray-100">
-            {DAYS_TR.map(d => (
-              <div key={d} className="py-2 text-center text-xs font-semibold uppercase tracking-wide text-gray-400">{d}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",padding:"10px 16px 6px"}}>
+            {DAYS.map(d=>(
+              <div key={d} style={{textAlign:"center",fontSize:11,fontWeight:700,letterSpacing:"0.08em",textTransform:"uppercase",color:"#a1a1aa",padding:"4px 0"}}>{d}</div>
             ))}
           </div>
-
-          {/* Month view */}
-          {view === "month" && (
-            <div className="grid grid-cols-7">
-              {monthGrid.map((day, idx) => {
-                if (!day) return <div key={`e${idx}`} className="border-b border-r border-gray-50 min-h-[80px]" />;
-                const key = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-                const wos = byDate[key] ?? [];
-                const isToday = key === todayKey;
-                const isSelected = key === selectedDay;
-                return (
-                  <button key={key} onClick={() => setSelectedDay(isSelected ? null : key)}
-                    className={`border-b border-r border-gray-100 min-h-[80px] p-1.5 text-left transition-colors ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`}>
-                    <div className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${isToday ? "bg-blue-600 text-white" : "text-gray-700"}`}>
-                      {day}
-                    </div>
-                    <div className="mt-1 space-y-0.5">
-                      {wos.slice(0, 3).map(w => (
-                        <div key={w.id} className={`flex items-center gap-1 rounded px-1 py-0.5 ${STATUS_CLS[w.status] ?? "bg-gray-300"} bg-opacity-20`}>
-                          <div className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${STATUS_CLS[w.status] ?? "bg-gray-400"}`} />
-                          <span className="text-xs font-medium text-gray-700 truncate">{w.customer.name}</span>
-                        </div>
+          {/* Cells */}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",padding:"0 16px 16px",gap:3}}>
+            {grid.map((day,i) => {
+              if(!day) return <div key={i}/>;
+              const k = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+              const wos = byDate[k]??[];
+              const isToday = k===todayKey;
+              const isSel   = k===selected;
+              const hasUrgent = wos.some(w=>w.status==="URGENT");
+              return (
+                <button key={i} onClick={()=>setSelected(k)} style={{
+                  border:"none",background:"transparent",cursor:"pointer",padding:"6px 4px",borderRadius:10,
+                  outline: isSel ? "2px solid #2563eb" : "none",
+                  background: isSel ? "#eff6ff" : isToday ? "#f5f3ff" : "transparent",
+                  transition:"all 0.12s", fontFamily:"inherit",
+                }}>
+                  <div style={{width:28,height:28,borderRadius:"50%",background:isToday?"#0d1117":"transparent",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto",fontSize:13,fontWeight:isToday?900:600,color:isToday?"#fff":isSel?"#1d4ed8":"#0a0a0f"}}>
+                    {day}
+                  </div>
+                  {wos.length>0 && (
+                    <div style={{display:"flex",justifyContent:"center",gap:2,marginTop:3}}>
+                      {wos.slice(0,3).map((w,ii)=>(
+                        <span key={ii} style={{width:5,height:5,borderRadius:"50%",background:hasUrgent?"#dc2626":s(w.status).dot,display:"inline-block"}}/>
                       ))}
-                      {wos.length > 3 && <div className="text-xs text-gray-400 pl-1">+{wos.length-3}</div>}
                     </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Week view */}
-          {view === "week" && (
-            <div className="grid grid-cols-7">
-              {weekDays.map(d => {
-                const key = toKey(d);
-                const wos = byDate[key] ?? [];
-                const isToday = key === todayKey;
-                const isSelected = key === selectedDay;
-                return (
-                  <button key={key} onClick={() => setSelectedDay(isSelected ? null : key)}
-                    className={`border-r border-gray-100 min-h-[200px] p-2 text-left transition-colors ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`}>
-                    <div className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold mb-2 ${isToday ? "bg-blue-600 text-white" : "text-gray-700"}`}>
-                      {d.getDate()}
-                    </div>
-                    <div className="space-y-1">
-                      {wos.map(w => (
-                        <div key={w.id} className={`rounded-lg px-2 py-1.5 border-l-2 ${STATUS_CLS[w.status]?.replace("bg-","border-") ?? "border-gray-300"} bg-white border border-gray-100 shadow-sm`}>
-                          <div className="text-xs font-bold text-gray-800 truncate">{w.customer.name}</div>
-                          <div className="text-xs text-gray-500 truncate">{TYPE_LABELS[w.type] ?? w.type}</div>
-                          {w.scheduledAt && (
-                            <div className="text-xs text-gray-400">{new Date(w.scheduledAt).toLocaleTimeString("tr-TR", { hour:"2-digit", minute:"2-digit" })}</div>
-                          )}
-                        </div>
-                      ))}
-                      {wos.length === 0 && <div className="text-xs text-gray-300 text-center pt-4">—</div>}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Right: selected day OR upcoming */}
-        <div className="space-y-4">
-          {/* Selected day detail */}
-          {selectedDay && (
-            <div className="rounded-2xl border border-blue-200 bg-blue-50 shadow-sm overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-blue-100">
-                <div className="text-sm font-bold text-blue-900">
-                  {new Date(selectedDay).toLocaleDateString("tr-TR", { weekday:"long", day:"numeric", month:"long" })}
-                </div>
-                <button onClick={() => setSelectedDay(null)} className="text-blue-400 hover:text-blue-600 text-xs font-bold">✕</button>
-              </div>
-              {selectedWOs.length === 0 ? (
-                <div className="px-4 py-6 text-center text-sm text-blue-400">Bu gün için planlı iş yok.</div>
-              ) : (
-                <div className="divide-y divide-blue-100">
-                  {selectedWOs.map(w => (
-                    <div key={w.id} className="px-4 py-3">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className={`h-2 w-2 rounded-full ${STATUS_CLS[w.status] ?? "bg-gray-400"}`} />
-                        <Link href={`/app/work-orders/${w.id}`} className="font-mono text-xs font-bold text-blue-700 hover:underline">{w.code}</Link>
-                        <span className="text-xs text-blue-500">{STATUS_LABEL[w.status]}</span>
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900">{w.customer.name}</div>
-                      {w.asset && <div className="text-xs text-gray-500">{w.asset.name}</div>}
-                      <div className="mt-1 flex items-center gap-2 flex-wrap">
-                        <span className="text-xs text-gray-500">{TYPE_LABELS[w.type] ?? w.type}</span>
-                        {w.technician && <span className="text-xs text-gray-500">· {w.technician.name}</span>}
-                        {w.scheduledAt && <span className="text-xs text-gray-400">{new Date(w.scheduledAt).toLocaleTimeString("tr-TR", { hour:"2-digit", minute:"2-digit" })}</span>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Upcoming */}
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <div className="text-sm font-bold text-gray-900">Yaklaşan İşler</div>
-              <div className="text-xs text-gray-400 mt-0.5">Sonraki 14 gün</div>
+        {/* Side panel */}
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          {/* Selected day */}
+          <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,padding:"20px",boxShadow:"0 1px 3px rgba(0,0,0,0.05)"}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#0a0a0f",marginBottom:14,letterSpacing:"-0.01em"}}>
+              {new Date(selected+"T00:00").toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
             </div>
             {loading ? (
-              <div className="flex justify-center py-6"><div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" /></div>
-            ) : (() => {
-              const now = Date.now();
-              const in14 = now + 14 * 24 * 60 * 60 * 1000;
-              const upcoming = items
-                .filter(w => w.scheduledAt && new Date(w.scheduledAt).getTime() >= now && new Date(w.scheduledAt).getTime() <= in14)
-                .sort((a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime());
-              if (upcoming.length === 0) return <div className="px-4 py-6 text-center text-sm text-gray-400">14 günde planlı iş yok.</div>;
-              return (
-                <div className="divide-y divide-gray-100">
-                  {upcoming.map(w => (
-                    <div key={w.id} className="px-4 py-3 flex items-start gap-3">
-                      <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${STATUS_CLS[w.status] ?? "bg-gray-400"}`} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-gray-500">{new Date(w.scheduledAt!).toLocaleDateString("tr-TR", { day:"numeric", month:"short" })}</span>
-                          <span className="text-xs text-gray-400">{new Date(w.scheduledAt!).toLocaleTimeString("tr-TR", { hour:"2-digit", minute:"2-digit" })}</span>
-                        </div>
-                        <div className="text-sm font-semibold text-gray-800 truncate">{w.customer.name}</div>
-                        <div className="text-xs text-gray-500">{TYPE_LABELS[w.type]} {w.technician ? `· ${w.technician.name}` : ""}</div>
+              <div style={{color:"#a1a1aa",fontSize:13}}>Yükleniyor...</div>
+            ) : selectedWOs.length===0 ? (
+              <div style={{textAlign:"center",padding:"24px 0"}}>
+                <div style={{fontSize:32,marginBottom:8}}>📅</div>
+                <div style={{fontSize:13,fontWeight:600,color:"#52525b"}}>Bu gün iş emri yok</div>
+                <div style={{fontSize:12,color:"#a1a1aa",marginTop:4}}>Farklı bir gün seçin</div>
+              </div>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {selectedWOs.map(w=>{
+                  const cfg=s(w.status);
+                  return (
+                    <Link key={w.id} href={`/app/work-orders/${w.id}`} style={{
+                      display:"block",border:"1px solid #e4e4e7",borderRadius:14,padding:"12px 14px",
+                      textDecoration:"none",borderLeft:`3px solid ${cfg.dot}`,transition:"all 0.12s",
+                    }}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:5}}>
+                        <span style={{fontFamily:"monospace",fontSize:11,fontWeight:700,color:"#a1a1aa"}}>{w.code}</span>
+                        <span style={{background:cfg.bg,color:cfg.color,borderRadius:999,padding:"2px 8px",fontSize:10.5,fontWeight:700}}>{w.status==="URGENT"?"Acil":w.status==="IN_PROGRESS"?"Devam":w.status==="DONE"?"Bitti":w.status==="PENDING"?"Planlı":"İptal"}</span>
                       </div>
-                      <Link href={`/app/work-orders/${w.id}`} className="text-xs text-blue-500 hover:underline flex-shrink-0">→</Link>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
+                      <div style={{fontSize:13,fontWeight:700,color:"#0a0a0f",marginBottom:2}}>{w.customer.name}</div>
+                      <div style={{fontSize:12,color:"#71717a"}}>{TYPE_L[w.type]??w.type}{w.asset?` · ${w.asset.name}`:""}</div>
+                      {w.technician && <div style={{fontSize:11.5,color:"#a1a1aa",marginTop:4}}>👤 {w.technician.name}</div>}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Stats */}
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-3">Bu Ay</div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: "Toplam", val: items.filter(w => { const d = w.scheduledAt ? new Date(w.scheduledAt) : null; return d && d.getMonth()===month && d.getFullYear()===year; }).length },
-                { label: "Bitti",  val: items.filter(w => { const d = w.scheduledAt ? new Date(w.scheduledAt) : null; return d && d.getMonth()===month && d.getFullYear()===year && w.status==="DONE"; }).length },
-                { label: "Acil",   val: items.filter(w => { const d = w.scheduledAt ? new Date(w.scheduledAt) : null; return d && d.getMonth()===month && d.getFullYear()===year && w.status==="URGENT"; }).length },
-                { label: "Bekleyen",val: items.filter(w => { const d = w.scheduledAt ? new Date(w.scheduledAt) : null; return d && d.getMonth()===month && d.getFullYear()===year && w.status==="PENDING"; }).length },
-              ].map(s => (
-                <div key={s.label} className="text-center">
-                  <div className="text-2xl font-extrabold text-gray-900">{s.val}</div>
-                  <div className="text-xs text-gray-400">{s.label}</div>
-                </div>
-              ))}
-            </div>
+          {/* Upcoming */}
+          <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,padding:"20px",boxShadow:"0 1px 3px rgba(0,0,0,0.05)"}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#0a0a0f",marginBottom:14}}>Yaklaşan İşler</div>
+            {items.filter(w=>w.scheduledAt && w.scheduledAt>new Date().toISOString() && w.status!=="DONE" && w.status!=="CANCELED").slice(0,5).length===0 ? (
+              <div style={{fontSize:13,color:"#a1a1aa"}}>Planlı iş yok.</div>
+            ) : (
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {items.filter(w=>w.scheduledAt && w.scheduledAt>new Date().toISOString() && w.status!=="DONE" && w.status!=="CANCELED")
+                  .sort((a,b)=>a.scheduledAt!.localeCompare(b.scheduledAt!)).slice(0,5).map(w=>{
+                  const cfg=s(w.status);
+                  const dt=new Date(w.scheduledAt!);
+                  return (
+                    <Link key={w.id} href={`/app/work-orders/${w.id}`} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 12px",border:"1px solid #e4e4e7",borderRadius:12,textDecoration:"none",transition:"all 0.12s"}}>
+                      <span style={{width:8,height:8,borderRadius:"50%",background:cfg.dot,flexShrink:0,display:"inline-block"}}/>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:12.5,fontWeight:700,color:"#0a0a0f",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{w.customer.name}</div>
+                        <div style={{fontSize:11,color:"#71717a"}}>{dt.toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}</div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

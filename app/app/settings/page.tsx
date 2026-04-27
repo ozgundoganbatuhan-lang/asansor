@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-type Org = { id: string; name: string; slug: string; vertical: "ELEVATOR" };
+type Org = { id: string; name: string; slug: string; vertical: "ELEVATOR"; phone?: string|null; website?: string|null };
 type Ent = { planTier: string; isTrial: boolean; isExpired: boolean; daysLeft: number; trialEndsAt: string };
 type User = { id: string; email: string; name?: string | null; phone?: string | null; role: string; createdAt: string };
 
@@ -80,7 +80,7 @@ export default function SettingsPage() {
     if (!org) return;
     setSaving(true); setErr(null); setSaved(false);
     try {
-      const r = await fetch("/api/org", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ name:org.name, vertical:"ELEVATOR" }) });
+      const r = await fetch("/api/org", { method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ name:org.name, vertical:"ELEVATOR", phone:org.phone||undefined, website:org.website||undefined }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j?.error || "Kaydedilemedi");
       if (j.org) setOrg(j.org);
@@ -144,10 +144,18 @@ export default function SettingsPage() {
       {activeTab === "org" && (
         <Card>
           <SectionHeader icon="🏢" title="Organizasyon Bilgileri" sub="Firma adı ve sektör yapılandırması" />
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:20 }}>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#a1a1aa", marginBottom:8 }}>Firma Adı</label>
               <input value={org?.name ?? ""} onChange={e => setOrg(o => o ? {...o, name:e.target.value} : o)} placeholder="Örn. Güvenli Asansör Ltd." disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e4e4e7"} />
+            </div>
+            <div>
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#a1a1aa", marginBottom:8 }}>Telefon (QR sayfasında görünür)</label>
+              <input value={org?.phone ?? ""} onChange={e => setOrg(o => o ? {...o, phone:e.target.value} : o)} placeholder="+90 212 000 00 00" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e4e4e7"} />
+            </div>
+            <div>
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#a1a1aa", marginBottom:8 }}>Web Sitesi (QR sayfasında görünür)</label>
+              <input value={org?.website ?? ""} onChange={e => setOrg(o => o ? {...o, website:e.target.value} : o)} placeholder="www.firmaniz.com" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e4e4e7"} />
             </div>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#a1a1aa", marginBottom:8 }}>Slug / URL</label>

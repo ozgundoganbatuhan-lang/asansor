@@ -109,3 +109,7 @@ CREATE INDEX IF NOT EXISTS "Inspection_assetId_idx" ON "Inspection"("assetId");
 
 -- Tamamlandı!
 SELECT 'V11 migration tamamlandı ✓' as result;
+
+-- Add org contact fields (safe: nullable columns)
+ALTER TABLE "Organization" ADD COLUMN IF NOT EXISTS "phone" TEXT;
+ALTER TABLE "Organization" ADD COLUMN IF NOT EXISTS "website" TEXT;

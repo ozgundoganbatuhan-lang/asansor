@@ -16,6 +16,8 @@ model Organization {
   planTier  String   @default("TRIAL")
   trialEndsAt DateTime @default(dbgenerated("NOW() + INTERVAL '30 days'"))
   createdAt DateTime @default(now())
+  phone     String?
+  website   String?
   updatedAt DateTime @updatedAt
 
   users            User[]
@@ -108,6 +110,8 @@ model Asset {
   inspectionLabel   String?  // YESIL, MAVI, SARI, KIRMIZI
 
   createdAt DateTime @default(now())
+  phone     String?
+  website   String?
   updatedAt DateTime @updatedAt
 
   workOrders       WorkOrder[]
@@ -246,6 +250,8 @@ model Invoice {
   dueAt     DateTime?
   paidAt    DateTime?
   createdAt DateTime @default(now())
+  phone     String?
+  website   String?
   updatedAt DateTime @updatedAt
 }
 
@@ -301,6 +307,8 @@ model Contract {
   fileUrl String?  // upload edilen PDF
 
   createdAt DateTime @default(now())
+  phone     String?
+  website   String?
   updatedAt DateTime @updatedAt
 
   assets      ContractAsset[]
@@ -345,6 +353,8 @@ model Inspection {
   notes            String?
 
   createdAt DateTime @default(now())
+  phone     String?
+  website   String?
   updatedAt DateTime @updatedAt
 }
 
@@ -605,3 +615,4 @@ enum ServiceInvoiceStatus {
   PAID
   VOID
 }
+// appended by redesign patch - these fields added below Organization model inline
