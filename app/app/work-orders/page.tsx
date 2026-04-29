@@ -28,7 +28,7 @@ const STATUS_CFG: Record<string, { label: string; bg: string; color: string; bor
   IN_PROGRESS: { label: "Yolda",      bg: "#fffbeb", color: "#b45309", border: "#fcd34d", dot: "#d97706" },
   DONE:        { label: "Tamam",      bg: "#f0fdf4", color: "#15803d", border: "#bbf7d0", dot: "#059669" },
   PENDING:     { label: "Planlı",     bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe", dot: "#2563eb" },
-  CANCELED:    { label: "İptal",      bg: "#f1f5f9", color: "#52525b", border: "#d4d4d8", dot: "#64748b" },
+  CANCELED:    { label: "İptal",      bg: "#f4f4f5", color: "#52525b", border: "#d4d4d8", dot: "#71717a" },
 };
 
 const FILTERS = ["ALL", "URGENT", "IN_PROGRESS", "PENDING", "DONE", "CANCELED"] as const;
@@ -112,16 +112,16 @@ function WorkOrdersPage() {
       {/* Page header */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#94a3b8", marginBottom: 6 }}>Operasyon</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0f172a", lineHeight: 1.05 }}>İş emirleri</h1>
-          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#64748b", maxWidth: 560 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a1a1aa", marginBottom: 6 }}>Operasyon</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0a0a0f", lineHeight: 1.05 }}>İş emirleri</h1>
+          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#71717a", maxWidth: 560 }}>
             Planla, ata, sahayı görünür kıl. Operasyonun ritmi tek listede.
           </p>
         </div>
         <button onClick={() => setShowForm(v => !v)} style={{
           display: "inline-flex", alignItems: "center", gap: 6,
-          background: showForm ? "#fff" : "#2563eb", color: showForm ? "#0f172a" : "#fff",
-          border: showForm ? "1.5px solid #e2e8f0" : "none",
+          background: showForm ? "#fff" : "#2563eb", color: showForm ? "#0a0a0f" : "#fff",
+          border: showForm ? "1.5px solid #e4e4e7" : "none",
           fontSize: 13, fontWeight: 700, padding: "9px 18px", borderRadius: 10,
           cursor: "pointer", fontFamily: "inherit",
           boxShadow: showForm ? "none" : "0 4px 16px rgba(37,99,235,0.3)",
@@ -144,13 +144,13 @@ function WorkOrdersPage() {
       {/* KPI */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
         {[
-          { label: "Toplam", value: rows.length, color: "#0f172a", bg: "#f1f5f9" },
+          { label: "Toplam", value: rows.length, color: "#0a0a0f", bg: "#f4f4f5" },
           { label: "Acil", value: counts.URGENT, color: "#dc2626", bg: "#fef2f2" },
           { label: "Devam Eden", value: counts.IN_PROGRESS, color: "#d97706", bg: "#fffbeb" },
           { label: "Tamamlanan", value: counts.DONE, color: "#059669", bg: "#f0fdf4" },
         ].map((k, i) => (
-          <div key={i} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "18px 20px" }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8", marginBottom: 10 }}>{k.label}</div>
+          <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: "18px 20px" }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#a1a1aa", marginBottom: 10 }}>{k.label}</div>
             <div style={{ fontSize: "2.2rem", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: k.color }}>{k.value}</div>
           </div>
         ))}
@@ -158,8 +158,8 @@ function WorkOrdersPage() {
 
       {/* New form */}
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni iş emri</div>
+        <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni iş emri</div>
           <form onSubmit={createOrder}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
               {[
@@ -221,7 +221,7 @@ function WorkOrdersPage() {
               <button type="submit" style={{ background: "#2563eb", color: "#fff", fontSize: 14, fontWeight: 700, padding: "11px 22px", borderRadius: 10, border: "none", cursor: "pointer", fontFamily: "inherit", boxShadow: "0 4px 14px rgba(37,99,235,0.3)" }}>
                 İş emrini oluştur
               </button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ background: "#fff", color: "#0f172a", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 10, border: "1.5px solid #e2e8f0", cursor: "pointer", fontFamily: "inherit" }}>
+              <button type="button" onClick={() => setShowForm(false)} style={{ background: "#fff", color: "#0a0a0f", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 10, border: "1.5px solid #e4e4e7", cursor: "pointer", fontFamily: "inherit" }}>
                 İptal
               </button>
             </div>
@@ -236,9 +236,9 @@ function WorkOrdersPage() {
             <button key={f} onClick={() => setFS(f)} style={{
               padding: "7px 14px", borderRadius: 999, fontSize: 12, fontWeight: 700,
               cursor: "pointer", fontFamily: "inherit",
-              background: filterStatus === f ? "#0f172a" : "#fff",
+              background: filterStatus === f ? "#0a0a0f" : "#fff",
               color:      filterStatus === f ? "#fff"    : "#374151",
-              border:     `1.5px solid ${filterStatus === f ? "#0f172a" : "#e2e8f0"}`,
+              border:     `1.5px solid ${filterStatus === f ? "#0a0a0f" : "#e4e4e7"}`,
               transition: "all 0.12s",
             }}>
               {FILTER_LABEL[f]} {counts[f] > 0 && <span style={{ marginLeft: 5, opacity: 0.65 }}>{counts[f]}</span>}
@@ -246,44 +246,44 @@ function WorkOrdersPage() {
           ))}
         </div>
         <input type="text" placeholder="Kod, müşteri, asansör veya teknisyen..." value={q} onChange={e => setQ(e.target.value)} style={{
-          width: 280, height: 38, padding: "0 14px", border: "1.5px solid #e2e8f0", borderRadius: 10, fontSize: 13, fontFamily: "inherit", outline: "none",
+          width: 280, height: 38, padding: "0 14px", border: "1.5px solid #e4e4e7", borderRadius: 10, fontSize: 13, fontFamily: "inherit", outline: "none",
         }} />
       </div>
 
       {/* List */}
       {loading ? (
         <div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 32, height: 32, border: "3px solid #e2e8f0", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+          <div style={{ width: 32, height: 32, border: "3px solid #e4e4e7", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
         </div>
       ) : rows.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px dashed #e2e8f0", borderRadius: 16, padding: 40, textAlign: "center" }}>
+        <div style={{ background: "#fff", border: "1px dashed #e4e4e7", borderRadius: 16, padding: 40, textAlign: "center" }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>📋</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0a0a0f", marginBottom: 6 }}>
             {q || filterStatus !== "ALL" ? "Eşleşen iş emri bulunamadı" : "Henüz iş emri yok"}
           </div>
-          <div style={{ fontSize: 13, color: "#64748b" }}>
+          <div style={{ fontSize: 13, color: "#71717a" }}>
             {q || filterStatus !== "ALL" ? "Farklı filtre veya arama deneyin." : "İlk iş emrini oluşturarak başlayın."}
           </div>
         </div>
       ) : (
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, overflow: "hidden" }}>
+        <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, overflow: "hidden" }}>
           {rows.map(o => {
             const sc = STATUS_CFG[o.status] ?? STATUS_CFG.PENDING;
             return (
               <Link key={o.id} href={`/app/work-orders/${o.id}`} className="wo-row" style={{
                 display: "flex", alignItems: "center", gap: 14,
-                padding: "14px 18px", borderBottom: "1px solid #f1f5f9",
+                padding: "14px 18px", borderBottom: "1px solid #f4f4f5",
                 textDecoration: "none", color: "inherit", transition: "all 0.12s",
               }}>
                 <div style={{ width: 6, alignSelf: "stretch", borderRadius: 3, background: sc.dot, flexShrink: 0 }} />
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
                     <span style={{ fontFamily: "ui-monospace, SFMono-Regular, monospace", fontSize: 12, fontWeight: 700, color: "#2563eb" }}>{o.code}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: "#0a0a0f", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {o.asset?.name ?? "Asansör atanmadı"}
                     </span>
                   </div>
-                  <div style={{ fontSize: 12, color: "#64748b" }}>
+                  <div style={{ fontSize: 12, color: "#71717a" }}>
                     {o.customer.name} · {TYPE_LABEL[o.type] ?? o.type} · {o.technician?.name ?? "Atanmadı"}
                   </div>
                 </div>
@@ -291,7 +291,7 @@ function WorkOrdersPage() {
                   <span style={{ padding: "3px 11px", borderRadius: 999, fontSize: 11, fontWeight: 700, background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, whiteSpace: "nowrap" }}>
                     {sc.label}
                   </span>
-                  <span style={{ fontSize: 11, color: "#94a3b8" }}>{new Date(o.createdAt).toLocaleDateString("tr-TR")}</span>
+                  <span style={{ fontSize: 11, color: "#a1a1aa" }}>{new Date(o.createdAt).toLocaleDateString("tr-TR")}</span>
                 </div>
               </Link>
             );
@@ -311,11 +311,11 @@ function WorkOrdersPage() {
 
 const fieldStyle: React.CSSProperties = {
   width: "100%", height: 40, padding: "0 12px",
-  border: "1.5px solid #e2e8f0", borderRadius: 9,
+  border: "1.5px solid #e4e4e7", borderRadius: 9,
   fontSize: 14, fontFamily: "inherit", outline: "none",
-  background: "#fff", color: "#0f172a",
+  background: "#fff", color: "#0a0a0f",
 };
 const labelStyle: React.CSSProperties = {
-  fontSize: 11, fontWeight: 700, color: "#64748b",
+  fontSize: 11, fontWeight: 700, color: "#71717a",
   textTransform: "uppercase", letterSpacing: "0.12em",
 };

@@ -60,17 +60,17 @@ export default function CustomersPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#94a3b8", marginBottom: 6 }}>Portföy</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0f172a", lineHeight: 1.05 }}>Müşteriler</h1>
-          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#64748b", maxWidth: 560 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a1a1aa", marginBottom: 6 }}>Portföy</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0a0a0f", lineHeight: 1.05 }}>Müşteriler</h1>
+          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#71717a", maxWidth: 560 }}>
             Bina yöneticileri, site yönetimleri ve kurumsal müşteriler.
           </p>
         </div>
         <button onClick={() => setShowForm(v => !v)} style={{
           display: "inline-flex", alignItems: "center", gap: 6,
           background: showForm ? "#fff" : "#2563eb",
-          color: showForm ? "#0f172a" : "#fff",
-          border: showForm ? "1.5px solid #e2e8f0" : "none",
+          color: showForm ? "#0a0a0f" : "#fff",
+          border: showForm ? "1.5px solid #e4e4e7" : "none",
           fontSize: 13, fontWeight: 700, padding: "9px 18px", borderRadius: 10,
           cursor: "pointer", fontFamily: "inherit",
           boxShadow: showForm ? "none" : "0 4px 16px rgba(37,99,235,0.3)",
@@ -90,20 +90,20 @@ export default function CustomersPage() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
         {[
-          { label: "Toplam müşteri", value: customers.length, color: "#0f172a" },
+          { label: "Toplam müşteri", value: customers.length, color: "#0a0a0f" },
           { label: "Toplam asansör", value: totalAssets, color: "#2563eb" },
           { label: "Toplam iş emri", value: totalWO, color: "#7c3aed" },
         ].map((k, i) => (
-          <div key={i} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "18px 20px" }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8", marginBottom: 10 }}>{k.label}</div>
+          <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: "18px 20px" }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#a1a1aa", marginBottom: 10 }}>{k.label}</div>
             <div style={{ fontSize: "2.2rem", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: k.color }}>{k.value}</div>
           </div>
         ))}
       </div>
 
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 14 }}>Yeni müşteri ekle</div>
+        <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", marginBottom: 14 }}>Yeni müşteri ekle</div>
           <form onSubmit={submit}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
               {[
@@ -122,7 +122,7 @@ export default function CustomersPage() {
               <button type="submit" disabled={saving} style={{ background: "#2563eb", color: "#fff", fontSize: 14, fontWeight: 700, padding: "11px 22px", borderRadius: 10, border: "none", cursor: saving ? "wait" : "pointer", fontFamily: "inherit", boxShadow: "0 4px 14px rgba(37,99,235,0.3)" }}>
                 {saving ? "Kaydediliyor..." : "Müşteriyi oluştur"}
               </button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ background: "#fff", color: "#0f172a", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 10, border: "1.5px solid #e2e8f0", cursor: "pointer", fontFamily: "inherit" }}>İptal</button>
+              <button type="button" onClick={() => setShowForm(false)} style={{ background: "#fff", color: "#0a0a0f", fontSize: 14, fontWeight: 600, padding: "11px 22px", borderRadius: 10, border: "1.5px solid #e4e4e7", cursor: "pointer", fontFamily: "inherit" }}>İptal</button>
             </div>
           </form>
         </div>
@@ -132,19 +132,19 @@ export default function CustomersPage() {
 
       {loading ? (
         <div style={{ minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 32, height: 32, border: "3px solid #e2e8f0", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+          <div style={{ width: 32, height: 32, border: "3px solid #e4e4e7", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
         </div>
       ) : filtered.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px dashed #e2e8f0", borderRadius: 16, padding: 40, textAlign: "center" }}>
+        <div style={{ background: "#fff", border: "1px dashed #e4e4e7", borderRadius: 16, padding: 40, textAlign: "center" }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>👥</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", marginBottom: 6 }}>Müşteri bulunamadı</div>
-          <div style={{ fontSize: 13, color: "#64748b" }}>Arama kriterini değiştirin veya yeni müşteri ekleyin.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0a0a0f", marginBottom: 6 }}>Müşteri bulunamadı</div>
+          <div style={{ fontSize: 13, color: "#71717a" }}>Arama kriterini değiştirin veya yeni müşteri ekleyin.</div>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
           {filtered.map(c => (
             <Link key={c.id} href={`/app/customers/${c.id}`} className="cust-card" style={{
-              background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16,
+              background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16,
               padding: 18, textDecoration: "none", color: "inherit", transition: "all 0.18s",
               display: "block",
             }}>
@@ -153,24 +153,24 @@ export default function CustomersPage() {
                   {c.name.split(" ").slice(0, 2).map(s => s[0]).join("").toUpperCase().slice(0, 2)}
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
-                  {c.contactName && <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>{c.contactName}</div>}
+                  <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
+                  {c.contactName && <div style={{ fontSize: 12, color: "#71717a", marginTop: 2 }}>{c.contactName}</div>}
                 </div>
               </div>
               {(c.phone || c.email) && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
-                  {c.phone && <div style={{ fontSize: 12, color: "#64748b" }}>📞 {c.phone}</div>}
-                  {c.email && <div style={{ fontSize: 12, color: "#64748b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>✉ {c.email}</div>}
+                  {c.phone && <div style={{ fontSize: 12, color: "#71717a" }}>📞 {c.phone}</div>}
+                  {c.email && <div style={{ fontSize: 12, color: "#71717a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>✉ {c.email}</div>}
                 </div>
               )}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94a3b8" }}>Asansör</div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>{c._count.assets}</div>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>Asansör</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", marginTop: 2 }}>{c._count.assets}</div>
                 </div>
                 <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94a3b8" }}>İş emri</div>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", marginTop: 2 }}>{c._count.workOrders}</div>
+                  <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>İş emri</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", marginTop: 2 }}>{c._count.workOrders}</div>
                 </div>
               </div>
             </Link>
@@ -189,11 +189,11 @@ export default function CustomersPage() {
 
 const fieldStyle: React.CSSProperties = {
   width: "100%", height: 40, padding: "0 12px",
-  border: "1.5px solid #e2e8f0", borderRadius: 9,
+  border: "1.5px solid #e4e4e7", borderRadius: 9,
   fontSize: 14, fontFamily: "inherit", outline: "none",
-  background: "#fff", color: "#0f172a",
+  background: "#fff", color: "#0a0a0f",
 };
 const labelStyle: React.CSSProperties = {
-  fontSize: 11, fontWeight: 700, color: "#64748b",
+  fontSize: 11, fontWeight: 700, color: "#71717a",
   textTransform: "uppercase", letterSpacing: "0.12em",
 };
