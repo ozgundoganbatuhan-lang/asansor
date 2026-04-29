@@ -117,7 +117,7 @@ export default function CalendarPage() {
               const hasUrgent = wos.some(w=>w.status==="URGENT");
               return (
                 <button key={i} onClick={()=>setSelected(k)} style={{
-                  border:"none",background:"transparent",cursor:"pointer",padding:"6px 4px",borderRadius:10,
+                  border:"none",cursor:"pointer",padding:"6px 4px",borderRadius:10,
                   outline: isSel ? "2px solid #2563eb" : "none",
                   background: isSel ? "#eff6ff" : isToday ? "#f5f3ff" : "transparent",
                   transition:"all 0.12s", fontFamily:"inherit",
