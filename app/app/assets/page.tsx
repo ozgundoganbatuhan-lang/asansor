@@ -22,7 +22,7 @@ const emptyForm = { customerId: "", name: "", buildingName: "", elevatorIdNo: ""
 
 function LabelBadge({ label }: { label?: string | null }) {
   const cfg = label ? LABEL_CFG[label] : null;
-  if (!cfg) return <span style={{ fontSize: 11, color: "#a1a1aa", fontStyle: "italic" }}>Kontrol kaydı yok</span>;
+  if (!cfg) return <span style={{ fontSize: 11, color: "#94a3b8", fontStyle: "italic" }}>Kontrol kaydı yok</span>;
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.text, borderRadius: 999, padding: "3px 10px", fontSize: 11, fontWeight: 700 }}>
       <span style={{ width: 7, height: 7, borderRadius: "50%", background: cfg.dot, flexShrink: 0 }} />
@@ -37,7 +37,7 @@ function Countdown({ nextAt }: { nextAt?: string | null }) {
   if (days < 0)  return <span style={{ fontSize: 11, fontWeight: 700, color: "#dc2626" }}>⚠ {Math.abs(days)} gün gecikti</span>;
   if (days <=30) return <span style={{ fontSize: 11, fontWeight: 700, color: "#d97706" }}>⏰ {days} gün kaldı</span>;
   if (days <=90) return <span style={{ fontSize: 11, fontWeight: 600, color: "#0891b2" }}>{days} gün kaldı</span>;
-  return <span style={{ fontSize: 11, color: "#a1a1aa" }}>{new Date(nextAt).toLocaleDateString("tr-TR")}</span>;
+  return <span style={{ fontSize: 11, color: "#94a3b8" }}>{new Date(nextAt).toLocaleDateString("tr-TR")}</span>;
 }
 
 export default function AssetsPage() {
@@ -93,9 +93,9 @@ export default function AssetsPage() {
       {/* Page header */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#a1a1aa", marginBottom: 6 }}>Servisim Filo</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0a0a0f", lineHeight: 1.05 }}>Asansör portföyü</h1>
-          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#71717a", maxWidth: 560 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#94a3b8", marginBottom: 6 }}>Servisim Filo</div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#0f172a", lineHeight: 1.05 }}>Asansör portföyü</h1>
+          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#64748b", maxWidth: 560 }}>
             Bina, müşteri, risk ve muayene etiketi. Etiket rengi A-Tipi muayene sonucunu yansıtır.
           </p>
         </div>
@@ -147,10 +147,10 @@ export default function AssetsPage() {
           { label: "Toplam asansör", value: assets.length, color: "#2563eb", bg: "#eff6ff" },
           { label: "Kırmızı etiket", value: redCount, color: "#dc2626", bg: "#fef2f2" },
           { label: "Yüksek risk", value: riskyCount, color: "#d97706", bg: "#fffbeb" },
-          { label: "Kontrol kaydı yok", value: noLabelCount, color: "#71717a", bg: "#f4f4f5" },
+          { label: "Kontrol kaydı yok", value: noLabelCount, color: "#64748b", bg: "#f1f5f9" },
         ].map((k, i) => (
-          <div key={i} style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 18, padding: "20px 22px", position: "relative" }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#a1a1aa", marginBottom: 10 }}>{k.label}</div>
+          <div key={i} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 18, padding: "20px 22px", position: "relative" }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#94a3b8", marginBottom: 10 }}>{k.label}</div>
             <div style={{ fontSize: "2.4rem", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: k.color }}>{k.value}</div>
           </div>
         ))}
@@ -163,9 +163,9 @@ export default function AssetsPage() {
             display: "inline-flex", alignItems: "center", gap: 6,
             padding: "7px 14px", borderRadius: 999, fontSize: 12, fontWeight: 700,
             cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
-            background: labelFilter === f.key ? "#0a0a0f" : "#fff",
+            background: labelFilter === f.key ? "#0f172a" : "#fff",
             color:      labelFilter === f.key ? "#fff"    : "#374151",
-            border:     `1.5px solid ${labelFilter === f.key ? "#0a0a0f" : "#e4e4e7"}`,
+            border:     `1.5px solid ${labelFilter === f.key ? "#0f172a" : "#e2e8f0"}`,
             boxShadow:  labelFilter === f.key ? "0 2px 8px rgba(0,0,0,0.12)" : "none",
           }}>
             {f.label}
@@ -178,8 +178,8 @@ export default function AssetsPage() {
 
       {/* New asset form */}
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni asansör ekle</div>
+        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni asansör ekle</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
             {[
               { k: "customerId", l: "Müşteri",        type: "select" },
@@ -190,14 +190,14 @@ export default function AssetsPage() {
               { k: "riskScore",  l: "Risk skoru",     type: "number" },
             ].map(f => (
               <div key={f.k} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.12em" }}>{f.l}</label>
+                <label style={{ fontSize: 11, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.12em" }}>{f.l}</label>
                 {f.type === "select" ? (
-                  <select value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e4e4e7", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
+                  <select value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e2e8f0", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
                     <option value="">Müşteri seçin</option>
                     {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 ) : (
-                  <input type={f.type} placeholder={f.ph || ""} value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e4e4e7", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }} />
+                  <input type={f.type} placeholder={f.ph || ""} value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e2e8f0", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }} />
                 )}
               </div>
             ))}
@@ -206,7 +206,7 @@ export default function AssetsPage() {
             💡 Muayene etiketini (Yeşil/Mavi/Sarı/Kırmızı) Periyodik Kontrol menüsünden ekleyin.
           </div>
           <button onClick={submit} disabled={saving || !form.customerId || !form.name} style={{
-            marginTop: 14, width: "100%", padding: "12px 20px", background: saving || !form.customerId || !form.name ? "#a1a1aa" : "#2563eb",
+            marginTop: 14, width: "100%", padding: "12px 20px", background: saving || !form.customerId || !form.name ? "#94a3b8" : "#2563eb",
             color: "#fff", fontSize: 14, fontWeight: 700, border: "none", borderRadius: 10, cursor: saving ? "wait" : "pointer", fontFamily: "inherit",
           }}>
             {saving ? "Kaydediliyor..." : "Asansörü oluştur →"}
@@ -216,16 +216,16 @@ export default function AssetsPage() {
 
       {/* Search */}
       <input type="text" placeholder="Bina, müşteri veya asansör adı ara..." value={query} onChange={e => setQuery(e.target.value)} style={{
-        width: "100%", height: 44, padding: "0 16px", background: "#fff", border: "1.5px solid #e4e4e7",
+        width: "100%", height: 44, padding: "0 16px", background: "#fff", border: "1.5px solid #e2e8f0",
         borderRadius: 10, fontSize: 14, fontFamily: "inherit", outline: "none",
       }} />
 
       {/* Asset cards grid */}
       {filtered.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px dashed #e4e4e7", borderRadius: 16, padding: 40, textAlign: "center" }}>
+        <div style={{ background: "#fff", border: "1px dashed #e2e8f0", borderRadius: 16, padding: 40, textAlign: "center" }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>🏢</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#0a0a0f" }}>Asansör bulunamadı</div>
-          <div style={{ fontSize: 13, color: "#a1a1aa", marginTop: 6 }}>Arama kriterini değiştirin veya yeni asansör ekleyin.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>Asansör bulunamadı</div>
+          <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 6 }}>Arama kriterini değiştirin veya yeni asansör ekleyin.</div>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
@@ -237,14 +237,14 @@ export default function AssetsPage() {
             const labelCfg  = asset.inspectionLabel ? LABEL_CFG[asset.inspectionLabel] : null;
             return (
               <Link key={asset.id} href={`/app/assets/${asset.id}`} className="asset-card" style={{
-                background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16,
+                background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16,
                 padding: 18, textDecoration: "none", color: "inherit", transition: "all 0.18s",
                 display: "block",
               }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.name}</div>
-                    <div style={{ fontSize: 12, color: "#71717a", marginTop: 3 }}>{asset.buildingName || "Bina yok"} · {asset.customer.name}</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.name}</div>
+                    <div style={{ fontSize: 12, color: "#64748b", marginTop: 3 }}>{asset.buildingName || "Bina yok"} · {asset.customer.name}</div>
                   </div>
                   <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700, background: riskBg, color: riskColor, border: `1px solid ${riskBd}`, whiteSpace: "nowrap" }}>
                     Risk {risk}
@@ -253,7 +253,7 @@ export default function AssetsPage() {
                 <div style={{
                   display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
                   background: labelCfg ? labelCfg.bg : "#f9f9fb",
-                  border: `1px solid ${labelCfg ? labelCfg.border : "#e4e4e7"}`,
+                  border: `1px solid ${labelCfg ? labelCfg.border : "#e2e8f0"}`,
                   borderRadius: 12, padding: "8px 12px", marginBottom: 10,
                 }}>
                   <LabelBadge label={asset.inspectionLabel} />
@@ -261,12 +261,12 @@ export default function AssetsPage() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>Kimlik</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#0a0a0f", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.elevatorIdNo || "—"}</div>
+                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94a3b8" }}>Kimlik</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.elevatorIdNo || "—"}</div>
                   </div>
                   <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#a1a1aa" }}>Konum</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#0a0a0f", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.locationNote || "—"}</div>
+                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#94a3b8" }}>Konum</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#0f172a", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.locationNote || "—"}</div>
                   </div>
                 </div>
               </Link>

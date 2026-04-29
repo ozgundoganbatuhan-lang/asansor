@@ -291,7 +291,7 @@ function Spin() {
 
 const S: Record<string, React.CSSProperties> = {
   page:  { minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr", fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" },
-  right: { display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 32px", background: "#f0f2f5", overflowY: "auto" },
+  right: { display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 32px", background: "#f8fafc", overflowY: "auto" },
   card:  { width: "100%", maxWidth: 440, paddingTop: 8 },
   hd:    { marginBottom: 22 },
   h1:    { fontSize: 24, fontWeight: 900, color: "#0f1623", letterSpacing: "-0.04em", margin: "0 0 5px", lineHeight: 1.1 },
