@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse"><stop stop-color="#07152d"/><stop offset="1" stop-color="#1456f0"/></linearGradient>
+</defs>
+<rect width="1200" height="675" rx="38" fill="url(#g)"/>
+<circle cx="1040" cy="120" r="180" fill="#5CA9FF" fill-opacity="0.15"/>
+<circle cx="180" cy="560" r="220" fill="#FFFFFF" fill-opacity="0.08"/>
+<rect x="74" y="74" width="1052" height="527" rx="32" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<text x="114" y="170" fill="#AFC9FF" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4">SERVISIM BLOG</text>
+<text x="114" y="300" fill="white" font-family="Arial, sans-serif" font-size="62" font-weight="800">Bakım Takibi</text>
+<text x="114" y="372" fill="white" font-family="Arial, sans-serif" font-size="62" font-weight="800">Operasyon düzeni</text>
+<text x="114" y="458" fill="#DCE8FF" font-family="Arial, sans-serif" font-size="24">Asansör servis firmaları için modern operasyon, QR ve saha deneyimi.</text>
+<rect x="114" y="504" width="212" height="56" rx="18" fill="white"/>
+<text x="148" y="540" fill="#1456F0" font-family="Arial, sans-serif" font-size="24" font-weight="700">servisim.app</text>
+</svg>
