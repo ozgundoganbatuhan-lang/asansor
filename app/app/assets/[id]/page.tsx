@@ -231,7 +231,7 @@ export default function AssetDetailPage() {
           <h1 style={{fontSize:22,fontWeight:800,color:"#111827",letterSpacing:"-0.03em",margin:"0 0 4px"}}>{asset.name}</h1>
           <div style={{fontSize:13,color:"#6b7280"}}>{asset.buildingName && `${asset.buildingName} · `}{asset.customer.name}</div>
         </div>
-        <div style={{display:"flex",gap:8",flexShrink:0}}>
+        <div style={{display:"flex",gap:8,flexShrink:0}}>
           <Link href={`/app/work-orders?assetId=${id}`}
             style={{display:"inline-flex",alignItems:"center",gap:6,background:"#2563eb",color:"#fff",
               fontSize:12.5,fontWeight:700,padding:"8px 16px",borderRadius:8,textDecoration:"none"}}>
