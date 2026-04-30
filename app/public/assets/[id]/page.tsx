@@ -57,7 +57,7 @@ export default async function PublicAssetPage({
   const waLink     = `https://wa.me/${orgPhoneRaw}?text=Servis%20bilgisi%20almak%20istiyorum`;
 
   const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#3b82f6",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
-  const dotColor   = inspLabel ? (LABEL_COLOR[inspLabel]??"#a1a1aa") : "#a1a1aa";
+  const dotColor   = inspLabel ? (LABEL_COLOR[inspLabel]??"#94a3b8") : "#94a3b8";
 
   const documents  = (asset.contractAssets??[])
     .map((ca:any)=>ca.contract).filter((c:any)=>c?.fileUrl)
@@ -170,7 +170,7 @@ export default async function PublicAssetPage({
             <div style={{fontSize:15,fontWeight:800,letterSpacing:"-0.02em",marginBottom:14}}>Kontrol Geçmişi</div>
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
               {asset.inspections.map((ins:any)=>{
-                const dc=LABEL_COLOR[ins.label]??"#a1a1aa";
+                const dc=LABEL_COLOR[ins.label]??"#94a3b8";
                 return (
                   <div key={ins.id} style={{background:"rgba(255,255,255,0.07)",borderRadius:14,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
                     <div>
@@ -205,7 +205,7 @@ export default async function PublicAssetPage({
 
         {/* Contact */}
         <section style={{background:"rgba(255,255,255,0.97)",borderRadius:24,padding:"24px",color:"#111"}}>
-          <div style={{fontSize:13,fontWeight:800,color:"#0a0a0f",marginBottom:4}}>İletişim</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#0f172a",marginBottom:4}}>İletişim</div>
           <p style={{fontSize:13,color:"#6b7280",lineHeight:1.7,margin:"0 0 18px"}}>
             Arıza bildirimi, bakım randevusu veya bilgi almak için aşağıdaki kanalları kullanabilirsiniz.
           </p>
@@ -216,17 +216,17 @@ export default async function PublicAssetPage({
             <a href={waLink} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:10,background:"#25d366",color:"#fff",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:700,fontSize:14}}>
               💬 WhatsApp ile Yaz
             </a>
-            <a href={`mailto:${orgEmail}`} style={{display:"flex",alignItems:"center",gap:10,background:"#f3f4f6",color:"#374151",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:600,fontSize:14}}>
+            <a href={`mailto:${orgEmail}`} style={{display:"flex",alignItems:"center",gap:10,background:"#f3f4f6",color:"#334155",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:600,fontSize:14}}>
               ✉️ {orgEmail}
             </a>
           </div>
           {/* Service firm footer */}
           <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid #e5e7eb",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
             <div>
-              <div style={{fontSize:12.5,fontWeight:700,color:"#0a0a0f"}}>{orgName}</div>
+              <div style={{fontSize:12.5,fontWeight:700,color:"#0f172a"}}>{orgName}</div>
               {orgWebsite && <a href={orgWebsite.startsWith("http")?orgWebsite:`https://${orgWebsite}`} target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#2563eb",textDecoration:"none"}}>{orgWebsite.replace(/^https?:\/\//,"")}</a>}
             </div>
-            <div style={{fontSize:11,color:"#9ca3af"}}>Servisim ile yönetiliyor</div>
+            <div style={{fontSize:11,color:"#94a3b8"}}>Servisim ile yönetiliyor</div>
           </div>
         </section>
       </div>
@@ -237,7 +237,7 @@ export default async function PublicAssetPage({
 function Err({title,desc}:{title:string;desc:string}) {
   return (
     <main style={{minHeight:"100vh",background:"linear-gradient(180deg,#06142d,#0b2553)",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"system-ui,sans-serif"}}>
-      <div style={{maxWidth:400,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"32px",textAlign:"center",color:"#fff"}}>
+      <div style={{maxWidth:400,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:18,padding:"32px",textAlign:"center",color:"#fff"}}>
         <div style={{fontSize:48,marginBottom:16}}>⚠️</div>
         <h1 style={{fontSize:20,fontWeight:800,margin:"0 0 10px"}}>{title}</h1>
         <p style={{fontSize:14,color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:0}}>{desc}</p>

@@ -41,21 +41,21 @@ export default function NewCustomerPage() {
     router.push(`/app/customers/${data.item?.id ?? ""}`);
   }
 
-  const inp = "mt-1 w-full rounded-xl border border-[#e4e8ee] bg-white px-3.5 py-2.5 text-sm text-[#0f1623] placeholder-[#c0c8d4] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-colors";
+  const inp = "mt-1 w-full rounded-xl border border-[#e2e8f0] bg-white px-3.5 py-2.5 text-sm text-[#0f1623] placeholder-[#c0c8d4] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-colors";
   const lbl = "block text-[11px] font-bold uppercase tracking-[0.07em] text-[#94a3b8]";
 
   return (
     <div className="max-w-2xl space-y-5">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={()=>router.back()} className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">← Geri</button>
+        <button onClick={()=>router.back()} className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">← Geri</button>
         <div>
           <h1 className="text-2xl font-black tracking-tight text-[#0f1623]">Yeni Müşteri</h1>
           <p className="text-sm text-[#64748b]">Müşteri kartını oluştur, asansörlerini bağla.</p>
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="rounded-2xl border border-[#e4e8ee] bg-white p-6 shadow-[0_1px_4px_rgba(15,22,35,.06)] space-y-6">
+      <form onSubmit={onSubmit} className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-[0_1px_4px_rgba(15,22,35,.06)] space-y-6">
 
         {/* Firma Bilgileri */}
         <section>
@@ -122,7 +122,7 @@ export default function NewCustomerPage() {
             {loading ? "Kaydediliyor…" : "Müşteri Oluştur →"}
           </button>
           <button type="button" onClick={()=>router.back()}
-            className="rounded-xl border border-[#e4e8ee] bg-white px-4 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+            className="rounded-xl border border-[#e2e8f0] bg-white px-4 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
             İptal
           </button>
         </div>

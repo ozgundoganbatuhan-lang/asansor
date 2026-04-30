@@ -210,7 +210,7 @@ export default function OnboardingTour() {
               <p style={{margin:"0 0 12px",fontSize:12.5,color:"#4b5a6e",lineHeight:1.7}}>{cd.desc}</p>
               <div style={{display:"flex",gap:7,justifyContent:"space-between",alignItems:"center"}}>
                 <div style={{display:"flex",gap:4}}>
-                  {DASH.map((_,i)=><div key={i} style={{height:3,width:i===st.di?16:5,borderRadius:10,background:i<=st.di?cd.color:"#e4e8ee",transition:"all .3s"}}/>)}
+                  {DASH.map((_,i)=><div key={i} style={{height:3,width:i===st.di?16:5,borderRadius:10,background:i<=st.di?cd.color:"#e2e8f0",transition:"all .3s"}}/>)}
                 </div>
                 <div style={{display:"flex",gap:7}}>
                   {st.di>0 && <button onClick={back} className="otour-btn-ghost" style={{fontSize:11.5,padding:"6px 11px"}}>← Geri</button>}
@@ -295,7 +295,7 @@ export default function OnboardingTour() {
         <div className="otour-modal" onClick={e=>e.stopPropagation()}>
           <div style={{height:4,background:`linear-gradient(90deg,${cs.color},${cs.color}80)`}}/>
           <div style={{display:"flex",justifyContent:"center",gap:5,padding:"13px 24px 0"}}>
-            {SETUP.map((_,i)=><div key={i} style={{height:3,borderRadius:10,transition:"all .35s cubic-bezier(.16,1,.3,1)",background:i<=st.si?cs.color:"#e4e8ee",width:i===st.si?22:6}}/>)}
+            {SETUP.map((_,i)=><div key={i} style={{height:3,borderRadius:10,transition:"all .35s cubic-bezier(.16,1,.3,1)",background:i<=st.si?cs.color:"#e2e8f0",width:i===st.si?22:6}}/>)}
           </div>
           <div style={{padding:"18px 24px 0",display:"flex",alignItems:"flex-start",gap:14}}>
             <div style={{width:52,height:52,borderRadius:14,background:cs.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>
@@ -358,14 +358,14 @@ function BeaconStyle({ selector, color, label }: { selector:string; color:string
 /* ─── CSS ─────────────────────────────────────────────────────────────────── */
 const CSS = `
   .otour-overlay { position:fixed;inset:0;z-index:9998;background:rgba(5,10,20,.52);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:otFadeIn .2s ease;font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
-  .otour-modal { background:#fff;border-radius:20px;width:100%;max-width:460px;box-shadow:0 32px 80px rgba(5,10,20,.22),0 0 0 1px rgba(5,10,20,.05);overflow:hidden;animation:otSlideUp .35s cubic-bezier(.16,1,.3,1); }
-  .otour-guide-bar { position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9000;background:#fff;border:1px solid #e4e8ee;border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(5,10,20,.13),0 0 0 1px rgba(5,10,20,.04);min-width:360px;max-width:560px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;animation:otSlideUp .3s cubic-bezier(.16,1,.3,1); }
+  .otour-modal { background:#fff;border-radius:18px;width:100%;max-width:460px;box-shadow:0 32px 80px rgba(5,10,20,.22),0 0 0 1px rgba(5,10,20,.05);overflow:hidden;animation:otSlideUp .35s cubic-bezier(.16,1,.3,1); }
+  .otour-guide-bar { position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9000;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(5,10,20,.13),0 0 0 1px rgba(5,10,20,.04);min-width:360px;max-width:560px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;animation:otSlideUp .3s cubic-bezier(.16,1,.3,1); }
   .otour-fab { position:fixed;bottom:24px;right:24px;z-index:9000;width:58px;height:58px;border:none;background:transparent;cursor:pointer;padding:0; }
-  .otour-fab-ring { position:absolute;inset:0;border-radius:50%;background:conic-gradient(#2563eb var(--pct,0%),#e4e8ee 0%);transition:background .5s; }
+  .otour-fab-ring { position:absolute;inset:0;border-radius:50%;background:conic-gradient(#2563eb var(--pct,0%),#e2e8f0 0%);transition:background .5s; }
   .otour-fab-inner { position:absolute;inset:4px;border-radius:50%;background:#1d4ed8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 4px 16px rgba(37,99,235,.45);transition:transform .15s; }
   .otour-fab:hover .otour-fab-inner { transform:scale(1.07); }
   .otour-fab-pulse .otour-fab-inner { animation:fabPulse 2.5s ease-in-out infinite; }
-  .otour-btn-ghost { padding:8px 14px;border-radius:10px;border:1px solid #e4e8ee;background:#fff;font-size:12.5px;font-weight:600;color:#64748b;cursor:pointer;transition:all .1s;white-space:nowrap;font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
+  .otour-btn-ghost { padding:8px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-size:12.5px;font-weight:600;color:#64748b;cursor:pointer;transition:all .1s;white-space:nowrap;font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
   .otour-btn-ghost:hover { background:#f4f5f7; }
   .otour-btn-primary { padding:9px 20px;border-radius:10px;border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.18);transition:all .15s;font-family:'Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-0.01em; }
   .otour-btn-primary:hover { opacity:.9;transform:translateY(-1px); }

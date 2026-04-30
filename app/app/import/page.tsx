@@ -117,7 +117,7 @@ function Pill({ children, color }: { children: React.ReactNode; color: "blue"|"g
   const map = {
     blue:  "bg-blue-50 text-blue-700 border-blue-200",
     green: "bg-green-50 text-green-700 border-green-200",
-    gray:  "bg-[#f4f5f7] text-[#64748b] border-[#e4e8ee]",
+    gray:  "bg-[#f4f5f7] text-[#64748b] border-[#e2e8f0]",
     red:   "bg-red-50 text-red-600 border-red-200",
     amber: "bg-amber-50 text-amber-700 border-amber-200",
   };
@@ -195,7 +195,7 @@ export default function ImportPage() {
   if (stage === "upload") return (
     <div className="max-w-2xl space-y-5">
       <div className="flex items-center gap-3">
-        <Link href="/app/customers" className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+        <Link href="/app/customers" className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
           ← Geri
         </Link>
         <div>
@@ -205,7 +205,7 @@ export default function ImportPage() {
       </div>
 
       {/* Format card */}
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
         <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-4">Desteklenen Sütunlar</div>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
@@ -263,7 +263,7 @@ export default function ImportPage() {
   if (stage === "mapping") return (
     <div className="max-w-3xl space-y-5">
       <div className="flex items-center gap-3">
-        <button onClick={reset} className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+        <button onClick={reset} className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
           ← Yeni Dosya
         </button>
         <div>
@@ -272,7 +272,7 @@ export default function ImportPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white overflow-hidden shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white overflow-hidden shadow-[0_1px_4px_rgba(15,22,35,.06)]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0f2f5] bg-[#f8f9fb]">
           <div>
             <div className="text-sm font-bold text-[#0f1623]">Her sütunu bir alana eşleştirin</div>
@@ -304,7 +304,7 @@ export default function ImportPage() {
                   <select
                     value={currentKey}
                     onChange={e => setMapping(m => ({ ...m, [h]: e.target.value }))}
-                    className="rounded-lg border border-[#e4e8ee] bg-white px-3 py-1.5 text-xs font-medium text-[#0f1623] focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]">
+                    className="rounded-lg border border-[#e2e8f0] bg-white px-3 py-1.5 text-xs font-medium text-[#0f1623] focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]">
                     <option value={SKIP_KEY}>— Atla —</option>
                     <optgroup label="MÜŞTERİ">
                       {CUSTOMER_FIELDS.map(f => <option key={f.key} value={f.key}>{f.emoji} {f.label}</option>)}
@@ -328,7 +328,7 @@ export default function ImportPage() {
     return (
       <div className="max-w-5xl space-y-5">
         <div className="flex items-center gap-3 flex-wrap">
-          <button onClick={() => setStage("mapping")} className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+          <button onClick={() => setStage("mapping")} className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
             ← Eşleştirmeye Dön
           </button>
           <div className="flex-1">
@@ -355,7 +355,7 @@ export default function ImportPage() {
           {Object.entries(mapping).filter(([, v]) => v !== SKIP_KEY).map(([h, key]) => {
             const field = ALL_FIELDS.find(f => f.key === key);
             return (
-              <span key={h} className="inline-flex items-center gap-1.5 rounded-full border border-[#e4e8ee] bg-white px-3 py-1 text-xs font-medium text-[#0f1623]">
+              <span key={h} className="inline-flex items-center gap-1.5 rounded-full border border-[#e2e8f0] bg-white px-3 py-1 text-xs font-medium text-[#0f1623]">
                 <span>{field?.emoji}</span>
                 <span className="text-[#94a3b8]">{h}</span>
                 <span>→</span>
@@ -365,7 +365,7 @@ export default function ImportPage() {
           })}
         </div>
 
-        <div className="rounded-2xl border border-[#e4e8ee] bg-white overflow-hidden shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+        <div className="rounded-2xl border border-[#e2e8f0] bg-white overflow-hidden shadow-[0_1px_4px_rgba(15,22,35,.06)]">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
@@ -409,7 +409,7 @@ export default function ImportPage() {
   const r = result as any;
   return (
     <div className="max-w-xl">
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
         <div className="text-5xl">{r?.errors?.length === 0 ? "✅" : "⚠️"}</div>
         <div>
           <h2 className="text-xl font-black text-[#0f1623] mb-4">
@@ -447,7 +447,7 @@ export default function ImportPage() {
 
         <div className="flex justify-center gap-3">
           <button onClick={reset}
-            className="rounded-xl border border-[#e4e8ee] px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+            className="rounded-xl border border-[#e2e8f0] px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
             Yeni Yükleme
           </button>
           <button onClick={() => router.push("/app/customers")}

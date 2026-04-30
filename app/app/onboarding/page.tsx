@@ -92,13 +92,13 @@ export default function OnboardingPage() {
           <h1 className="text-2xl font-black tracking-tight text-[#0f1623]">Başlangıç Sihirbazı</h1>
           <p className="text-sm text-[#64748b] mt-0.5">Platformu 5 adımda keşfedin</p>
         </div>
-        <Link href="/app/dashboard" className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+        <Link href="/app/dashboard" className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
           Atla →
         </Link>
       </div>
 
       {/* Progress bar */}
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-[#94a3b8]">İlerleme</span>
           <span className="text-xs font-bold text-[#2563eb]">{Math.round(progress)}%</span>
@@ -113,7 +113,7 @@ export default function OnboardingPage() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all
                 ${i < stepIndex ? "bg-blue-600 border-blue-600 text-white" :
                   i === stepIndex ? "bg-white border-blue-600 text-blue-600 font-bold shadow-sm" :
-                  "bg-white border-[#e4e8ee] text-[#94a3b8]"}`}>
+                  "bg-white border-[#e2e8f0] text-[#94a3b8]"}`}>
                 {i < stepIndex ? "✓" : s.icon === "👋" ? "★" : i}
               </div>
             </button>
@@ -122,7 +122,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Current step card */}
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white shadow-[0_1px_4px_rgba(15,22,35,.06)] overflow-hidden">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white shadow-[0_1px_4px_rgba(15,22,35,.06)] overflow-hidden">
         {/* Step content */}
         <div className="p-8 text-center">
           <div className="text-6xl mb-5">{step.icon}</div>
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
 
           {step.href && (
             <button onClick={next}
-              className="w-full rounded-xl border border-[#e4e8ee] bg-white px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+              className="w-full rounded-xl border border-[#e2e8f0] bg-white px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
               Zaten yaptım, devam et →
             </button>
           )}
@@ -166,7 +166,7 @@ export default function OnboardingPage() {
 
       {/* Quick tips (only on done step) */}
       {isLast && (
-        <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+        <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
           <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-4">💡 İpuçları</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {TIPS.map(t => (
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
       )}
 
       {/* Step list overview */}
-      <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+      <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
         <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-3">Tüm Adımlar</div>
         <div className="space-y-2">
           {STEPS.filter(s => s.id !== "welcome").map((s, i) => {

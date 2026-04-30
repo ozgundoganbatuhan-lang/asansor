@@ -91,7 +91,7 @@ function RegisterForm() {
           <div style={{ marginBottom: 24 }}>
             <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
               {([1, 2] as const).map(n => (
-                <div key={n} style={{ flex: 1, height: 3, borderRadius: 10, background: n <= step ? "#2563eb" : "#e4e8ee", transition: "background .3s" }} />
+                <div key={n} style={{ flex: 1, height: 3, borderRadius: 10, background: n <= step ? "#2563eb" : "#e2e8f0", transition: "background .3s" }} />
               ))}
             </div>
             <span style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600 }}>
@@ -168,7 +168,7 @@ function RegisterForm() {
                 <button
                   type="button"
                   onClick={() => { setStep(1); setError(null); }}
-                  style={{ width: 46, height: 46, background: "#f4f5f7", border: "1px solid #e4e8ee", borderRadius: 10, fontSize: 16, fontWeight: 700, color: "#4b5a6e", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  style={{ width: 46, height: 46, background: "#f4f5f7", border: "1px solid #e2e8f0", borderRadius: 10, fontSize: 16, fontWeight: 700, color: "#4b5a6e", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                   ←
                 </button>
                 {/* Button is ALWAYS enabled — validation happens inside onSubmit */}
@@ -201,7 +201,7 @@ function ConsentSection({ kvkk, setKvkk, terms, setTerms, marketing, setMarketin
     { emoji: "🔐", label: "Gizlilik Politikası", href: "/privacy", summary: "Çerez kullanımı ve veri saklama sürelerini açıklar." },
   ];
   return (
-    <div style={{ borderRadius: 14, border: "1px solid #e4e8ee", overflow: "hidden" }}>
+    <div style={{ borderRadius: 14, border: "1px solid #e2e8f0", overflow: "hidden" }}>
       <div style={{ background: "#f8fafc", padding: "12px 14px 10px", borderBottom: "1px solid #f0f2f5" }}>
         <p style={{ margin: "0 0 10px", fontSize: 10.5, fontWeight: 800, color: "#94a3b8", textTransform: "uppercase" as const, letterSpacing: "0.08em" }}>
           Sözleşmeler — Lütfen okuyun
@@ -209,7 +209,7 @@ function ConsentSection({ kvkk, setKvkk, terms, setTerms, marketing, setMarketin
         <div style={{ display: "flex", flexDirection: "column" as const, gap: 7 }}>
           {DOCS.map(d => (
             <a key={d.href} href={d.href} target="_blank" rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 12px", borderRadius: 10, border: "1px solid #e4e8ee", background: "#fff", textDecoration: "none" }}>
+              style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 12px", borderRadius: 10, border: "1px solid #e2e8f0", background: "#fff", textDecoration: "none" }}>
               <span style={{ fontSize: 16, lineHeight: 1.4, flexShrink: 0 }}>{d.emoji}</span>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
@@ -250,7 +250,7 @@ function ChkItem({ checked, onChange, required, children }: { checked: boolean; 
       {/* NOTE: no required attribute — prevents browser blocking submit with invisible tooltip */}
       <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)}
         style={{ position: "absolute", opacity: 0, width: 0, height: 0, pointerEvents: "none" }} />
-      <span style={{ fontSize: 12, color: "#374151", lineHeight: 1.6 }}>
+      <span style={{ fontSize: 12, color: "#334155", lineHeight: 1.6 }}>
         {children}
         {required && <span style={{ color: "#ef4444", marginLeft: 3 }}>*</span>}
       </span>
@@ -291,7 +291,7 @@ function Spin() {
 
 const S: Record<string, React.CSSProperties> = {
   page:  { minHeight: "100vh", display: "grid", gridTemplateColumns: "1fr 1fr", fontFamily: "'Plus Jakarta Sans',system-ui,sans-serif" },
-  right: { display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 32px", background: "#f0f2f5", overflowY: "auto" },
+  right: { display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "40px 32px", background: "#f8fafc", overflowY: "auto" },
   card:  { width: "100%", maxWidth: 440, paddingTop: 8 },
   hd:    { marginBottom: 22 },
   h1:    { fontSize: 24, fontWeight: 900, color: "#0f1623", letterSpacing: "-0.04em", margin: "0 0 5px", lineHeight: 1.1 },

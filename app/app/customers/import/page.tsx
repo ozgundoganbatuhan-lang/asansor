@@ -109,7 +109,7 @@ export default function ImportCustomersPage() {
     <div className="max-w-3xl space-y-5">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/app/customers" className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+        <Link href="/app/customers" className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
           ← Müşteriler
         </Link>
         <div>
@@ -122,7 +122,7 @@ export default function ImportCustomersPage() {
       {stage === "upload" && (
         <div className="space-y-4">
           {/* Template download */}
-          <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+          <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-sm font-bold text-[#0f1623] mb-1">📋 Şablon İndir</div>
@@ -132,14 +132,14 @@ export default function ImportCustomersPage() {
                 </p>
               </div>
               <button onClick={downloadTemplate}
-                className="shrink-0 rounded-xl border border-[#e4e8ee] bg-white px-4 py-2 text-sm font-semibold text-[#2563eb] hover:bg-[#eff6ff] hover:border-blue-200 transition-colors">
+                className="shrink-0 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2 text-sm font-semibold text-[#2563eb] hover:bg-[#eff6ff] hover:border-blue-200 transition-colors">
                 ⬇ Şablon İndir
               </button>
             </div>
           </div>
 
           {/* Column guide */}
-          <div className="rounded-2xl border border-[#e4e8ee] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
+          <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
             <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-3">Sütun Kılavuzu</div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -189,7 +189,7 @@ export default function ImportCustomersPage() {
       {/* STAGE: Preview */}
       {stage === "preview" && (
         <div className="space-y-4">
-          <div className="rounded-2xl border border-[#e4e8ee] bg-white shadow-[0_1px_4px_rgba(15,22,35,.06)] overflow-hidden">
+          <div className="rounded-2xl border border-[#e2e8f0] bg-white shadow-[0_1px_4px_rgba(15,22,35,.06)] overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0f2f5]">
               <div>
                 <div className="text-sm font-bold text-[#0f1623]">Önizleme</div>
@@ -197,7 +197,7 @@ export default function ImportCustomersPage() {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => { setStage("upload"); setRows([]); setFileName(""); }}
-                  className="rounded-lg border border-[#e4e8ee] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+                  className="rounded-lg border border-[#e2e8f0] px-3 py-1.5 text-xs font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
                   ← Geri
                 </button>
                 <button onClick={doImport} disabled={loading}
@@ -241,7 +241,7 @@ export default function ImportCustomersPage() {
 
       {/* STAGE: Done */}
       {stage === "done" && result && (
-        <div className="rounded-2xl border border-[#e4e8ee] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
+        <div className="rounded-2xl border border-[#e2e8f0] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
           <div className="text-5xl">{result.errors.length === 0 ? "✅" : "⚠️"}</div>
           <div>
             <h2 className="text-xl font-black text-[#0f1623] mb-2">
@@ -270,7 +270,7 @@ export default function ImportCustomersPage() {
 
           <div className="flex justify-center gap-3">
             <button onClick={() => { setStage("upload"); setRows([]); setFileName(""); setResult(null); }}
-              className="rounded-xl border border-[#e4e8ee] px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
+              className="rounded-xl border border-[#e2e8f0] px-5 py-2.5 text-sm font-semibold text-[#64748b] hover:bg-[#f4f5f7] transition-colors">
               Yeni Yükleme
             </button>
             <button onClick={() => router.push("/app/customers")}

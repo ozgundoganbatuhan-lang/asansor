@@ -65,21 +65,21 @@ export default function ReportsPage() {
 
   const TABS=[{k:"overview",l:"Genel Bakış"},{k:"workorders",l:"İş Emirleri"},{k:"finance",l:"Finansal"}] as const;
 
-  if(loading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,gap:12,color:"#71717a",fontSize:14}}><div style={{width:24,height:24,border:"3px solid #e4e4e7",borderTopColor:"#7c3aed",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>Yükleniyor...</div>;
+  if(loading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,gap:12,color:"#64748b",fontSize:14}}><div style={{width:24,height:24,border:"3px solid #e2e8f0",borderTopColor:"#7c3aed",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>Yükleniyor...</div>;
   if(err) return <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:12,padding:"16px 20px",color:"#b91c1c"}}>⚠️ {err}</div>;
 
   return (
     <div style={{maxWidth:1000,margin:"0 auto"}}>
       <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",gap:16,marginBottom:24,flexWrap:"wrap"}}>
         <div>
-          <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.16em",textTransform:"uppercase",color:"#a1a1aa",marginBottom:6}}>Analitik & Veri</div>
-          <h1 style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",color:"#0a0a0f",margin:0}}>Raporlar</h1>
+          <div style={{fontSize:11,fontWeight:700,letterSpacing:"0.16em",textTransform:"uppercase",color:"#94a3b8",marginBottom:6}}>Analitik & Veri</div>
+          <h1 style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",color:"#0f172a",margin:0}}>Raporlar</h1>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <button onClick={()=>dlCSV("is-emirleri.csv",wos.map(w=>({Kod:w.status,Tip:TYPE_L[w.type]??w.type,Durum:w.status,Tarih:w.createdAt.slice(0,10)})))} style={{background:"#f4f4f6",border:"none",borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:"#52525b"}}>
+          <button onClick={()=>dlCSV("is-emirleri.csv",wos.map(w=>({Kod:w.status,Tip:TYPE_L[w.type]??w.type,Durum:w.status,Tarih:w.createdAt.slice(0,10)})))} style={{background:"#f1f5f9",border:"none",borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",color:"#475569"}}>
             ⬇ İş Emirleri CSV
           </button>
-          <button onClick={()=>dlCSV("faturalar.csv",invs.map(i=>({Durum:i.status,Toplam:i.total,Tarih:i.issuedAt.slice(0,10)})))} style={{background:"#0a0a0f",color:"#fff",border:"none",borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          <button onClick={()=>dlCSV("faturalar.csv",invs.map(i=>({Durum:i.status,Toplam:i.total,Tarih:i.issuedAt.slice(0,10)})))} style={{background:"#0f172a",color:"#fff",border:"none",borderRadius:10,padding:"10px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             ⬇ Faturalar CSV
           </button>
         </div>
@@ -88,26 +88,26 @@ export default function ReportsPage() {
       {/* KPI row */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12,marginBottom:24}}>
         {[
-          {l:"Toplam İş",v:kpi.total,c:"#0a0a0f",bg:"#f4f4f6",icon:"📋"},
+          {l:"Toplam İş",v:kpi.total,c:"#0f172a",bg:"#f1f5f9",icon:"📋"},
           {l:"Tamamlanan",v:kpi.done,c:"#059669",bg:"#f0fdf4",icon:"✅"},
           {l:"Tamamlanma %",v:`%${kpi.rate}`,c:"#7c3aed",bg:"#f5f3ff",icon:"📊"},
           {l:"Acil",v:kpi.urgent,c:"#b91c1c",bg:"#fef2f2",icon:"🚨"},
-          {l:"Faturalanan",v:money(kpi.totalInv),c:"#0a0a0f",bg:"#f9f9fb",icon:"🧾"},
+          {l:"Faturalanan",v:money(kpi.totalInv),c:"#0f172a",bg:"#f9f9fb",icon:"🧾"},
           {l:"Tahsil",v:money(kpi.paidTotal),c:"#059669",bg:"#f0fdf4",icon:"💰"},
           {l:"Bekleyen",v:money(kpi.openTotal),c:"#d97706",bg:"#fffbeb",icon:"⏳"},
         ].map(k=>(
           <div key={k.l} style={{background:k.bg,borderRadius:14,padding:"16px 18px"}}>
             <div style={{fontSize:18,marginBottom:6}}>{k.icon}</div>
             <div style={{fontSize:typeof k.v==="number"&&k.v<1000?22:15,fontWeight:900,color:k.c,letterSpacing:"-0.03em",lineHeight:1.1}}>{k.v}</div>
-            <div style={{fontSize:11,color:"#71717a",marginTop:4,fontWeight:600}}>{k.l}</div>
+            <div style={{fontSize:11,color:"#64748b",marginTop:4,fontWeight:600}}>{k.l}</div>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",gap:4,background:"#f4f4f6",borderRadius:14,padding:4,marginBottom:20}}>
+      <div style={{display:"flex",gap:4,background:"#f1f5f9",borderRadius:14,padding:4,marginBottom:20}}>
         {TABS.map(t=>(
-          <button key={t.k} onClick={()=>setTab(t.k)} style={{flex:1,padding:"9px 16px",borderRadius:10,border:"none",cursor:"pointer",fontSize:13,fontWeight:700,transition:"all 0.15s",background:tab===t.k?"#fff":"transparent",color:tab===t.k?"#0a0a0f":"#71717a",boxShadow:tab===t.k?"0 1px 4px rgba(0,0,0,0.08)":"none",fontFamily:"inherit"}}>
+          <button key={t.k} onClick={()=>setTab(t.k)} style={{flex:1,padding:"9px 16px",borderRadius:10,border:"none",cursor:"pointer",fontSize:13,fontWeight:700,transition:"all 0.15s",background:tab===t.k?"#fff":"transparent",color:tab===t.k?"#0f172a":"#64748b",boxShadow:tab===t.k?"0 1px 4px rgba(0,0,0,0.08)":"none",fontFamily:"inherit"}}>
             {t.l}
           </button>
         ))}
@@ -117,35 +117,35 @@ export default function ReportsPage() {
       {tab==="overview" && (
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
           {/* Revenue trend */}
-          <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,padding:"24px"}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#0a0a0f",marginBottom:4}}>Gelir Trendi</div>
-            <div style={{fontSize:12,color:"#71717a",marginBottom:20}}>Son 6 ay • tahsil edilen</div>
+          <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"24px"}}>
+            <div style={{fontSize:14,fontWeight:800,color:"#0f172a",marginBottom:4}}>Gelir Trendi</div>
+            <div style={{fontSize:12,color:"#64748b",marginBottom:20}}>Son 6 ay • tahsil edilen</div>
             <div style={{display:"flex",alignItems:"flex-end",gap:8,height:120}}>
               {trend.map(t=>(
                 <div key={t.label} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:6}}>
-                  <div style={{fontSize:10,color:"#a1a1aa",fontWeight:600,textAlign:"center"}}>{t.val>0?money(t.val):""}</div>
-                  <div style={{width:"100%",borderRadius:"6px 6px 0 0",background:t.val>0?"#2563eb":"#e4e4e7",height:`${Math.max((t.val/trendMax)*100,4)}%`,transition:"height 0.4s"}}/>
-                  <div style={{fontSize:10,color:"#71717a",fontWeight:600}}>{t.label}</div>
+                  <div style={{fontSize:10,color:"#94a3b8",fontWeight:600,textAlign:"center"}}>{t.val>0?money(t.val):""}</div>
+                  <div style={{width:"100%",borderRadius:"6px 6px 0 0",background:t.val>0?"#2563eb":"#e2e8f0",height:`${Math.max((t.val/trendMax)*100,4)}%`,transition:"height 0.4s"}}/>
+                  <div style={{fontSize:10,color:"#64748b",fontWeight:600}}>{t.label}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Work order types */}
-          <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,padding:"24px"}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#0a0a0f",marginBottom:4}}>İş Emri Dağılımı</div>
-            <div style={{fontSize:12,color:"#71717a",marginBottom:20}}>Türe göre</div>
-            {woByType.length===0 ? <div style={{color:"#a1a1aa",fontSize:13}}>Veri yok.</div> : (
+          <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"24px"}}>
+            <div style={{fontSize:14,fontWeight:800,color:"#0f172a",marginBottom:4}}>İş Emri Dağılımı</div>
+            <div style={{fontSize:12,color:"#64748b",marginBottom:20}}>Türe göre</div>
+            {woByType.length===0 ? <div style={{color:"#94a3b8",fontSize:13}}>Veri yok.</div> : (
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {woByType.map(([type,count])=>{
                   const pct=Math.round(count/wos.length*100);
                   return (
                     <div key={type}>
                       <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                        <span style={{fontSize:12.5,fontWeight:600,color:"#52525b"}}>{TYPE_L[type]??type}</span>
-                        <span style={{fontSize:12.5,fontWeight:800,color:"#0a0a0f"}}>{count} <span style={{color:"#a1a1aa",fontWeight:500}}>(%{pct})</span></span>
+                        <span style={{fontSize:12.5,fontWeight:600,color:"#475569"}}>{TYPE_L[type]??type}</span>
+                        <span style={{fontSize:12.5,fontWeight:800,color:"#0f172a"}}>{count} <span style={{color:"#94a3b8",fontWeight:500}}>(%{pct})</span></span>
                       </div>
-                      <div style={{height:6,background:"#f4f4f6",borderRadius:999,overflow:"hidden"}}>
+                      <div style={{height:6,background:"#f1f5f9",borderRadius:999,overflow:"hidden"}}>
                         <div style={{height:"100%",width:`${pct}%`,background:"linear-gradient(90deg,#2563eb,#7c3aed)",borderRadius:999,transition:"width 0.4s"}}/>
                       </div>
                     </div>
@@ -159,19 +159,19 @@ export default function ReportsPage() {
 
       {/* Work orders table */}
       {tab==="workorders" && (
-        <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,overflow:"hidden"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1.5fr 1fr 1fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e4e4e7"}}>
-            {["Durum","Tür","Tarih",""].map(h=><div key={h} style={{fontSize:10.5,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#a1a1aa"}}>{h}</div>)}
+        <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,overflow:"hidden"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1.5fr 1fr 1fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e2e8f0"}}>
+            {["Durum","Tür","Tarih",""].map(h=><div key={h} style={{fontSize:10.5,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#94a3b8"}}>{h}</div>)}
           </div>
           {wos.slice(0,50).map((w,i)=>{
-            const S:Record<string,{bg:string;c:string}>={DONE:{bg:"#f0fdf4",c:"#15803d"},URGENT:{bg:"#fef2f2",c:"#b91c1c"},IN_PROGRESS:{bg:"#fffbeb",c:"#b45309"},PENDING:{bg:"#eff6ff",c:"#1d4ed8"},CANCELED:{bg:"#f4f4f5",c:"#52525b"}};
-            const s=S[w.status]??{bg:"#f4f4f5",c:"#52525b"};
+            const S:Record<string,{bg:string;c:string}>={DONE:{bg:"#f0fdf4",c:"#15803d"},URGENT:{bg:"#fef2f2",c:"#b91c1c"},IN_PROGRESS:{bg:"#fffbeb",c:"#b45309"},PENDING:{bg:"#eff6ff",c:"#1d4ed8"},CANCELED:{bg:"#f1f5f9",c:"#475569"}};
+            const s=S[w.status]??{bg:"#f1f5f9",c:"#475569"};
             return (
-              <div key={w.id} style={{display:"grid",gridTemplateColumns:"1fr 1.5fr 1fr 1fr",padding:"13px 20px",borderBottom:i<Math.min(wos.length,50)-1?"1px solid #f4f4f5":"none",alignItems:"center"}}>
+              <div key={w.id} style={{display:"grid",gridTemplateColumns:"1fr 1.5fr 1fr 1fr",padding:"13px 20px",borderBottom:i<Math.min(wos.length,50)-1?"1px solid #f1f5f9":"none",alignItems:"center"}}>
                 <span style={{background:s.bg,color:s.c,borderRadius:999,padding:"3px 10px",fontSize:12,fontWeight:700,display:"inline-block"}}>{w.status==="DONE"?"Tamam":w.status==="URGENT"?"Acil":w.status==="IN_PROGRESS"?"Devam":w.status==="PENDING"?"Planlı":"İptal"}</span>
-                <span style={{fontSize:13,color:"#52525b"}}>{TYPE_L[w.type]??w.type}</span>
-                <span style={{fontSize:12,color:"#71717a"}}>{new Date(w.createdAt).toLocaleDateString("tr-TR")}</span>
-                <span style={{fontSize:12,color:"#71717a"}}>{w.laborCost||w.serviceFee?money((w.laborCost??0)+(w.serviceFee??0)):"—"}</span>
+                <span style={{fontSize:13,color:"#475569"}}>{TYPE_L[w.type]??w.type}</span>
+                <span style={{fontSize:12,color:"#64748b"}}>{new Date(w.createdAt).toLocaleDateString("tr-TR")}</span>
+                <span style={{fontSize:12,color:"#64748b"}}>{w.laborCost||w.serviceFee?money((w.laborCost??0)+(w.serviceFee??0)):"—"}</span>
               </div>
             );
           })}
@@ -180,18 +180,18 @@ export default function ReportsPage() {
 
       {/* Finance */}
       {tab==="finance" && (
-        <div style={{background:"#fff",border:"1px solid #e4e4e7",borderRadius:20,overflow:"hidden"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e4e4e7"}}>
-            {["Durum","Tutar","Fatura Tarihi","Ödeme"].map(h=><div key={h} style={{fontSize:10.5,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#a1a1aa"}}>{h}</div>)}
+        <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,overflow:"hidden"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e2e8f0"}}>
+            {["Durum","Tutar","Fatura Tarihi","Ödeme"].map(h=><div key={h} style={{fontSize:10.5,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#94a3b8"}}>{h}</div>)}
           </div>
           {invs.slice(0,50).map((inv,i)=>{
             const paid=inv.status==="PAID";
             return (
-              <div key={inv.id} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",padding:"13px 20px",borderBottom:i<Math.min(invs.length,50)-1?"1px solid #f4f4f5":"none",alignItems:"center"}}>
+              <div key={inv.id} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",padding:"13px 20px",borderBottom:i<Math.min(invs.length,50)-1?"1px solid #f1f5f9":"none",alignItems:"center"}}>
                 <span style={{background:paid?"#f0fdf4":"#fffbeb",color:paid?"#15803d":"#b45309",borderRadius:999,padding:"3px 10px",fontSize:12,fontWeight:700,display:"inline-block"}}>{paid?"Ödendi":"Bekliyor"}</span>
-                <span style={{fontSize:13,fontWeight:700,color:"#0a0a0f"}}>{money(inv.total)}</span>
-                <span style={{fontSize:12,color:"#71717a"}}>{new Date(inv.issuedAt).toLocaleDateString("tr-TR")}</span>
-                <span style={{fontSize:12,color:"#71717a"}}>{inv.paidAt?new Date(inv.paidAt).toLocaleDateString("tr-TR"):"—"}</span>
+                <span style={{fontSize:13,fontWeight:700,color:"#0f172a"}}>{money(inv.total)}</span>
+                <span style={{fontSize:12,color:"#64748b"}}>{new Date(inv.issuedAt).toLocaleDateString("tr-TR")}</span>
+                <span style={{fontSize:12,color:"#64748b"}}>{inv.paidAt?new Date(inv.paidAt).toLocaleDateString("tr-TR"):"—"}</span>
               </div>
             );
           })}

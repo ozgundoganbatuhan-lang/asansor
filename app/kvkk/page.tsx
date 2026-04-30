@@ -8,7 +8,7 @@ export const metadata = {
 const S = {
   page:  { minHeight:"100vh", background:"#f8fafc", padding:"48px 24px", fontFamily:"'Plus Jakarta Sans',system-ui,sans-serif" } as React.CSSProperties,
   wrap:  { maxWidth:840, margin:"0 auto" } as React.CSSProperties,
-  card:  { background:"#fff", border:"1px solid #e4e8ee", borderRadius:20, padding:"48px 52px" } as React.CSSProperties,
+  card:  { background:"#fff", border:"1px solid #e4e8ee", borderRadius:18, padding:"48px 52px" } as React.CSSProperties,
   h1:    { fontSize:28, fontWeight:900, color:"#0f1623", letterSpacing:"-0.04em", margin:"0 0 6px" } as React.CSSProperties,
   meta:  { fontSize:13, color:"#94a3b8", margin:"0 0 40px" } as React.CSSProperties,
   h2:    { fontSize:15.5, fontWeight:800, color:"#0f1623", margin:"32px 0 10px" } as React.CSSProperties,

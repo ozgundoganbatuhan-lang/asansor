@@ -24,7 +24,7 @@ function CheckEmail() {
     <div className="min-h-screen bg-[#f0f2f5] font-sans flex flex-col items-center justify-center p-6">
       <div className="mb-8"><AuthBrand /></div>
 
-      <div className="w-full max-w-[420px] bg-white border border-[#e4e8ee] rounded-2xl p-10 shadow-[0_2px_20px_rgba(15,22,35,.06)] text-center">
+      <div className="w-full max-w-[420px] bg-white border border-[#e2e8f0] rounded-2xl p-10 shadow-[0_2px_20px_rgba(15,22,35,.06)] text-center">
         <div className="text-5xl mb-5">{expired ? "⏱" : "📧"}</div>
 
         <h1 className="text-xl font-black text-[#0f1623] tracking-tight mb-2">

@@ -23,7 +23,7 @@ const STATUS_CFG: Record<string, { label: string; bg: string; color: string; nex
   IN_PROGRESS: { label: "🚗 Yolda",    bg: "#fffbeb", color: "#b45309", next: "DONE",        nextLabel: "Tamamla" },
   URGENT:      { label: "🚨 Acil",     bg: "#fef2f2", color: "#b91c1c", next: "IN_PROGRESS", nextLabel: "Başlat" },
   DONE:        { label: "✅ Tamam",    bg: "#f0fdf4", color: "#15803d" },
-  CANCELED:    { label: "❌ İptal",    bg: "#f4f4f5", color: "#52525b" },
+  CANCELED:    { label: "❌ İptal",    bg: "#f1f5f9", color: "#475569" },
 };
 const PRIORITY_COLORS: Record<string, string> = { Acil: "#dc2626", Yüksek: "#d97706", Normal: "#059669" };
 
@@ -35,7 +35,7 @@ function fmtDate(d?: string | null) {
 
 // ─── Compact Work Order Card ──────────────────────────────────────────────────
 function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, status: string) => void }) {
-  const cfg = STATUS_CFG[wo.status] ?? { label: wo.status, bg: "#f4f4f5", color: "#71717a" };
+  const cfg = STATUS_CFG[wo.status] ?? { label: wo.status, bg: "#f1f5f9", color: "#64748b" };
   const [updating, setUpdating] = useState(false);
 
   async function advance() {
@@ -53,7 +53,7 @@ function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, s
 
   return (
     <div style={{
-      background: "#fff", border: "1px solid #e4e4e7", borderRadius: 18,
+      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 18,
       overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
       borderLeft: `4px solid ${cfg.color}`,
       transition: "transform 0.15s, box-shadow 0.15s",
@@ -62,16 +62,16 @@ function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, s
       <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-            <span style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#a1a1aa" }}>{wo.code}</span>
+            <span style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#94a3b8" }}>{wo.code}</span>
             <span style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}20`, borderRadius: 999, padding: "2px 10px", fontSize: 11.5, fontWeight: 700 }}>{cfg.label}</span>
             {wo.priority && wo.priority !== "Normal" && (
-              <span style={{ background: `${PRIORITY_COLORS[wo.priority] ?? "#71717a"}15`, color: PRIORITY_COLORS[wo.priority] ?? "#71717a", borderRadius: 999, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>
+              <span style={{ background: `${PRIORITY_COLORS[wo.priority] ?? "#64748b"}15`, color: PRIORITY_COLORS[wo.priority] ?? "#64748b", borderRadius: 999, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>
                 {wo.priority}
               </span>
             )}
           </div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", letterSpacing: "-0.02em", marginBottom: 4 }}>{wo.customer.name}</div>
-          <div style={{ fontSize: 13, color: "#71717a" }}>{TYPE_LABEL[wo.type] ?? wo.type}</div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em", marginBottom: 4 }}>{wo.customer.name}</div>
+          <div style={{ fontSize: 13, color: "#64748b" }}>{TYPE_LABEL[wo.type] ?? wo.type}</div>
         </div>
         {cfg.next && (
           <button onClick={advance} disabled={updating} style={{
@@ -98,9 +98,9 @@ function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, s
           </div>
         )}
         {wo.asset && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#52525b" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#475569" }}>
             <span style={{ fontSize: 15 }}>🛗</span>
-            <span><b style={{ color: "#0a0a0f" }}>{wo.asset.name}</b>{wo.asset.floor ? ` · ${wo.asset.floor}` : ""}{wo.asset.serialNumber ? ` · S/N: ${wo.asset.serialNumber}` : ""}</span>
+            <span><b style={{ color: "#0f172a" }}>{wo.asset.name}</b>{wo.asset.floor ? ` · ${wo.asset.floor}` : ""}{wo.asset.serialNumber ? ` · S/N: ${wo.asset.serialNumber}` : ""}</span>
           </div>
         )}
         {wo.note && (
@@ -110,8 +110,8 @@ function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, s
           </div>
         )}
         {wo.scheduledAt && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#71717a" }}>
-            <span>🕐</span> <span>Planlanan: <b style={{ color: "#0a0a0f" }}>{fmtDate(wo.scheduledAt)}</b></span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#64748b" }}>
+            <span>🕐</span> <span>Planlanan: <b style={{ color: "#0f172a" }}>{fmtDate(wo.scheduledAt)}</b></span>
           </div>
         )}
       </div>
@@ -174,7 +174,7 @@ export default function TechnicianPortalPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#f1f2f5", fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* ── HEADER ── */}
-      <header style={{ background: "#0a0a0f", color: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
+      <header style={{ background: "#0f172a", color: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{
@@ -200,7 +200,7 @@ export default function TechnicianPortalPage() {
 
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 20px 100px" }}>
         {/* ── GREETING ── */}
-        <div style={{ background: "linear-gradient(135deg,#0a0a0f,#1a1d2e)", borderRadius: 20, padding: "24px", color: "#fff", marginBottom: 20, position: "relative", overflow: "hidden" }}>
+        <div style={{ background: "linear-gradient(135deg,#0f172a,#1a1d2e)", borderRadius: 20, padding: "24px", color: "#fff", marginBottom: 20, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, background: "radial-gradient(circle,rgba(124,58,237,0.25),transparent 70%)", pointerEvents: "none" }} />
           <div style={{ position: "relative" }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>{today}</div>
@@ -235,10 +235,10 @@ export default function TechnicianPortalPage() {
             { icon: "📞", label: "Müşteri Ara", desc: "İş emrindeki numarayı çevir", href: "#" },
             { icon: "🗺", label: "Haritada Göster", desc: "Günlük rotanı görüntüle", href: "#" },
           ].map(a => (
-            <Link key={a.label} href={a.href} style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 16, padding: "16px 18px", textDecoration: "none", display: "block", transition: "all 0.15s" }}>
+            <Link key={a.label} href={a.href} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "16px 18px", textDecoration: "none", display: "block", transition: "all 0.15s" }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>{a.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#0a0a0f", marginBottom: 2 }}>{a.label}</div>
-              <div style={{ fontSize: 12, color: "#71717a" }}>{a.desc}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 2 }}>{a.label}</div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>{a.desc}</div>
             </Link>
           ))}
         </div>
@@ -253,7 +253,7 @@ export default function TechnicianPortalPage() {
             <button key={f.key} onClick={() => setFilter(f.key)} style={{
               flex: 1, padding: "9px 8px", borderRadius: 9, border: "none",
               background: filter === f.key ? "#fff" : "transparent",
-              color: filter === f.key ? "#0a0a0f" : "#71717a",
+              color: filter === f.key ? "#0f172a" : "#64748b",
               fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
               boxShadow: filter === f.key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
               fontFamily: "inherit",
@@ -263,8 +263,8 @@ export default function TechnicianPortalPage() {
 
         {/* ── CONTENT ── */}
         {loading ? (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200, gap: 12, color: "#71717a", fontSize: 14 }}>
-            <div style={{ width: 24, height: 24, border: "3px solid #e4e4e7", borderTopColor: "#7c3aed", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200, gap: 12, color: "#64748b", fontSize: 14 }}>
+            <div style={{ width: 24, height: 24, border: "3px solid #e2e8f0", borderTopColor: "#7c3aed", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
             Yükleniyor...
           </div>
         ) : err ? (
@@ -272,12 +272,12 @@ export default function TechnicianPortalPage() {
             ⚠️ {err}
           </div>
         ) : filtered.length === 0 ? (
-          <div style={{ background: "#fff", border: "1px solid #e4e4e7", borderRadius: 20, padding: "40px 24px", textAlign: "center" }}>
+          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 20, padding: "40px 24px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>{filter === "done" ? "🎉" : "☀️"}</div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#0a0a0f", marginBottom: 6 }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>
               {filter === "active" ? "Aktif iş emrin yok!" : filter === "done" ? "Henüz tamamlanan yok" : "Hiç iş emri yok"}
             </div>
-            <div style={{ fontSize: 13, color: "#71717a" }}>
+            <div style={{ fontSize: 13, color: "#64748b" }}>
               {filter === "active" ? "Bugün planlanmış işlerin burada görünecek." : "Tamamlanan işler burada listelenir."}
             </div>
           </div>
@@ -291,7 +291,7 @@ export default function TechnicianPortalPage() {
       </div>
 
       {/* ── BOTTOM NAV ── */}
-      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #e4e4e7", display: "flex", alignItems: "center", justifyContent: "space-around", padding: "0 16px", height: 68, zIndex: 50, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
+      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-around", padding: "0 16px", height: 68, zIndex: 50, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
         {[
           { icon: "📋", label: "İş Emirleri", active: true, action: () => setFilter("active") },
           { icon: "✅", label: "Tamamlananlar", active: false, action: () => setFilter("done") },
@@ -301,7 +301,7 @@ export default function TechnicianPortalPage() {
           <button key={n.label} onClick={n.action} style={{
             display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
             background: "none", border: "none", cursor: "pointer", padding: "8px 12px",
-            color: n.active ? "#2563eb" : "#a1a1aa", fontFamily: "inherit",
+            color: n.active ? "#2563eb" : "#94a3b8", fontFamily: "inherit",
           }}>
             <span style={{ fontSize: 22 }}>{n.icon}</span>
             <span style={{ fontSize: 10, fontWeight: 700 }}>{n.label}</span>

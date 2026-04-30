@@ -2,40 +2,43 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AuthLeft, AUTH_CSS } from "@/components/AuthLayout";
+import { AuthLeft, AuthBrand, AUTH_CSS } from "@/components/AuthLayout";
+
+function EyeIcon({ show }: { show: boolean }) {
+  return show
+    ? <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" /></svg>
+    : <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>;
+}
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email,    setEmail]    = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [error,    setError]    = useState<string | null>(null);
-  const [loading,  setLoading]  = useState(false);
+  const [error, setError]       = useState<string | null>(null);
+  const [loading, setLoading]   = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    const c = () => setIsMobile(window.innerWidth < 1024);
+    c();
+    window.addEventListener("resize", c);
+    return () => window.removeEventListener("resize", c);
   }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const res  = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json().catch(() => ({}));
       setLoading(false);
       if (!res.ok) { setError(data?.error ?? "Giriş başarısız"); return; }
       if (data.emailVerified === false) { router.push("/auth/check-email"); return; }
-      router.push("/app/dashboard");
-      router.refresh();
+      router.push("/app/dashboard"); router.refresh();
     } catch {
       setLoading(false);
       setError("Bağlantı hatası. Lütfen tekrar deneyin.");
@@ -43,87 +46,69 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "grid",
+    <div style={{ minHeight: "100vh", display: "grid",
       gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-      fontFamily: "'Inter',system-ui,sans-serif",
-    }}>
+      fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       <style>{AUTH_CSS}</style>
-
       {!isMobile && <AuthLeft variant="login" />}
 
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "40px 32px", background: "#f9fafb", overflowY: "auto",
-      }}>
-        <div className="auth-card" style={{
-          width: "100%", maxWidth: 400,
-          background: "#fff", borderRadius: 16,
-          border: "1px solid #e5e7eb",
-          boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-          padding: 32,
-        }}>
-          <div style={{ marginBottom: 26 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: "#111827", letterSpacing: "-0.03em", margin: "0 0 5px", lineHeight: 1.1 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "40px 32px", background: "#f8fafc", overflowY: "auto" }}>
+        <div className="auth-card" style={{ width: "100%", maxWidth: 400 }}>
+
+          {isMobile && (
+            <div style={{ marginBottom: 32, display: "flex", justifyContent: "center" }}>
+              <AuthBrand />
+            </div>
+          )}
+
+          <div style={{ marginBottom: 28 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0f172a",
+              letterSpacing: "-0.04em", margin: "0 0 7px", lineHeight: 1.1 }}>
               Giriş Yapın
             </h1>
-            <p style={{ fontSize: 13, color: "#9ca3af", margin: 0 }}>
+            <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
               Hesabınıza erişmek için bilgilerinizi girin.
             </p>
           </div>
 
-          <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Field label="E-posta Adresi">
-              <input
-                className="auth-inp"
-                type="email"
-                value={email}
-                required
-                autoFocus
-                onChange={e => setEmail(e.target.value)}
-                placeholder="ali@firmaniz.com"
-              />
-            </Field>
+          <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <label className="auth-lbl" style={{ display: "block", fontSize: 11.5, fontWeight: 700,
+                color: "#64748b", marginBottom: 7 }}>
+                E-posta Adresi
+              </label>
+              <input className="auth-inp" type="email" value={email} required autoFocus
+                onChange={e => setEmail(e.target.value)} placeholder="ali@firmaniz.com" />
+            </div>
 
-            <Field label="Şifre">
+            <div>
+              <label style={{ display: "block", fontSize: 11.5, fontWeight: 700,
+                color: "#64748b", marginBottom: 7 }}>
+                Şifre
+              </label>
               <div style={{ position: "relative" }}>
-                <input
-                  className="auth-inp"
-                  type={showPass ? "text" : "password"}
-                  value={password}
-                  required
-                  style={{ paddingRight: 42 }}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={() => setShowPass(p => !p)}
-                  style={{
-                    position: "absolute", right: 12, top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "none", border: "none", cursor: "pointer",
-                    color: "#9ca3af", padding: 4, display: "flex",
-                  }}
-                >
-                  {showPass
-                    ? <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" /></svg>
-                    : <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                  }
+                <input className="auth-inp" type={showPass ? "text" : "password"} value={password}
+                  required style={{ paddingRight: 44 }}
+                  onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
+                <button type="button" tabIndex={-1} onClick={() => setShowPass(p => !p)}
+                  style={{ position: "absolute", right: 13, top: "50%",
+                    transform: "translateY(-50%)", background: "none", border: "none",
+                    cursor: "pointer", color: "#94a3b8", padding: 4, display: "flex" }}>
+                  <EyeIcon show={showPass} />
                 </button>
               </div>
-            </Field>
+            </div>
 
             {error && (
               <div className="auth-err" style={{
-                display: "flex", alignItems: "center", gap: 8,
+                display: "flex", alignItems: "flex-start", gap: 9,
                 background: "#fef2f2", border: "1px solid #fecaca",
-                borderRadius: 8, padding: "10px 13px",
-                color: "#dc2626", fontSize: 13,
+                borderRadius: 10, padding: "11px 14px", color: "#dc2626", fontSize: 13,
               }}>
-                <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                  style={{ flexShrink: 0, marginTop: 1 }}>
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -134,13 +119,15 @@ export default function LoginPage() {
 
             <button type="submit" disabled={loading} className="auth-btn" style={{ marginTop: 4 }}>
               {loading
-                ? <><span className="spin" style={{ width: 13, height: 13, border: "2px solid rgba(255,255,255,.3)", borderTopColor: "#fff", borderRadius: "50%" }} />Giriş yapılıyor…</>
+                ? <><span className="auth-spin" style={{ width: 14, height: 14,
+                    border: "2px solid rgba(255,255,255,.3)", borderTopColor: "#fff",
+                    borderRadius: "50%" }} />Giriş yapılıyor…</>
                 : "Giriş Yap →"
               }
             </button>
           </form>
 
-          <p style={{ textAlign: "center", marginTop: 20, color: "#9ca3af", fontSize: 13 }}>
+          <p style={{ textAlign: "center", marginTop: 22, color: "#64748b", fontSize: 13.5 }}>
             Hesabınız yok mu?{" "}
             <Link href="/auth/register" style={{ color: "#2563eb", fontWeight: 700, textDecoration: "none" }}>
               Ücretsiz başlayın →
@@ -148,21 +135,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <label style={{
-        display: "block", fontSize: 11, fontWeight: 700,
-        color: "#9ca3af", textTransform: "uppercase" as const,
-        letterSpacing: "0.07em", marginBottom: 6,
-      }}>
-        {label}
-      </label>
-      {children}
     </div>
   );
 }
