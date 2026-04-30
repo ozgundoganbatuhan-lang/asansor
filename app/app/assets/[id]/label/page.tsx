@@ -58,7 +58,6 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
           <div style={{ border: "1.5px solid #e5e7eb", borderRadius: 20,
             padding: "20px", background: "#fff", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={qrUrl} alt="QR etiketi"
               style={{ width: 260, height: 260, borderRadius: 12, display: "block" }} />
           </div>
@@ -84,12 +83,7 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
 
         {/* Actions */}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 10 }}>
-          <PrintButton style={{
-            display: "inline-flex", alignItems: "center", gap: 7,
-            background: "#111827", color: "#fff", border: "none",
-            fontSize: 13, fontWeight: 700, padding: "10px 20px",
-            borderRadius: 9, cursor: "pointer", fontFamily: "inherit",
-          }} />
+          <PrintButton className="print-btn-dark" />
           <a href={publicUrl} target="_blank" rel="noreferrer"
             style={{ display: "inline-flex", alignItems: "center", gap: 6,
               background: "#2563eb", color: "#fff", fontSize: 13, fontWeight: 700,

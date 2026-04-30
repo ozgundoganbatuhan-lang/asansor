@@ -92,7 +92,6 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
       {/* QR preview box */}
       <div style={{border:"2px dashed #e5e7eb",borderRadius:12,padding:"20px 16px",
         display:"flex",flexDirection:"column",alignItems:"center",gap:8,marginBottom:14,background:"#fafafa"}}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={qrApiUrl}
           alt="QR kod"

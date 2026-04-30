@@ -323,3 +323,21 @@ input:focus, select:focus, textarea:focus {
 .trial-bar {
   display: none;
 }
+
+/* Print button style for label page */
+.print-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.print-btn-dark:hover { background: #1f2937; }
