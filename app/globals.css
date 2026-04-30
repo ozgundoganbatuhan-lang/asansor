@@ -261,29 +261,20 @@ input:focus, select:focus, textarea:focus {
 .table-row:hover { background: var(--surface-2) !important; }
 .table-row:last-child { border-bottom: none !important; }
 
-/* Navigation items */
+/* Navigation items - base only; hover/active handled inline in Shell.tsx */
 .nav-item {
   display: flex;
   align-items: center;
   gap: 9px;
   padding: 7px 10px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
-  color: rgba(255,255,255,0.38);
+  color: rgba(255,255,255,0.35);
   text-decoration: none;
-  transition: all 0.12s;
+  transition: all 0.1s;
   position: relative;
   margin-bottom: 1px;
-}
-.nav-item:hover {
-  background: rgba(255,255,255,0.05) !important;
-  color: rgba(255,255,255,0.75) !important;
-}
-.nav-item.active {
-  background: rgba(37,99,235,0.15) !important;
-  color: #fff !important;
-  font-weight: 600;
 }
 
 /* Auth */
