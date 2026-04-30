@@ -261,7 +261,7 @@ input:focus, select:focus, textarea:focus {
 .table-row:hover { background: var(--surface-2) !important; }
 .table-row:last-child { border-bottom: none !important; }
 
-/* Navigation items - base only; hover/active handled inline in Shell.tsx */
+/* Navigation items */
 .nav-item {
   display: flex;
   align-items: center;
@@ -272,9 +272,18 @@ input:focus, select:focus, textarea:focus {
   font-weight: 500;
   color: rgba(255,255,255,0.35);
   text-decoration: none;
-  transition: all 0.1s;
+  transition: background 0.1s, color 0.1s;
   position: relative;
   margin-bottom: 1px;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+}
+.nav-item.active {
+  background: rgba(37,99,235,0.18);
+  color: #fff;
+  font-weight: 600;
 }
 
 /* Auth */
