@@ -13,7 +13,7 @@
   --primary-dark: #1d4ed8;
   --primary-soft: #eff6ff;
   --accent: #7c3aed;
-  --background: #f1f2f6;
+  --background: #f9fafb;
   --surface: #ffffff;
   --surface-2: #f8fafc;
   --foreground: #0f172a;
@@ -262,28 +262,28 @@ input:focus, select:focus, textarea:focus {
 .table-row:last-child { border-bottom: none !important; }
 
 /* Navigation items */
+/* nav-item — matches HTML design exactly */
 .nav-item {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 7px 10px;
-  border-radius: 7px;
-  font-size: 12.5px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
-  color: rgba(255,255,255,0.35);
+  color: #8b9ab0;
   text-decoration: none;
-  transition: background 0.1s, color 0.1s;
+  transition: background 0.12s, color 0.12s;
   position: relative;
-  margin-bottom: 1px;
+  cursor: pointer;
 }
 .nav-item:hover {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.75);
+  background: #1c2333;
+  color: #e2e8f0;
 }
 .nav-item.active {
-  background: rgba(37,99,235,0.18);
-  color: #fff;
-  font-weight: 600;
+  background: #1d2d50;
+  color: #e2e8f0;
 }
 
 /* Auth */
@@ -319,25 +319,15 @@ input:focus, select:focus, textarea:focus {
 .chip-purple { background:#f5f3ff; color:#5b21b6; border-color:#ddd6fe; }
 .chip-gray   { background:#f1f5f9; color:#475569; border-color:#e2e8f0; }
 
-/* Trial bar - now lives inside sidebar */
-.trial-bar {
-  display: none;
-}
+/* Trial bar */
+/* trial-bar is now inside the sidebar — not a fixed bottom bar */
+.trial-bar { display: none !important; }
 
-/* Print button style for label page */
+/* Print button */
 .print-btn-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  background: #111827;
-  color: #fff;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 20px;
-  border-radius: 9px;
-  cursor: pointer;
-  font-family: inherit;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  background: #111827; color: #fff; border: none;
+  font-size: 13px; font-weight: 700; padding: 10px 20px;
+  border-radius: 9px; cursor: pointer; font-family: inherit;
 }
 .print-btn-dark:hover { background: #1f2937; }
