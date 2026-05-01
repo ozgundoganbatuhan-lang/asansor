@@ -203,17 +203,16 @@ export default function Shell({ children }: { children: ReactNode }) {
         <div onClick={() => setOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.65)", zIndex:59, backdropFilter:"blur(2px)" }} />
       )}
 
-      {/* ── MAIN CONTENT: marginLeft pushes it past the sidebar ── */}
-      {/* NO topbar here — pages handle their own page title */}
-      <div style={{
-        marginLeft: mob ? 0 : SW,
-        minHeight: "100vh",
-        background: "#f9fafb",
-        paddingBottom: mob ? 64 : 0,
-      }}>
-        <main className="page-animate" style={{ padding: mob ? "20px 16px" : "28px 32px" }}>
-          {children}
-        </main>
+      {/* ── MAIN CONTENT: flex+spacer = guaranteed full width ── */}
+      <div style={{ display:"flex", minHeight:"100vh" }}>
+        {!mob && <div style={{ width:SW, flexShrink:0 }} />}
+        <div style={{ flex:1, minWidth:0, background:"#f9fafb", paddingBottom: mob ? 64 : 0 }}>
+          <main className="page-animate"
+            style={{ padding: mob ? "20px 16px" : "28px 32px",
+              width:"100%", boxSizing:"border-box" as const }}>
+            {children}
+          </main>
+        </div>
       </div>
 
       {/* Mobile bottom nav */}
