@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { signAssetShareToken } from "@/lib/asset-share";
 
+import { headers } from "next/headers";
+
 export default async function AssetLabelPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const asset = await prisma.asset.findUnique({
@@ -12,7 +14,11 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
   });
   if (!asset) notFound();
   const token = signAssetShareToken(asset.id, asset.organizationId);
-  const publicUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/public/assets/${asset.id}?token=${token}`;
+  const hdrs = await headers();
+  const host = hdrs.get("host") ?? "localhost:3000";
+  const proto = process.env.NEXT_PUBLIC_SITE_URL?.startsWith("http") ? "" : (host.includes("localhost") ? "http" : "https");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `${proto}://${host}`;
+  const publicUrl = `${siteUrl}/public/assets/${asset.id}?token=${token}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(publicUrl)}&margin=12`;
   const companyName = asset.organization?.name ?? process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Servis Firması";
 

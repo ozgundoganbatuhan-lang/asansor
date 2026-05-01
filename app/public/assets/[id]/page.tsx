@@ -9,18 +9,20 @@ export default async function PublicAssetPage({
   const {id}    = await params;
   const {token} = await searchParams;
 
-  if(!token) return <Err title="QR bağlantısı geçersiz" desc="Bu sayfa yalnızca geçerli bir QR kod tarandığında açılır." />;
-
-  let payload: {assetId:string;orgId:string}|null = null;
-  try { payload = verifyAssetShareToken(token); } catch {}
-  if(!payload||payload.assetId!==id) return <Err title="Bağlantı süresi dolmuş" desc="QR kodunun bağlantı süresi dolmuş. Servis firmasıyla iletişime geçin." />;
+  // Token opsiyonel — varsa doğrula, yoksa asset ID ile direkt aç
+  let orgId: string | null = null;
+  if (token) {
+    let payload: {assetId:string;orgId:string}|null = null;
+    try { payload = verifyAssetShareToken(token); } catch {}
+    if (payload && payload.assetId === id) orgId = payload.orgId;
+  }
 
   let asset: any = null;
   let org: any = null;
   try {
     [asset, org] = await Promise.all([
       prisma.asset.findFirst({
-        where:{id,organizationId:payload.orgId},
+        where: orgId ? {id, organizationId: orgId} : {id},
         include:{
           customer:{select:{name:true,address:true,phone:true}},
           workOrders:{orderBy:{createdAt:"desc"},take:8,include:{technician:{select:{name:true}}}},
@@ -29,7 +31,7 @@ export default async function PublicAssetPage({
           contractAssets:{include:{contract:{select:{id:true,contractNumber:true,fileUrl:true,startDate:true,endDate:true,status:true}}}},
         },
       }),
-      prisma.organization.findUnique({where:{id:payload.orgId},select:{name:true,phone:true,website:true}}),
+      orgId ? prisma.organization.findUnique({where:{id:orgId},select:{name:true,phone:true,website:true}}) : Promise.resolve(null),
     ]);
   } catch(err) {
     console.error("[PublicAssetPage] error:", err);

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-type Customer = { id:string;name:string;contactName?:string|null;phone?:string|null;email?:string|null;_count:{assets:number;workOrders:number} };
+type Customer = { id:string;name:string;contactName?:string|null;phone?:string|null;email?:string|null;address?:string|null;_count:{assets:number;workOrders:number} };
 const Ic=({d,size=15,stroke="currentColor"}:{d:string;size?:number;stroke?:string})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>);
 const F:React.CSSProperties={width:"100%",height:42,padding:"0 13px",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:14,fontFamily:"inherit",outline:"none",background:"#fff",color:"#0f172a",transition:"border-color .15s"};
 
@@ -14,6 +14,7 @@ export default function CustomersPage() {
   const [showForm,setShowForm]=useState(false);
   const [name,setName]=useState(""),[contactName,setContactName]=useState(""),
     [phone,setPhone]=useState(""),[ email,setEmail]=useState(""),
+    [address,setAddress]=useState(""),
     [saving,setSaving]=useState(false);
 
   async function load(){setLoading(true);try{const r=await fetch("/api/customers");const d=await r.json();if(d.error)setError(d.error);else setCustomers(d.items??[]);}catch(e:any){setError(e.message);}setLoading(false);}
@@ -24,10 +25,10 @@ export default function CustomersPage() {
   const totalW=filtered.reduce((s,c)=>s+c._count.workOrders,0);
 
   async function submit(e:React.FormEvent){e.preventDefault();setError(null);setSaving(true);
-    const res=await fetch("/api/customers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,contactName:contactName||undefined,phone:phone||undefined,email:email||undefined})});
+    const res=await fetch("/api/customers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,contactName:contactName||undefined,phone:phone||undefined,email:email||undefined,address:address||undefined})});
     const d=await res.json().catch(()=>({}));setSaving(false);
     if(!res.ok){setError(d.error??"Müşteri oluşturulamadı");return;}
-    setName("");setContactName("");setPhone("");setEmail("");setShowForm(false);await load();}
+    setName("");setContactName("");setPhone("");setEmail("");setAddress("");setShowForm(false);await load();}
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:18}}>
@@ -73,7 +74,8 @@ export default function CustomersPage() {
               {[{l:"Firma / Bina Adı *",v:name,set:setName,t:"text",ph:"ABC Apartman Yönetimi",req:true},
                 {l:"İletişim Kişisi",v:contactName,set:setContactName,t:"text",ph:"Ali Yılmaz"},
                 {l:"Telefon",v:phone,set:setPhone,t:"tel",ph:"05XX XXX XX XX"},
-                {l:"E-posta",v:email,set:setEmail,t:"email",ph:"ali@apartman.com"}
+                {l:"E-posta",v:email,set:setEmail,t:"email",ph:"ali@apartman.com"},
+                {l:"Adres",v:address,set:setAddress,t:"text",ph:"Atatürk Cad. No:5, Kadıköy / İstanbul"}
               ].map((fi,i)=>(
                 <div key={i}>
                   <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#64748b",marginBottom:7}}>{fi.l}</label>
@@ -121,7 +123,7 @@ export default function CustomersPage() {
               </div>
               <div>
                 {c.contactName&&<div style={{fontSize:13,fontWeight:600,color:"#334155"}}>{c.contactName}</div>}
-                {c.phone&&<div style={{fontSize:11.5,color:"#94a3b8",marginTop:1}}>{c.phone}</div>}
+                {c.phone&&<div style={{fontSize:11.5,color:"#94a3b8",marginTop:1}}>{c.phone}</div>}{c.address&&<div style={{fontSize:11,color:"#9ca3af",marginTop:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {c.address}</div>}
               </div>
               <div style={{fontSize:20,fontWeight:900,color:c._count.assets>0?"#2563eb":"#cbd5e1",letterSpacing:"-0.04em"}}>{c._count.assets}</div>
               <div style={{fontSize:20,fontWeight:900,color:c._count.workOrders>0?"#7c3aed":"#cbd5e1",letterSpacing:"-0.04em"}}>{c._count.workOrders}</div>

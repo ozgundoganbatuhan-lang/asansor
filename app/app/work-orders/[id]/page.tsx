@@ -63,40 +63,47 @@ function fmtDate(v?: string | null) {
 /* ─── Embedded Map (OpenStreetMap iframe — no API key) ─── */
 function EmbeddedMap({ address, label }: { address?: string | null; label?: string | null }) {
   if (!address && !label) return null;
-  const query = encodeURIComponent([label, address].filter(Boolean).join(", "));
-  const osmEmbed = `https://www.openstreetmap.org/search?query=${query}#map=15`;
-  const gmapsLink = `https://www.google.com/maps/search/?api=1&query=${query}`;
-  const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${query}`;
+  // Use address first, fallback to label for geocoding
+  const searchQuery = encodeURIComponent(address || label || "");
+  const labelQuery  = encodeURIComponent([label, address].filter(Boolean).join(", "));
+  // Google Maps embed (works without API key for basic search)
+  const gmapsEmbed = `https://maps.google.com/maps?q=${searchQuery}&output=embed&z=15`;
+  const gmapsLink  = `https://www.google.com/maps/search/?api=1&query=${labelQuery}`;
+  const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${searchQuery}`;
 
   return (
     <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden", marginBottom: 16 }}>
-      {/* Embedded iframe — OpenStreetMap */}
-      <div style={{ position: "relative", height: 220 }}>
+      {/* Google Maps embed */}
+      <div style={{ position: "relative", height: 240 }}>
         <iframe
-          src={`https://www.openstreetmap.org/export/embed.html?bbox=&layer=mapnik&marker=&query=${query}`}
-          style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+          src={gmapsEmbed}
+          width="100%" height="100%"
+          style={{ border: "none", display: "block" }}
           loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
           title="Konum haritası"
         />
-        {/* Expand overlay */}
         <a href={gmapsLink} target="_blank" rel="noreferrer"
-          style={{ position: "absolute", bottom: 10, right: 10, background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 7, textDecoration: "none" }}>
-          ↗ Tam ekran aç
+          style={{ position: "absolute", bottom: 10, right: 10, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 7, textDecoration: "none" }}>
+          ↗ Tam ekran
         </a>
       </div>
-      {/* Address + action row */}
+      {/* Address + actions */}
       <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderTop: "1px solid #f3f4f6", flexWrap: "wrap" }}>
-        <div style={{ fontSize: 13, color: "#6b7280" }}>
-          <span style={{ fontSize: 14 }}>📍</span>{" "}
-          <span style={{ fontWeight: 500, color: "#374151" }}>{[label, address].filter(Boolean).join("  ·  ")}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#374151", flex: 1, minWidth: 0 }}>
+          <span>📍</span>
+          <span style={{ fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {[label, address].filter(Boolean).join("  ·  ")}
+          </span>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <a href={gmapsLink} target="_blank" rel="noreferrer"
-            style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#f3f4f6", borderRadius: 8, textDecoration: "none" }}>
+            style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#f3f4f6", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
             🗺️ Haritada Gör
           </a>
           <a href={directionsLink} target="_blank" rel="noreferrer"
-            style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#2563eb", borderRadius: 8, textDecoration: "none" }}>
+            style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#2563eb", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
             🧭 Yol Tarifi
           </a>
         </div>
