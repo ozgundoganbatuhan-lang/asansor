@@ -88,7 +88,6 @@ export default function MaintenancePlansPage() {
             {showForm ? "✕ Kapat" : "+ Yeni Plan"}
           </button>
         </OnboardingBeacon>
-      </div>
 
       {err && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c" }}>{err}</div>}
 

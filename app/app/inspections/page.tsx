@@ -60,7 +60,6 @@ export default function InspectionsPage() {
       <button onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#2563eb", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
           {showForm ? "✕ Kapat" : "+ Muayene Kaydet"}
         </button>
-      </div>
 
       {err && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c" }}>{err}</div>}
       {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
