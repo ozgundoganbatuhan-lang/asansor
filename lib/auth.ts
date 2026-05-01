@@ -40,9 +40,18 @@ export async function readSession(): Promise<Session | null> {
 }
 
 export function sessionFromRequest(req: NextRequest): Session | null {
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifyToken(token);
+  // 1. Try cookie (web app)
+  const cookieToken = req.cookies.get(COOKIE_NAME)?.value;
+  if (cookieToken) return verifyToken(cookieToken);
+
+  // 2. Try Authorization: Bearer <token> (mobile app)
+  const authHeader = req.headers.get("authorization") ?? req.headers.get("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const bearerToken = authHeader.slice(7).trim();
+    if (bearerToken) return verifyToken(bearerToken);
+  }
+
+  return null;
 }
 
 export function setSessionCookie(res: NextResponse, session: Session): void {
