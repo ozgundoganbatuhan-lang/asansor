@@ -5,391 +5,481 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import PhotoUploader from "@/components/PhotoUploader";
 import SignaturePad from "@/components/SignaturePad";
-import { buildGoogleMapsDirections } from "@/lib/maps";
-import { Button, Card, ErrorBanner, Input, PageHeader, Pill, Select, Spinner, Textarea } from "@/components/ui";
+import PrintButton from "@/components/PrintButton";
 
+/* ─── Types ─── */
 type WorkOrder = {
-  id: string;
-  code: string;
-  status: string;
-  type: string;
-  priority?: string | null;
-  note?: string | null;
-  laborCost: number;
-  serviceFee: number;
-  scheduledAt?: string | null;
-  completedAt?: string | null;
+  id: string; code: string; status: string; type: string;
+  priority?: string | null; note?: string | null;
+  laborCost: number; serviceFee: number;
+  scheduledAt?: string | null; completedAt?: string | null;
   customer: { id: string; name: string; phone?: string | null; address?: string | null; email?: string | null };
   asset?: { id: string; name: string; buildingName?: string | null; locationNote?: string | null; elevatorIdNo?: string | null } | null;
   technician?: { id: string; name: string; phone?: string | null } | null;
-  partsUsed: Array<{ id: string; quantity: number; part: { id: string; name: string; price?: number | null } }>;
+  partsUsed: { id: string; quantity: number; part: { id: string; name: string; price?: number | null } }[];
   invoice?: { id: string; number: string; status: string } | null;
 };
-
 type Evidence = {
-  startedAt?: string | null;
-  endedAt?: string | null;
-  serviceOutcome?: string | null;
-  summary?: string | null;
-  signoffName?: string | null;
-  customerContact?: string | null;
-  locationNote?: string | null;
-  signatureDataUrl?: string | null;
+  startedAt?: string | null; endedAt?: string | null;
+  serviceOutcome?: string | null; summary?: string | null;
+  signoffName?: string | null; customerContact?: string | null;
+  locationNote?: string | null; signatureDataUrl?: string | null;
 };
-
 type Attachment = { id: string; url: string; originalName: string; size: number };
-
 type Technician = { id: string; name: string };
 type Asset = { id: string; name: string; buildingName?: string | null };
 
-type StatusTone = "neutral" | "amber" | "red" | "green";
+/* ─── Status config ─── */
+const ST: Record<string, { label: string; bg: string; color: string; dot: string; border: string }> = {
+  PENDING:     { label: "Planlı",        bg: "#eff6ff", color: "#1d4ed8", dot: "#3b82f6", border: "#bfdbfe" },
+  IN_PROGRESS: { label: "Devam Ediyor",  bg: "#fefce8", color: "#92400e", dot: "#f59e0b", border: "#fde68a" },
+  URGENT:      { label: "Acil",          bg: "#fef2f2", color: "#b91c1c", dot: "#ef4444", border: "#fecaca" },
+  DONE:        { label: "Tamamlandı",    bg: "#f0fdf4", color: "#166534", dot: "#22c55e", border: "#bbf7d0" },
+  CANCELED:    { label: "İptal",         bg: "#f9fafb", color: "#6b7280", dot: "#9ca3af", border: "#e5e7eb" },
+};
 
-const statuses = [
-  ["PENDING", "Planlı", "neutral"],
-  ["IN_PROGRESS", "Devam ediyor", "amber"],
-  ["URGENT", "Acil", "red"],
-  ["DONE", "Tamamlandı", "green"],
-  ["CANCELED", "İptal", "neutral"],
-] as const;
+const TYPE_LABEL: Record<string, string> = {
+  FAULT:                "Arıza Müdahalesi",
+  PERIODIC_MAINTENANCE: "Periyodik Bakım",
+  ANNUAL_INSPECTION:    "Yıllık Muayene",
+  REVISION:             "Revizyon",
+  INSTALLATION:         "Kurulum",
+};
 
-function money(value: number) {
-  return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format((value ?? 0) / 100);
+const CHECKLIST = [
+  "Teknisyen atandı", "Planlanan saat girildi",
+  "Servis özeti yazıldı", "Fotoğraf yüklendi", "İmza alındı",
+];
+
+/* ─── Helpers ─── */
+function money(v: number) {
+  return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format((v ?? 0) / 100);
+}
+function fmtDate(v?: string | null) {
+  if (!v) return "—";
+  return new Date(v).toLocaleString("tr-TR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
-function fmtDate(value?: string | null, withTime = true) {
-  if (!value) return "—";
-  return new Date(value).toLocaleString("tr-TR", withTime ? undefined : { year: "numeric", month: "2-digit", day: "2-digit" });
-}
-
-export default function WorkOrderDetailPage() {
-  const params = useParams<{ id: string }>();
-  const [item, setItem] = useState<WorkOrder | null>(null);
-  const [technicians, setTechnicians] = useState<Technician[]>([]);
-  const [assets, setAssets] = useState<Asset[]>([]);
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [evidence, setEvidence] = useState<Evidence>({});
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [messageTone, setMessageTone] = useState<"success" | "info">("success");
-
-  const [form, setForm] = useState({ status: "PENDING", technicianId: "", assetId: "", scheduledAt: "", note: "", laborCost: "0", serviceFee: "0" });
-
-  async function load() {
-    const [itemRes, techRes, evidenceRes, attachmentRes] = await Promise.all([
-      fetch(`/api/work-orders/${params.id}`),
-      fetch(`/api/technicians`),
-      fetch(`/api/work-orders/${params.id}/evidence`),
-      fetch(`/api/work-orders/${params.id}/attachments`),
-    ]);
-    const itemData = await itemRes.json();
-    if (!itemRes.ok) {
-      setError(itemData.error ?? "İş emri yüklenemedi.");
-      return;
-    }
-    setItem(itemData.item);
-    setForm({
-      status: itemData.item.status,
-      technicianId: itemData.item.technician?.id ?? "",
-      assetId: itemData.item.asset?.id ?? "",
-      scheduledAt: itemData.item.scheduledAt ? itemData.item.scheduledAt.slice(0, 16) : "",
-      note: itemData.item.note ?? "",
-      laborCost: String((itemData.item.laborCost ?? 0) / 100),
-      serviceFee: String((itemData.item.serviceFee ?? 0) / 100),
-    });
-    setTechnicians((await techRes.json()).items ?? []);
-    setEvidence((await evidenceRes.json()).item ?? {});
-    setAttachments((await attachmentRes.json()).items ?? []);
-
-    if (itemData.item.customer?.id) {
-      const assetsRes = await fetch(`/api/assets?customerId=${itemData.item.customer.id}`);
-      const assetsData = await assetsRes.json();
-      setAssets(assetsData.items ?? []);
-    }
-  }
-
-  useEffect(() => {
-    void load();
-  }, [params.id]);
-
-  const mapsUrl = useMemo(
-    () => buildGoogleMapsDirections({ address: item?.customer.address, label: `${item?.asset?.buildingName ?? ""} ${item?.asset?.name ?? ""}` }),
-    [item],
-  );
-  const currentStatusTone = statuses.find((status) => status[0] === item?.status)?.[2] as StatusTone | undefined;
-
-  const totalCost = useMemo(() => {
-    if (!item) return 0;
-    return item.laborCost + item.serviceFee + item.partsUsed.reduce((sum, usage) => sum + (usage.part.price ?? 0) * usage.quantity, 0);
-  }, [item]);
-
-  const completionChecklist = useMemo(
-    () => [
-      { label: "Teknisyen atandı", done: Boolean(form.technicianId) },
-      { label: "Planlanan saat girildi", done: Boolean(form.scheduledAt) },
-      { label: "Servis özeti yazıldı", done: Boolean((evidence.summary ?? "").trim()) },
-      { label: "Fotoğraf yüklendi", done: attachments.length > 0 },
-      { label: "İmza alındı", done: Boolean(evidence.signatureDataUrl) },
-    ],
-    [attachments.length, evidence.signatureDataUrl, evidence.summary, form.scheduledAt, form.technicianId],
-  );
-
-  const completionRate = Math.round((completionChecklist.filter((item) => item.done).length / completionChecklist.length) * 100);
-
-  async function saveOrder() {
-    setSaving(true);
-    setError(null);
-    setMessage(null);
-    const res = await fetch(`/api/work-orders/${params.id}`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        status: form.status,
-        technicianId: form.technicianId || null,
-        assetId: form.assetId || null,
-        scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null,
-        note: form.note || null,
-        laborCost: Math.round(Number(form.laborCost || 0) * 100),
-        serviceFee: Math.round(Number(form.serviceFee || 0) * 100),
-        completedAt: form.status === "DONE" ? new Date().toISOString() : null,
-      }),
-    });
-    const data = await res.json();
-    setSaving(false);
-    if (!res.ok) {
-      setError(data.error ?? "İş emri kaydedilemedi.");
-      return;
-    }
-    setMessageTone("success");
-    setMessage("Operasyon kartı güncellendi.");
-    await load();
-  }
-
-  async function saveEvidence() {
-    setError(null);
-    const res = await fetch(`/api/work-orders/${params.id}/evidence`, {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(evidence),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "Servis kanıtı kaydedilemedi.");
-      return;
-    }
-    setMessageTone("success");
-    setMessage("Servis kanıtı ve imza kaydedildi.");
-  }
-
-  function quickStatus(nextStatus: string) {
-    setForm((prev) => ({ ...prev, status: nextStatus }));
-    setMessageTone("info");
-    setMessage(nextStatus === "IN_PROGRESS" ? "Durum devam ediyor olarak hazırlandı. Kaydettiğinizde iş emrine işlenecek." : "Durum tamamlandı olarak hazırlandı. Kaydettiğinizde kapanış zamanı da atanacak.");
-  }
-
-  if (!item) {
-    return <div className="flex min-h-[50vh] items-center justify-center">{error ? <ErrorBanner msg={error} /> : <Spinner />}</div>;
-  }
+/* ─── Embedded Map (OpenStreetMap iframe — no API key) ─── */
+function EmbeddedMap({ address, label }: { address?: string | null; label?: string | null }) {
+  if (!address && !label) return null;
+  const query = encodeURIComponent([label, address].filter(Boolean).join(", "));
+  const osmEmbed = `https://www.openstreetmap.org/search?query=${query}#map=15`;
+  const gmapsLink = `https://www.google.com/maps/search/?api=1&query=${query}`;
+  const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${query}`;
 
   return (
-    <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[36px] border border-[color:var(--border)] bg-[linear-gradient(135deg,#06142d_0%,#0d2f6e_55%,#1456f0_100%)] p-6 text-white shadow-[var(--shadow-hard)] md:p-8">
-        <div className="absolute inset-y-0 right-0 w-[42%] bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_55%)]" />
-        <div className="relative z-10 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/70">Saha operasyon kartı</div>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-black tracking-[-0.06em] md:text-[3rem]">{item.code}</h1>
-              <Pill tone={currentStatusTone ?? "neutral"} className="bg-white/90 text-slate-800">{statuses.find((status) => status[0] === item.status)?.[1] ?? item.status}</Pill>
-            </div>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-white/78 md:text-[15px]">{item.customer.name} · {item.asset?.buildingName || "Bina adı yok"} · {item.asset?.name || "Asansör atanmadı"}. Saha kapanışı, fotoğraf yükleme, imza ve servis formu tek akışta yönetilir.</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {mapsUrl && <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[22px] border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/16">Rota aç</a>}
-              <Link href={`/service-forms/${item.id}`} target="_blank" className="rounded-[22px] bg-white px-5 py-3 text-sm font-semibold text-[color:var(--primary)] shadow-[var(--shadow-soft)]">Servis formu</Link>
-              {item.customer.phone ? <a href={`tel:${item.customer.phone}`} className="rounded-[22px] border border-white/15 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/8">Müşteriyi ara</a> : null}
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-1">
-            <MetricBox label="Hazırlık skoru" value={`%${completionRate}`} note="Kanıtlı kapanış için gerekli alanların doluluk oranı" strong />
-            <MetricBox label="Tahmini maliyet" value={money(totalCost)} note="İşçilik, servis ve parça toplamı" />
-            <MetricBox label="Planlanan zaman" value={form.scheduledAt ? fmtDate(new Date(form.scheduledAt).toISOString()) : "Henüz yok"} note={item.technician?.name || "Teknisyen atanmadı"} />
-          </div>
+    <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden", marginBottom: 16 }}>
+      {/* Embedded iframe — OpenStreetMap */}
+      <div style={{ position: "relative", height: 220 }}>
+        <iframe
+          src={`https://www.openstreetmap.org/export/embed.html?bbox=&layer=mapnik&marker=&query=${query}`}
+          style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+          loading="lazy"
+          title="Konum haritası"
+        />
+        {/* Expand overlay */}
+        <a href={gmapsLink} target="_blank" rel="noreferrer"
+          style={{ position: "absolute", bottom: 10, right: 10, background: "rgba(0,0,0,0.65)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 7, textDecoration: "none" }}>
+          ↗ Tam ekran aç
+        </a>
+      </div>
+      {/* Address + action row */}
+      <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderTop: "1px solid #f3f4f6", flexWrap: "wrap" }}>
+        <div style={{ fontSize: 13, color: "#6b7280" }}>
+          <span style={{ fontSize: 14 }}>📍</span>{" "}
+          <span style={{ fontWeight: 500, color: "#374151" }}>{[label, address].filter(Boolean).join("  ·  ")}</span>
         </div>
-      </section>
-
-      <PageHeader
-        eyebrow="Premium workflow"
-        title="İş emri deneyimi"
-        subtitle="Operasyon, servis kanıtı ve görsel kayıt aynı sayfada. Saha ekibi tek bakışta ne yapacağını anlar, ofis ekibi de kapanışı güvenle izler."
-        action={
-          <div className="flex flex-wrap gap-3">
-            <Button variant="soft" onClick={() => quickStatus("IN_PROGRESS")}>Şimdi başlat</Button>
-            <Button variant="secondary" onClick={() => quickStatus("DONE")}>Kapatmaya hazırla</Button>
-          </div>
-        }
-      />
-
-      {error && <ErrorBanner msg={error} />}
-      {message && <div className={`rounded-[22px] border px-4 py-3 text-sm font-semibold ${messageTone === "success" ? "border-emerald-100 bg-emerald-50 text-emerald-700" : "border-blue-100 bg-blue-50 text-blue-700"}`}>{message}</div>}
-
-      <div className="grid gap-6 2xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-6">
-          <Card
-            title="Operasyon kartı"
-            subtitle="İş emrinin atama, tarih ve maliyet ayarlarını güncelle. Karmaşayı azaltmak için yalnızca gerçekten karar gerektiren alanlar burada tutuldu."
-            action={<Pill tone="blue">{item.type}</Pill>}
-          >
-            <div className="grid gap-4 md:grid-cols-2">
-              <Select label="Durum" value={form.status} onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value }))}>
-                {statuses.map((status) => <option key={status[0]} value={status[0]}>{status[1]}</option>)}
-              </Select>
-              <Select label="Teknisyen" value={form.technicianId} onChange={(e) => setForm((prev) => ({ ...prev, technicianId: e.target.value }))}>
-                <option value="">Teknisyen seçin</option>
-                {technicians.map((technician) => <option key={technician.id} value={technician.id}>{technician.name}</option>)}
-              </Select>
-              <Select label="Asansör" value={form.assetId} onChange={(e) => setForm((prev) => ({ ...prev, assetId: e.target.value }))}>
-                <option value="">Asansör seçin</option>
-                {assets.map((asset) => <option key={asset.id} value={asset.id}>{asset.name}{asset.buildingName ? ` · ${asset.buildingName}` : ""}</option>)}
-              </Select>
-              <Input label="Planlanan tarih" type="datetime-local" value={form.scheduledAt} onChange={(e) => setForm((prev) => ({ ...prev, scheduledAt: e.target.value }))} />
-              <Input label="İşçilik (₺)" type="number" value={form.laborCost} onChange={(e) => setForm((prev) => ({ ...prev, laborCost: e.target.value }))} />
-              <Input label="Servis ücreti (₺)" type="number" value={form.serviceFee} onChange={(e) => setForm((prev) => ({ ...prev, serviceFee: e.target.value }))} />
-              <div className="md:col-span-2">
-                <Textarea label="İş emri notu" value={form.note} onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))} />
-              </div>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button onClick={saveOrder} disabled={saving}>{saving ? "Kaydediliyor..." : "Operasyonu kaydet"}</Button>
-              <Button variant="soft" onClick={() => setForm((prev) => ({ ...prev, note: `${prev.note ? `${prev.note.trim()}\n` : ""}Yerinde kontrol tamamlandı.` }))}>Hazır not ekle</Button>
-            </div>
-          </Card>
-
-          <Card
-            tone="soft"
-            title="Servis kanıtı ve onay"
-            subtitle="Zaman, sonuç, özet, muhatap ve imza aynı blokta toplanır. Kapanış kalitesi yükselsin diye akış olabildiğince kısa tutuldu."
-            action={<div className="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--primary)] shadow-[var(--shadow-xs)]">Kanıtlı kapanış</div>}
-          >
-            <div className="grid gap-4 md:grid-cols-2">
-              <Input label="Başlangıç saati" type="datetime-local" value={evidence.startedAt ? evidence.startedAt.slice(0, 16) : ""} onChange={(e) => setEvidence((prev) => ({ ...prev, startedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} />
-              <Input label="Bitiş saati" type="datetime-local" value={evidence.endedAt ? evidence.endedAt.slice(0, 16) : ""} onChange={(e) => setEvidence((prev) => ({ ...prev, endedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} />
-              <Input label="Servis sonucu" value={evidence.serviceOutcome ?? ""} onChange={(e) => setEvidence((prev) => ({ ...prev, serviceOutcome: e.target.value }))} placeholder="Bakım tamamlandı / parça bekleniyor" />
-              <Input label="Onaylayan kişi" value={evidence.signoffName ?? ""} onChange={(e) => setEvidence((prev) => ({ ...prev, signoffName: e.target.value }))} placeholder="Bina yöneticisi" />
-              <Input label="Sahadaki muhatap" value={evidence.customerContact ?? ""} onChange={(e) => setEvidence((prev) => ({ ...prev, customerContact: e.target.value }))} />
-              <Input label="Konum notu" value={evidence.locationNote ?? ""} onChange={(e) => setEvidence((prev) => ({ ...prev, locationNote: e.target.value }))} />
-              <div className="md:col-span-2">
-                <Textarea label="Servis özeti" value={evidence.summary ?? ""} onChange={(e) => setEvidence((prev) => ({ ...prev, summary: e.target.value }))} placeholder="Yapılan işlem, tespit edilen durum ve önerilen aksiyonlar" />
-              </div>
-              <div className="md:col-span-2">
-                <SignaturePad value={evidence.signatureDataUrl} onChange={(signatureDataUrl) => setEvidence((prev) => ({ ...prev, signatureDataUrl }))} />
-              </div>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button onClick={saveEvidence}>Kanıtı kaydet</Button>
-              <Button variant="secondary" onClick={() => setEvidence((prev) => ({ ...prev, summary: item.note ?? prev.summary }))}>İş emri notunu özet alanına al</Button>
-            </div>
-          </Card>
-
-          <Card title="Fotoğraf kanıtları" subtitle="URL alanı yerine doğrudan çekim ve yükleme. Görseller cihazda sıkıştırılır, ardından iş emrine bağlanır.">
-            <PhotoUploader workOrderId={item.id} onUploaded={(newItems) => setAttachments((prev) => [...newItems, ...prev])} />
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {attachments.length === 0 ? <p className="text-sm text-[color:var(--muted)]">Henüz fotoğraf yüklenmedi.</p> : attachments.map((attachment) => (
-                <a key={attachment.id} href={attachment.url} target="_blank" rel="noreferrer" className="group overflow-hidden rounded-[26px] border border-[color:var(--border)] bg-white shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5">
-                  <div className="relative">
-                    <img src={attachment.url} alt={attachment.originalName} className="h-52 w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
-                    <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent,rgba(15,23,42,0.72))] px-4 pb-3 pt-10 text-xs font-bold text-white/90">Görsel kanıt</div>
-                  </div>
-                  <div className="space-y-1 p-4">
-                    <div className="line-clamp-2 text-sm font-semibold text-[color:var(--foreground)]">{attachment.originalName}</div>
-                    <div className="text-xs text-[color:var(--muted)]">Yüklenen dosya · Yeni sekmede aç</div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
-          <Card title="Kapanış hazırlığı" subtitle="Kaliteli servis kaydı için kalan eksikler ve hızlı aksiyonlar." action={<Pill tone={completionRate >= 80 ? "green" : completionRate >= 50 ? "amber" : "red"}>%{completionRate}</Pill>}>
-            <div className="rounded-[22px] bg-[color:var(--surface-soft)] p-3">
-              <div className="h-2 overflow-hidden rounded-full bg-white/80">
-                <div className="h-full rounded-full bg-[linear-gradient(90deg,#1456f0,#5ca9ff)] transition-all" style={{ width: `${completionRate}%` }} />
-              </div>
-            </div>
-            <div className="mt-4 space-y-3">
-              {completionChecklist.map((entry) => (
-                <div key={entry.label} className="flex items-center justify-between gap-4 rounded-[20px] bg-[color:var(--surface-soft-2)] px-4 py-3 text-sm">
-                  <span className="font-medium text-[color:var(--foreground)]">{entry.label}</span>
-                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${entry.done ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>{entry.done ? "Tamam" : "Eksik"}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card title="Müşteri ve konum" subtitle="Sahada hızlı erişim için gereken iletişim bilgileri ve adres detayları.">
-            <div className="space-y-4">
-              <InfoLine label="Müşteri" value={item.customer.name} />
-              <InfoLine label="Telefon" value={item.customer.phone || "—"} />
-              <InfoLine label="Adres" value={item.customer.address || "—"} />
-              <InfoLine label="Asansör" value={item.asset?.name || "—"} />
-              <InfoLine label="Bina" value={item.asset?.buildingName || "—"} />
-            </div>
-            <div className="mt-5 flex flex-wrap gap-3">
-              {item.customer.phone ? <a href={`tel:${item.customer.phone}`} className="rounded-[20px] border border-[color:var(--border)] bg-white px-4 py-2.5 text-sm font-semibold text-[color:var(--foreground)]">Müşteriyi ara</a> : null}
-              {mapsUrl && <a href={mapsUrl} target="_blank" rel="noreferrer" className="rounded-[20px] bg-[color:var(--surface-soft)] px-4 py-2.5 text-sm font-semibold text-[color:var(--primary)]">Google Maps ile git</a>}
-            </div>
-          </Card>
-
-          <Card title="Finans ve stok görünümü" subtitle="Bu iş emrinin sahadaki mali etkisi ve kullanılan parçalar." action={item.invoice ? <Pill tone="green">{item.invoice.number}</Pill> : <Pill tone="gray">Fatura yok</Pill>}>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <MiniMetric label="İşçilik" value={money(item.laborCost)} />
-              <MiniMetric label="Servis" value={money(item.serviceFee)} />
-              <MiniMetric label="Parçalar" value={money(item.partsUsed.reduce((sum, usage) => sum + (usage.part.price ?? 0) * usage.quantity, 0))} />
-              <MiniMetric label="Toplam" value={money(totalCost)} strong />
-            </div>
-            <div className="mt-5 space-y-3">
-              {item.partsUsed.length === 0 ? <p className="text-sm text-[color:var(--muted)]">Parça eklenmedi.</p> : item.partsUsed.map((usage) => (
-                <div key={usage.id} className="flex items-center justify-between gap-4 rounded-[22px] bg-[color:var(--surface-soft-2)] px-4 py-3 text-sm">
-                  <div>
-                    <div className="font-semibold text-[color:var(--foreground)]">{usage.part.name}</div>
-                    <div className="text-[color:var(--muted)]">Adet: {usage.quantity}</div>
-                  </div>
-                  <div className="font-bold text-[color:var(--foreground)]">{usage.part.price ? money(usage.part.price * usage.quantity) : "—"}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
+        <div style={{ display: "flex", gap: 8 }}>
+          <a href={gmapsLink} target="_blank" rel="noreferrer"
+            style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#f3f4f6", borderRadius: 8, textDecoration: "none" }}>
+            🗺️ Haritada Gör
+          </a>
+          <a href={directionsLink} target="_blank" rel="noreferrer"
+            style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#2563eb", borderRadius: 8, textDecoration: "none" }}>
+            🧭 Yol Tarifi
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-function MetricBox({ label, value, note, strong = false }: { label: string; value: string; note: string; strong?: boolean }) {
+/* ─── Input / Field helpers ─── */
+const F: React.CSSProperties = { width: "100%", padding: "9px 12px", border: "1.5px solid #e5e7eb", borderRadius: 9, fontSize: 13, fontFamily: "inherit", outline: "none", background: "#fff", color: "#111827", boxSizing: "border-box" };
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className={`rounded-[28px] border border-white/10 ${strong ? "bg-white/14" : "bg-white/10"} p-5 backdrop-blur`}>
-      <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-white/54">{label}</div>
-      <div className="mt-3 text-2xl font-black tracking-[-0.04em] text-white">{value}</div>
-      <div className="mt-2 text-sm leading-6 text-white/72">{note}</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+      <label style={{ fontSize: 11, fontWeight: 700, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</label>
+      {children}
     </div>
   );
 }
 
-function InfoLine({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-4 rounded-[20px] bg-[color:var(--surface-soft-2)] px-4 py-3 text-sm">
-      <span className="text-[color:var(--muted)]">{label}</span>
-      <span className="max-w-[70%] text-right font-semibold text-[color:var(--foreground)]">{value}</span>
+/* ─── Page ─── */
+export default function WorkOrderDetailPage() {
+  const params = useParams<{ id: string }>();
+  const [item, setItem]             = useState<WorkOrder | null>(null);
+  const [technicians, setTechs]     = useState<Technician[]>([]);
+  const [assets, setAssets]         = useState<Asset[]>([]);
+  const [attachments, setAttach]    = useState<Attachment[]>([]);
+  const [evidence, setEvidence]     = useState<Evidence>({});
+  const [saving, setSaving]         = useState(false);
+  const [savingEvidence, setSavEv]  = useState(false);
+  const [error, setError]           = useState<string | null>(null);
+  const [success, setSuccess]       = useState<string | null>(null);
+  const [tab, setTab]               = useState<"detay" | "kanit" | "fotolar" | "imza">("detay");
+  const [form, setForm]             = useState({ status: "PENDING", technicianId: "", assetId: "", scheduledAt: "", note: "", laborCost: "0", serviceFee: "0" });
+
+  async function load() {
+    const [itemRes, techRes, evRes, attRes] = await Promise.all([
+      fetch(`/api/work-orders/${params.id}`),
+      fetch(`/api/technicians`),
+      fetch(`/api/work-orders/${params.id}/evidence`),
+      fetch(`/api/work-orders/${params.id}/attachments`),
+    ]);
+    const itemData = await itemRes.json();
+    if (!itemRes.ok) { setError(itemData.error ?? "Yüklenemedi."); return; }
+    setItem(itemData.item);
+    setForm({ status: itemData.item.status, technicianId: itemData.item.technician?.id ?? "", assetId: itemData.item.asset?.id ?? "", scheduledAt: itemData.item.scheduledAt?.slice(0, 16) ?? "", note: itemData.item.note ?? "", laborCost: String((itemData.item.laborCost ?? 0) / 100), serviceFee: String((itemData.item.serviceFee ?? 0) / 100) });
+    setTechs((await techRes.json()).items ?? []);
+    setEvidence((await evRes.json()).item ?? {});
+    setAttach((await attRes.json()).items ?? []);
+    if (itemData.item.customer?.id) {
+      const aRes = await fetch(`/api/assets?customerId=${itemData.item.customer.id}`);
+      setAssets((await aRes.json()).items ?? []);
+    }
+  }
+
+  useEffect(() => { void load(); }, [params.id]);
+
+  const st = item ? (ST[item.status] ?? ST.PENDING) : ST.PENDING;
+
+  const completionList = useMemo(() => [
+    { label: "Teknisyen atandı",       done: !!form.technicianId },
+    { label: "Planlanan saat girildi", done: !!form.scheduledAt },
+    { label: "Servis özeti yazıldı",   done: !!(evidence.summary ?? "").trim() },
+    { label: "Fotoğraf yüklendi",      done: attachments.length > 0 },
+    { label: "İmza alındı",            done: !!evidence.signatureDataUrl },
+  ], [form.technicianId, form.scheduledAt, evidence.summary, evidence.signatureDataUrl, attachments.length]);
+
+  const completionPct = Math.round(completionList.filter(c => c.done).length / completionList.length * 100);
+  const totalCost = useMemo(() => item ? item.laborCost + item.serviceFee + item.partsUsed.reduce((s, u) => s + (u.part.price ?? 0) * u.quantity, 0) : 0, [item]);
+
+  /* Map address — use customer address */
+  const mapAddress = item?.customer?.address;
+  const mapLabel   = [item?.asset?.buildingName ?? item?.asset?.name, item?.customer?.name].filter(Boolean).join(" — ");
+
+  async function saveOrder() {
+    setSaving(true); setError(null); setSuccess(null);
+    const res = await fetch(`/api/work-orders/${params.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: form.status, technicianId: form.technicianId || null, assetId: form.assetId || null, scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null, note: form.note || null, laborCost: Math.round(Number(form.laborCost) * 100), serviceFee: Math.round(Number(form.serviceFee) * 100), completedAt: form.status === "DONE" ? new Date().toISOString() : null }) });
+    const data = await res.json(); setSaving(false);
+    if (!res.ok) { setError(data.error ?? "Kaydedilemedi."); return; }
+    setSuccess("İş emri güncellendi ✓"); await load();
+  }
+
+  async function saveEv() {
+    setSavEv(true); setError(null);
+    const res = await fetch(`/api/work-orders/${params.id}/evidence`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(evidence) });
+    const data = await res.json(); setSavEv(false);
+    if (!res.ok) { setError(data.error ?? "Kaydedilemedi."); return; }
+    setSuccess("Servis kanıtı kaydedildi ✓");
+  }
+
+  if (!item) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "50vh" }}>
+      {error ? <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px", color: "#b91c1c", fontSize: 13 }}>{error}</div>
+             : <div style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid #e5e7eb", borderTopColor: "#2563eb", animation: "spin .7s linear infinite" }} />}
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
-}
 
-function MiniMetric({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className={`rounded-[22px] border px-4 py-4 ${strong ? "border-[color:var(--border-strong)] bg-[color:var(--surface-soft)]" : "border-[color:var(--border)] bg-white"}`}>
-      <div className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[color:var(--muted-2)]">{label}</div>
-      <div className="mt-3 text-xl font-black tracking-[-0.04em] text-[color:var(--foreground)]">{value}</div>
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}} input:focus,select:focus,textarea:focus{border-color:#2563eb!important;outline:none!important;}`}</style>
+
+      {/* ── Breadcrumb ── */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#9ca3af" }}>
+        <Link href="/app/work-orders" style={{ color: "#6b7280", textDecoration: "none", fontWeight: 500 }}>← İş Emirleri</Link>
+        <span>/</span>
+        <span style={{ fontFamily: "monospace", fontWeight: 700, color: "#374151" }}>{item.code}</span>
+      </div>
+
+      {/* ── Header card ── */}
+      <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: "20px 24px" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div>
+            {/* Status pill */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 5, background: st.bg, border: `1px solid ${st.border}`, borderRadius: 99, padding: "4px 12px", marginBottom: 10 }}>
+              <div style={{ width: 7, height: 7, borderRadius: "50%", background: st.dot }} />
+              <span style={{ fontSize: 12, fontWeight: 700, color: st.color }}>{st.label}</span>
+            </div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#111827", letterSpacing: "-0.06em", marginBottom: 6 }}>{item.code}</div>
+            <div style={{ fontSize: 14, color: "#6b7280" }}>
+              <span style={{ fontWeight: 600, color: "#374151" }}>{item.customer.name}</span>
+              {item.asset?.name && <><span style={{ margin: "0 6px", color: "#d1d5db" }}>·</span><span>{item.asset.name}</span></>}
+              {item.asset?.buildingName && <><span style={{ margin: "0 6px", color: "#d1d5db" }}>·</span><span>{item.asset.buildingName}</span></>}
+            </div>
+            <div style={{ marginTop: 6, fontSize: 12, color: "#9ca3af" }}>
+              {TYPE_LABEL[item.type] ?? item.type}
+              {item.scheduledAt && <><span style={{ margin: "0 8px" }}>·</span>📅 {fmtDate(item.scheduledAt)}</>}
+              {item.technician?.name && <><span style={{ margin: "0 8px" }}>·</span>👷 {item.technician.name}</>}
+            </div>
+          </div>
+          {/* Completion ring */}
+          <div style={{ textAlign: "center", flexShrink: 0 }}>
+            <div style={{ fontSize: 32, fontWeight: 900, color: completionPct === 100 ? "#22c55e" : completionPct >= 60 ? "#f59e0b" : "#ef4444", letterSpacing: "-1px" }}>%{completionPct}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.5px" }}>Hazırlık</div>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ marginTop: 16, height: 6, background: "#f3f4f6", borderRadius: 99, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#22c55e" : "#2563eb", borderRadius: 99, transition: "width .3s" }} />
+        </div>
+
+        {/* Quick actions */}
+        <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+          <a href={`/service-forms/${item.id}`} target="_blank" rel="noreferrer"
+            style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "#111827", color: "#fff", borderRadius: 8, textDecoration: "none" }}>
+            Servis Formu ↗
+          </a>
+          {item.customer.phone && (
+            <a href={`tel:${item.customer.phone}`}
+              style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", background: "#f3f4f6", color: "#374151", borderRadius: 8, textDecoration: "none" }}>
+              📞 {item.customer.phone}
+            </a>
+          )}
+          <PrintButton className="print-btn-dark" />
+        </div>
+      </div>
+
+      {/* Alerts */}
+      {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c", display: "flex", justifyContent: "space-between" }}>{error}<button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#b91c1c", fontWeight: 700 }}>✕</button></div>}
+      {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
+
+      {/* ── Tab bar ── */}
+      <div style={{ display: "flex", gap: 2, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 5 }}>
+        {([
+          { key: "detay",  label: "📋 Detay" },
+          { key: "kanit",  label: "✅ Servis Kanıtı" },
+          { key: "fotolar",label: "📷 Fotoğraflar" },
+          { key: "imza",   label: "✍️ İmza" },
+        ] as const).map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)}
+            style={{ flex: 1, padding: "8px 14px", borderRadius: 9, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: tab === t.key ? "#111827" : "transparent", color: tab === t.key ? "#fff" : "#6b7280", transition: "all .15s" }}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ══════════ DETAY TAB ══════════ */}
+      {tab === "detay" && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 20, alignItems: "start" }}>
+          {/* LEFT */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+            {/* Map — always on top */}
+            {(mapAddress || mapLabel) && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#9ca3af", marginBottom: 8 }}>📍 KONUM</div>
+                <EmbeddedMap address={mapAddress} label={mapLabel} />
+              </div>
+            )}
+
+            {/* Operasyon kartı */}
+            <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Operasyon Güncelle</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <Field label="Durum">
+                  <select style={F} value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
+                    {Object.entries(ST).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                  </select>
+                </Field>
+                <Field label="Teknisyen">
+                  <select style={F} value={form.technicianId} onChange={e => setForm(f => ({ ...f, technicianId: e.target.value }))}>
+                    <option value="">— Seçin —</option>
+                    {technicians.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </Field>
+                <Field label="Asansör">
+                  <select style={F} value={form.assetId} onChange={e => setForm(f => ({ ...f, assetId: e.target.value }))}>
+                    <option value="">— Seçin —</option>
+                    {assets.map(a => <option key={a.id} value={a.id}>{a.name}{a.buildingName ? ` · ${a.buildingName}` : ""}</option>)}
+                  </select>
+                </Field>
+                <Field label="Planlanan Tarih">
+                  <input style={F} type="datetime-local" value={form.scheduledAt} onChange={e => setForm(f => ({ ...f, scheduledAt: e.target.value }))} />
+                </Field>
+                <Field label="İşçilik (₺)">
+                  <input style={F} type="number" value={form.laborCost} onChange={e => setForm(f => ({ ...f, laborCost: e.target.value }))} />
+                </Field>
+                <Field label="Servis Ücreti (₺)">
+                  <input style={F} type="number" value={form.serviceFee} onChange={e => setForm(f => ({ ...f, serviceFee: e.target.value }))} />
+                </Field>
+                <div style={{ gridColumn: "1 / 3" }}>
+                  <Field label="Not">
+                    <textarea style={{ ...F, minHeight: 70, resize: "vertical" }} value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))} placeholder="İş emri notu..." />
+                  </Field>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+                <button onClick={saveOrder} disabled={saving} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: saving ? 0.6 : 1 }}>
+                  {saving ? "Kaydediliyor..." : "Kaydet"}
+                </button>
+                {form.status !== "IN_PROGRESS" && (
+                  <button onClick={() => setForm(f => ({ ...f, status: "IN_PROGRESS" }))} style={{ background: "#fefce8", color: "#92400e", border: "1px solid #fde68a", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
+                    Başlat
+                  </button>
+                )}
+                {form.status !== "DONE" && (
+                  <button onClick={() => setForm(f => ({ ...f, status: "DONE" }))} style={{ background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
+                    Tamamlandı
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Finance */}
+            <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 14 }}>Finans</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
+                {[{ label: "İşçilik", val: money(item.laborCost) }, { label: "Servis", val: money(item.serviceFee) }, { label: "Parçalar", val: money(item.partsUsed.reduce((s, u) => s + (u.part.price ?? 0) * u.quantity, 0)) }, { label: "Toplam", val: money(totalCost) }].map(k => (
+                  <div key={k.label} style={{ background: "#f9fafb", borderRadius: 10, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 4 }}>{k.label}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: "#111827" }}>{k.val}</div>
+                  </div>
+                ))}
+              </div>
+              {item.partsUsed.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {item.partsUsed.map(u => (
+                    <div key={u.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#f9fafb", borderRadius: 9, fontSize: 13 }}>
+                      <div><div style={{ fontWeight: 600, color: "#111827" }}>{u.part.name}</div><div style={{ color: "#9ca3af", fontSize: 11 }}>Adet: {u.quantity}</div></div>
+                      <div style={{ fontWeight: 700 }}>{u.part.price ? money(u.part.price * u.quantity) : "—"}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {item.invoice && (
+                <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, background: "#f0fdf4", borderRadius: 9, padding: "10px 14px" }}>
+                  <span style={{ fontSize: 12, color: "#166534", fontWeight: 600 }}>Fatura:</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#166534" }}>{item.invoice.number}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT — Completion checklist + Customer info */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+            {/* Completion checklist */}
+            <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 18 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>Kapanış Hazırlığı</div>
+                <span style={{ fontSize: 18, fontWeight: 900, color: completionPct === 100 ? "#22c55e" : completionPct >= 60 ? "#f59e0b" : "#ef4444" }}>%{completionPct}</span>
+              </div>
+              <div style={{ height: 5, background: "#f3f4f6", borderRadius: 99, overflow: "hidden", marginBottom: 14 }}>
+                <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#22c55e" : "#2563eb", borderRadius: 99 }} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {completionList.map(c => (
+                  <div key={c.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "#f9fafb", borderRadius: 8 }}>
+                    <span style={{ fontSize: 12, color: "#374151" }}>{c.label}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 99, background: c.done ? "#f0fdf4" : "#f3f4f6", color: c.done ? "#166534" : "#6b7280" }}>{c.done ? "✓" : "Eksik"}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Customer info */}
+            <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 18 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 12 }}>Müşteri & Konum</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                {[["Müşteri", item.customer.name], ["Telefon", item.customer.phone], ["E-posta", item.customer.email], ["Adres", item.customer.address], ["Asansör", item.asset?.name], ["Bina", item.asset?.buildingName], ["Asansör No", item.asset?.elevatorIdNo]].filter(([, v]) => v).map(([l, v], i, arr) => (
+                  <div key={l as string} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "10px 0", borderBottom: i < arr.length - 1 ? "1px solid #f3f4f6" : "none", gap: 12 }}>
+                    <span style={{ fontSize: 12, color: "#9ca3af", flexShrink: 0 }}>{l}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#111827", textAlign: "right" }}>{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════ KANİT TAB ══════════ */}
+      {tab === "kanit" && (
+        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 18 }}>Servis Kanıtı ve Onay</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <Field label="Başlangıç Saati">
+              <input style={F} type="datetime-local" value={evidence.startedAt?.slice(0, 16) ?? ""} onChange={e => setEvidence(ev => ({ ...ev, startedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} />
+            </Field>
+            <Field label="Bitiş Saati">
+              <input style={F} type="datetime-local" value={evidence.endedAt?.slice(0, 16) ?? ""} onChange={e => setEvidence(ev => ({ ...ev, endedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} />
+            </Field>
+            <Field label="Servis Sonucu">
+              <input style={F} value={evidence.serviceOutcome ?? ""} onChange={e => setEvidence(ev => ({ ...ev, serviceOutcome: e.target.value }))} placeholder="Bakım tamamlandı / parça bekleniyor..." />
+            </Field>
+            <Field label="Onaylayan Kişi">
+              <input style={F} value={evidence.signoffName ?? ""} onChange={e => setEvidence(ev => ({ ...ev, signoffName: e.target.value }))} placeholder="Bina yöneticisi..." />
+            </Field>
+            <Field label="Sahadaki Muhatap">
+              <input style={F} value={evidence.customerContact ?? ""} onChange={e => setEvidence(ev => ({ ...ev, customerContact: e.target.value }))} />
+            </Field>
+            <Field label="Konum Notu">
+              <input style={F} value={evidence.locationNote ?? ""} onChange={e => setEvidence(ev => ({ ...ev, locationNote: e.target.value }))} placeholder="Bina arka giriş, 3. kat..." />
+            </Field>
+            <div style={{ gridColumn: "1 / 3" }}>
+              <Field label="Servis Özeti">
+                <textarea style={{ ...F, minHeight: 90, resize: "vertical" }} value={evidence.summary ?? ""} onChange={e => setEvidence(ev => ({ ...ev, summary: e.target.value }))} placeholder="Yapılan işlem, tespit ve öneriler..." />
+              </Field>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+            <button onClick={saveEv} disabled={savingEvidence} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: savingEvidence ? 0.6 : 1 }}>
+              {savingEvidence ? "Kaydediliyor..." : "Kanıtı Kaydet"}
+            </button>
+            <button onClick={() => setEvidence(ev => ({ ...ev, summary: item.note ?? ev.summary }))} style={{ background: "#f3f4f6", color: "#374151", border: "none", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
+              İş emri notunu aktar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════ FOTOĞRAF TAB ══════════ */}
+      {tab === "fotolar" && (
+        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Fotoğraf Kanıtları</div>
+          <PhotoUploader workOrderId={item.id} onUploaded={newItems => setAttach(prev => [...newItems, ...prev])} />
+          {attachments.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "32px 0", color: "#9ca3af", fontSize: 13 }}>Henüz fotoğraf yüklenmedi.</div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 16 }}>
+              {attachments.map(a => (
+                <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ borderRadius: 12, overflow: "hidden", border: "1px solid #e5e7eb", display: "block", textDecoration: "none" }}>
+                  <img src={a.url} alt={a.originalName} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
+                  <div style={{ padding: "10px 12px", fontSize: 11, fontWeight: 600, color: "#6b7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.originalName}</div>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══════════ İMZA TAB ══════════ */}
+      {tab === "imza" && (
+        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 24 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Müşteri İmzası</div>
+          <SignaturePad value={evidence.signatureDataUrl} onChange={signatureDataUrl => setEvidence(ev => ({ ...ev, signatureDataUrl }))} />
+          {evidence.signatureDataUrl && (
+            <button onClick={saveEv} style={{ marginTop: 14, background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer" }}>
+              İmzayı Kaydet
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
