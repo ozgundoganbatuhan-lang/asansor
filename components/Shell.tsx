@@ -203,16 +203,23 @@ export default function Shell({ children }: { children: ReactNode }) {
         <div onClick={() => setOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.65)", zIndex:59, backdropFilter:"blur(2px)" }} />
       )}
 
-      {/* ── MAIN CONTENT: flex+spacer = guaranteed full width ── */}
-      <div style={{ display:"flex", minHeight:"100vh" }}>
-        {!mob && <div style={{ width:SW, flexShrink:0 }} />}
-        <div style={{ flex:1, minWidth:0, background:"#f9fafb", paddingBottom: mob ? 64 : 0 }}>
-          <main className="page-animate"
-            style={{ padding: mob ? "20px 16px" : "28px 32px",
-              width:"100%", boxSizing:"border-box" as const }}>
-            {children}
-          </main>
-        </div>
+      {/* ── MAIN CONTENT ── */}
+      {/* position:fixed + left:SW + right:0 = GUARANTEED full remaining width */}
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: mob ? 0 : SW,
+        right: 0,
+        bottom: 0,
+        overflowY: "auto",
+        background: "#f9fafb",
+        paddingBottom: mob ? 64 : 0,
+        zIndex: 10,
+      }}>
+        <main className="page-animate"
+          style={{ padding: mob ? "20px 16px" : "28px 32px" }}>
+          {children}
+        </main>
       </div>
 
       {/* Mobile bottom nav */}

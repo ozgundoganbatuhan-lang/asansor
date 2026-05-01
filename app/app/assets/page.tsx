@@ -142,7 +142,7 @@ export default function AssetsPage() {
       )}
 
       {/* KPI cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
         {[
           { label: "Toplam asansör", value: assets.length, color: "#2563eb", bg: "#eff6ff" },
           { label: "Kırmızı etiket", value: redCount, color: "#dc2626", bg: "#fef2f2" },
@@ -180,7 +180,7 @@ export default function AssetsPage() {
       {showForm && (
         <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 20 }}>
           <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni asansör ekle</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             {[
               { k: "customerId", l: "Müşteri",        type: "select" },
               { k: "name",       l: "Asansör adı",    type: "text" },
@@ -228,7 +228,7 @@ export default function AssetsPage() {
           <div style={{ fontSize: 13, color: "#94a3b8", marginTop: 6 }}>Arama kriterini değiştirin veya yeni asansör ekleyin.</div>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {filtered.map(asset => {
             const risk = asset.riskScore ?? 0;
             const riskColor = risk >= 70 ? "#dc2626" : risk >= 45 ? "#d97706" : "#059669";
