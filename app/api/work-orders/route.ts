@@ -9,9 +9,16 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const customerId = searchParams.get("customerId") ?? undefined;
+  const assetId    = searchParams.get("assetId")    ?? undefined;
+  const limit      = parseInt(searchParams.get("limit") ?? "100");
 
   const items = await prisma.workOrder.findMany({
-    where: { organizationId: session.orgId, ...(customerId ? { customerId } : {}) },
+    where: {
+      organizationId: session.orgId,
+      ...(customerId ? { customerId } : {}),
+      ...(assetId    ? { assetId }    : {}),
+    },
+    take: limit,
     include: {
       customer: { select: { id: true, name: true } },
       technician: { select: { id: true, name: true, initials: true } },
