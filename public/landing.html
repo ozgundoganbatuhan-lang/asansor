@@ -10,6 +10,25 @@ header[style*="position: sticky"][style*="background"]:not(.nav) {
   display: none !important;
 }
 body, html { margin: 0 !important; padding: 0 !important; }
+
+/* ══════════ VIDEO DEMO ══════════ */
+.video-sec{padding:96px 0;background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.video-inner{max-width:960px;margin:0 auto;padding:0 28px;text-align:center}
+.video-badge{display:inline-flex;align-items:center;gap:7px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:999px;padding:5px 14px;font-size:11.5px;font-weight:700;color:#2563eb;letter-spacing:0.05em;margin-bottom:20px}
+.video-h2{font-size:clamp(26px,3.5vw,44px);font-weight:900;letter-spacing:-0.05em;color:var(--ink);line-height:1.08;margin-bottom:14px;text-wrap:balance}
+.video-sub{font-size:15.5px;line-height:1.75;color:var(--ink3);max-width:500px;margin:0 auto 48px}
+.video-wrap{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(15,23,42,.2),0 4px 16px rgba(15,23,42,.08);background:#0f172a;aspect-ratio:16/9}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:pointer}
+.video-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.35);cursor:pointer;transition:background .2s}
+.video-play:hover{background:rgba(15,23,42,.5)}
+.video-play-btn{width:72px;height:72px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3);transition:transform .2s}
+.video-play:hover .video-play-btn{transform:scale(1.08)}
+.video-play-btn svg{margin-left:5px}
+.video-points{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap}
+.video-point{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink2)}
+.video-point svg{color:#22c55e;flex-shrink:0}
+
 </style>
 
 <meta charset="UTF-8">
@@ -805,6 +824,46 @@ hr.pd{border:none;border-top:1px solid var(--border);margin:24px 0}
   </div>
 </div>
 
+
+<!-- ══════════ PRODUCT DEMO VIDEO ══════════ -->
+<section class="video-sec">
+  <div class="video-inner">
+    <div class="video-badge reveal">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+      Ürün Demosu
+    </div>
+    <h2 class="video-h2 reveal" style="transition-delay:.06s">Servisim&apos;i 3 dakikada keşfedin.</h2>
+    <p class="video-sub reveal" style="transition-delay:.1s">
+      Asansör servis operasyonunuzu nasıl dijitalize ettiğimizi, iş emirlerinden QR etiketlere kadar görün.
+    </p>
+
+    <div class="video-wrap reveal" style="transition-delay:.14s" id="vw">
+      <!-- Thumbnail: VIDEO_ID yerine YouTube video ID'nizi girin -->
+      <!-- Örnek URL: https://youtube.com/watch?v=dQw4w9WgXcQ → ID = dQw4w9WgXcQ -->
+      <img class="video-thumb" id="vthumb"
+        src="https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg"
+        alt="Servisim Demo"
+        onerror="this.src='https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg';this.onerror=null"
+      />
+      <div class="video-play" id="vplay" onclick="startVideo()">
+        <div class="video-play-btn">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="#2563eb"><polygon points="5,3 19,12 5,21"/></svg>
+        </div>
+      </div>
+      <iframe id="vframe" src="" data-src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&rel=0&modestbranding=1"
+        allow="autoplay; encrypted-media; fullscreen" allowfullscreen
+        style="display:none;position:absolute;inset:0;width:100%;height:100%;border:0">
+      </iframe>
+    </div>
+
+    <div class="video-points reveal" style="transition-delay:.18s">
+      <span class="video-point"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Kurulum yok, hemen başlayın</span>
+      <span class="video-point"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>14 gün ücretsiz deneyin</span>
+      <span class="video-point"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Türk mevzuatına uygun</span>
+    </div>
+  </div>
+</section>
+
 <!-- ══════════ METRICS ══════════ -->
 <div class="metrics-strip">
   <div class="metrics-inner">
@@ -1235,6 +1294,14 @@ function toggleFaq(btn){
   document.querySelectorAll('.faq-item').forEach(i=>{i.classList.remove('open');i.dataset.open='false';});
   if(!isOpen){item.classList.add('open');item.dataset.open='true';}
 }
+
+function startVideo(){
+  var p=document.getElementById('vplay'),f=document.getElementById('vframe'),t=document.getElementById('vthumb');
+  if(!p||!f)return;
+  p.style.display='none';if(t)t.style.display='none';
+  f.style.display='block';f.src=f.getAttribute('data-src');
+}
+
 </script>
 </body>
 </html>

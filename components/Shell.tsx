@@ -14,25 +14,25 @@ const Ic = ({ d, size = 15 }: { d: string; size?: number }) => (
 );
 
 const NAV = [
-  { group: "Ana Menü", items: [
+  { group:"Ana Menü", items:[
     { href:"/app/dashboard",         label:"Dashboard",         section:"ASTEK",         icon:"M3 13h8V3H3zm10 8h8V11h-8zM3 21h8v-6H3zm10-10h8V3h-8z" },
     { href:"/app/work-orders",       label:"İş Emirleri",       section:"OPERASYON",     icon:"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4", badge:"7" },
     { href:"/app/customers",         label:"Müşteriler",        section:"PORTFÖY",       icon:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z" },
     { href:"/app/assets",            label:"Asansörler",        section:"SERVİSİM FİLO", icon:"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10" },
   ]},
-  { group: "Saha", items: [
+  { group:"Saha", items:[
     { href:"/app/maintenance-plans", label:"Bakım Takvimi",     section:"SAHA",          icon:"M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" },
     { href:"/app/inspections",       label:"Periyodik Kontrol", section:"SAHA",          icon:"M9 12l2 2 4-4M21 12c0 5-4 9-9 9s-9-4-9-9 4-9 9-9 9 4 9 9z" },
     { href:"/app/technicians",       label:"Teknisyenler",      section:"SAHA",          icon:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z" },
     { href:"/app/calendar",          label:"Takvim",            section:"SAHA",          icon:"M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" },
   ]},
-  { group: "Finans", items: [
+  { group:"Finans", items:[
     { href:"/app/contracts", label:"Sözleşmeler", section:"FİNANS", icon:"M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8" },
     { href:"/app/invoices",  label:"Faturalar",   section:"FİNANS", icon:"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4 M7 10l5 5 5-5 M12 15V3" },
     { href:"/app/stock",     label:"Stok",        section:"FİNANS", icon:"M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" },
     { href:"/app/reports",   label:"Raporlar",    section:"FİNANS", icon:"M3 3v18h18 M9 17V9 M14 17V5 M19 17v-7" },
   ]},
-  { group: "Araçlar", items: [
+  { group:"Araçlar", items:[
     { href:"/app/settings",      label:"Ayarlar",          section:"SİSTEM",  icon:"M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" },
     { href:"/app/docs/teklif",   label:"Teklif Şablonu",   section:"ARAÇLAR", icon:"M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6 M9 15h6 M9 11h6" },
     { href:"/app/docs/sozlesme", label:"Sözleşme Şablonu", section:"ARAÇLAR", icon:"M9 12h6 M9 16h6 M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z M14 2v6h6" },
@@ -41,7 +41,7 @@ const NAV = [
 
 const ALL  = NAV.flatMap(g => g.items);
 const MOB4 = ALL.slice(0, 4);
-const SW   = 248;
+const SW   = 248; // sidebar width px
 
 const NO_SHELL = ["/auth","/blog","/public","/marketing","/kvkk","/terms","/privacy","/offline","/service-forms"];
 
@@ -61,45 +61,35 @@ export default function Shell({ children }: { children: ReactNode }) {
   }, []);
   useEffect(() => { setOpen(false); }, [pathname]);
 
+  /* No shell on public routes */
   if (NO_SHELL.some(p => pathname.startsWith(p))) return <>{children}</>;
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const mob = mounted && isMob;
-
   const active = ALL.find(i => isActive(i.href));
-  const crumbSection = active?.section ?? "ASTEK";
-  const crumbLabel   = active?.label   ?? "Servisim";
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/auth/login");
   }
 
-  /* ── Sidebar colour tokens (from HTML design) ── */
-  const C = {
-    bg:     "#0d1117",
-    border: "#1e2d3d",
-    hover:  "#1c2333",
-    active: "#1d2d50",
-    text:   "#8b9ab0",
-    textA:  "#e2e8f0",
-  };
+  const C = { bg:"#0d1117", border:"#1e2d3d", hover:"#1c2333", active:"#1d2d50", text:"#8b9ab0", textA:"#e2e8f0" };
 
   return (
     <>
+      {/* Global styles for shell */}
       <style>{`
         html,body{margin:0;padding:0;}
-        .shell-nav-link{display:flex;align-items:center;gap:9px;padding:7px 12px;margin:1px 8px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;color:${C.text};transition:background .1s,color .1s;position:relative;}
-        .shell-nav-link:hover{background:${C.hover};color:${C.textA};}
-        .shell-nav-link.active{background:${C.active};color:${C.textA};font-weight:600;}
-        .shell-topbar-search:hover{border-color:#d1d5db!important;}
-        .shell-notif:hover{border-color:#d1d5db!important;}
-        ::-webkit-scrollbar{width:4px;height:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:99px;}
+        .snl{display:flex;align-items:center;gap:9px;padding:7px 12px;margin:1px 8px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;color:${C.text};position:relative;transition:background .1s,color .1s;}
+        .snl:hover{background:${C.hover};color:${C.textA};}
+        .snl.on{background:${C.active};color:${C.textA};font-weight:600;}
       `}</style>
 
-      <div style={{ display:"flex", minHeight:"100vh", fontFamily:"'DM Sans','Plus Jakarta Sans',system-ui,sans-serif" }}>
+      {/* ── Root: padding-left pushes content right of sidebar ── */}
+      <div style={{ paddingLeft: mob ? 0 : SW, minHeight:"100vh",
+        fontFamily:"'DM Sans','Plus Jakarta Sans',system-ui,sans-serif" }}>
 
-        {/* ═════════ SIDEBAR ═════════ */}
+        {/* ════ SIDEBAR (fixed) ════ */}
         <aside style={{
           position:"fixed", top:0, left:0, width:SW, height:"100vh",
           background:C.bg, display:"flex", flexDirection:"column",
@@ -133,9 +123,8 @@ export default function Shell({ children }: { children: ReactNode }) {
 
           {/* Search */}
           <div style={{ padding:"10px 12px", borderBottom:`1px solid ${C.border}`, flexShrink:0 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:8,
-              background:C.hover, border:`1px solid ${C.border}`,
-              borderRadius:6, padding:"7px 10px", cursor:"pointer" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, background:C.hover,
+              border:`1px solid ${C.border}`, borderRadius:6, padding:"7px 10px", cursor:"pointer" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.text}
                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 style={{ display:"inline-flex", flexShrink:0 }}>
@@ -171,7 +160,7 @@ export default function Shell({ children }: { children: ReactNode }) {
             </Link>
           </div>
 
-          {/* Nav */}
+          {/* Nav groups */}
           <nav style={{ flex:1, overflowY:"auto", scrollbarWidth:"none" as const, paddingBottom:8 }}>
             {NAV.map(group => (
               <div key={group.group}>
@@ -181,16 +170,16 @@ export default function Shell({ children }: { children: ReactNode }) {
                   {group.group}
                 </div>
                 {group.items.map(item => {
-                  const act = isActive(item.href);
+                  const on = isActive(item.href);
                   return (
                     <Link key={item.href} href={item.href}
-                      className={`shell-nav-link${act ? " active" : ""}`}>
-                      {act && <span style={{ position:"absolute", left:0, top:"50%",
+                      className={`snl${on ? " on" : ""}`}>
+                      {on && <span style={{ position:"absolute", left:0, top:"50%",
                         transform:"translateY(-50%)", width:3, height:16,
                         background:"#3b82f6", borderRadius:3 }} />}
                       <span style={{ width:15, height:15, display:"inline-flex",
                         alignItems:"center", justifyContent:"center", flexShrink:0,
-                        color: act ? "#60a5fa" : C.text }}>
+                        color: on ? "#60a5fa" : C.text }}>
                         <Ic d={item.icon} size={15} />
                       </span>
                       <span style={{ flex:1, overflow:"hidden", textOverflow:"ellipsis",
@@ -214,7 +203,6 @@ export default function Shell({ children }: { children: ReactNode }) {
 
           {/* Bottom */}
           <div style={{ flexShrink:0, borderTop:`1px solid ${C.border}` }}>
-            {/* Trial */}
             <div style={{ margin:"12px 12px 4px", background:C.hover,
               borderRadius:10, padding:"10px 12px" }}>
               <div style={{ display:"flex", justifyContent:"space-between",
@@ -224,15 +212,13 @@ export default function Shell({ children }: { children: ReactNode }) {
               </div>
               <div style={{ height:4, background:"rgba(255,255,255,.1)",
                 borderRadius:99, overflow:"hidden" }}>
-                <div style={{ height:"100%", width:"73%",
-                  background:"#3b82f6", borderRadius:99 }} />
+                <div style={{ height:"100%", width:"73%", background:"#3b82f6", borderRadius:99 }} />
               </div>
               <Link href="/app/upgrade" style={{ display:"block", fontSize:11,
                 fontWeight:600, color:"#3b82f6", marginTop:8, textDecoration:"none" }}>
                 Pro&apos;ya yükselt →
               </Link>
             </div>
-            {/* User */}
             <div style={{ padding:"10px 12px", display:"flex", alignItems:"center", gap:9 }}>
               <div style={{ width:32, height:32, borderRadius:"50%", flexShrink:0,
                 background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
@@ -268,31 +254,20 @@ export default function Shell({ children }: { children: ReactNode }) {
               zIndex:59, backdropFilter:"blur(2px)" }} />
         )}
 
-        {/* ═════════ MAIN ═════════ */}
-        <div style={{
-          position:"absolute",
-          top:0,
-          left: mob ? 0 : SW,
-          right:0,
-          bottom:0,
-          display:"flex",
-          flexDirection:"column",
-          minHeight:"100vh",
-        }}>
+        {/* ════ MAIN CONTENT (padding-left pushes it, so it fills remaining width naturally) ════ */}
+        <div style={{ display:"flex", flexDirection:"column", minHeight:"100vh" }}>
 
           {/* ── Topbar / Header ── */}
           <header style={{
             position:"sticky", top:0, zIndex:40,
-            background:"#fff",
-            borderBottom:"1px solid #e5e7eb",
-            height:58,
-            display:"flex", alignItems:"center",
+            background:"#fff", borderBottom:"1px solid #e5e7eb",
+            height:58, display:"flex", alignItems:"center",
             justifyContent:"space-between",
             padding: mob ? "0 16px" : "0 28px",
-            gap:16, flexShrink:0,
+            gap:16,
           }}>
-            {/* Left: hamburger (mob) + breadcrumb */}
-            <div style={{ display:"flex", alignItems:"center", gap:12, overflow:"hidden" }}>
+            {/* Left: mobile hamburger + breadcrumb */}
+            <div style={{ display:"flex", alignItems:"center", gap:12, overflow:"hidden", flex:1 }}>
               {mob && (
                 <button onClick={() => setOpen(v => !v)}
                   style={{ width:36, height:36, borderRadius:8,
@@ -303,17 +278,17 @@ export default function Shell({ children }: { children: ReactNode }) {
                   <Ic d="M4 6h16M4 12h16M4 18h16" size={16} />
                 </button>
               )}
-              {/* Breadcrumb — THIS IS THE PAGE TITLE IN THE HEADER */}
+              {/* Page title in header */}
               <div style={{ overflow:"hidden" }}>
                 <div style={{ fontSize:10, fontWeight:700, color:"#9ca3af",
                   textTransform:"uppercase", letterSpacing:"0.5px",
                   lineHeight:1, marginBottom:3 }}>
-                  {crumbSection}
+                  {active?.section ?? "ASTEK"}
                 </div>
                 <div style={{ fontSize:18, fontWeight:800, color:"#111827",
                   letterSpacing:"-0.04em", lineHeight:1,
                   overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                  {crumbLabel}
+                  {active?.label ?? "Servisim"}
                 </div>
               </div>
             </div>
@@ -321,12 +296,9 @@ export default function Shell({ children }: { children: ReactNode }) {
             {/* Right: search + notification + CTA */}
             <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
               {!mob && (
-                <div className="shell-topbar-search"
-                  style={{ display:"flex", alignItems:"center", gap:6,
-                    background:"#f9fafb", border:"1px solid #e5e7eb",
-                    borderRadius:8, padding:"6px 12px",
-                    cursor:"pointer", minWidth:160,
-                    transition:"border-color .12s" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:6,
+                  background:"#f9fafb", border:"1px solid #e5e7eb",
+                  borderRadius:8, padding:"6px 12px", cursor:"pointer", minWidth:160 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                     stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     style={{ display:"inline-flex", flexShrink:0 }}>
@@ -337,13 +309,10 @@ export default function Shell({ children }: { children: ReactNode }) {
                     borderRadius:3, padding:"1px 5px", fontFamily:"monospace" }}>⌘K</kbd>
                 </div>
               )}
-              <button className="shell-notif"
-                style={{ width:36, height:36, background:"#fff",
-                  border:"1px solid #e5e7eb", borderRadius:8,
-                  cursor:"pointer", display:"inline-flex",
-                  alignItems:"center", justifyContent:"center",
-                  color:"#6b7280", position:"relative" as const,
-                  transition:"border-color .12s" }}>
+              <button style={{ width:36, height:36, background:"#fff",
+                border:"1px solid #e5e7eb", borderRadius:8, cursor:"pointer",
+                display:"inline-flex", alignItems:"center", justifyContent:"center",
+                color:"#6b7280", position:"relative" as const }}>
                 <Ic d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9 M13.73 21a2 2 0 01-3.46 0" size={15} />
                 <div style={{ position:"absolute", top:8, right:8, width:6, height:6,
                   borderRadius:"50%", background:"#ef4444", border:"2px solid #fff" }} />
@@ -360,10 +329,10 @@ export default function Shell({ children }: { children: ReactNode }) {
             </div>
           </header>
 
-          {/* ── Page content ── */}
+          {/* ── Page content — full width of remaining space ── */}
           <main className="page-animate"
             style={{ flex:1, padding: mob ? "20px 16px" : "24px 28px",
-              background:"#f9fafb", width:"100%", boxSizing:"border-box" as const }}>
+              background:"#f9fafb", boxSizing:"border-box" as const }}>
             {children}
           </main>
         </div>
@@ -374,13 +343,13 @@ export default function Shell({ children }: { children: ReactNode }) {
             background:"#fff", borderTop:"1px solid #e5e7eb", zIndex:50,
             display:"flex", alignItems:"center" }}>
             {MOB4.map(item => {
-              const act = isActive(item.href);
+              const on = isActive(item.href);
               return (
                 <Link key={item.href} href={item.href} style={{
                   flex:1, display:"flex", flexDirection:"column",
                   alignItems:"center", justifyContent:"center",
                   gap:3, padding:"8px 4px",
-                  color: act ? "#2563eb" : "#9ca3af",
+                  color: on ? "#2563eb" : "#9ca3af",
                   fontSize:9.5, fontWeight:600, textDecoration:"none",
                 }}>
                   <Ic d={item.icon} size={20} />
