@@ -97,11 +97,6 @@ export default function ContractsPage() {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-        <div>
-          <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", color: "#9ca3af", marginBottom: 4 }}>Finans</div>
-          <h1 style={{ fontSize: 26, fontWeight: 700, color: "#111827", letterSpacing: "-0.5px", margin: 0 }}>Sözleşmeler</h1>
-          <p style={{ fontSize: 13, color: "#6b7280", marginTop: 4 }}>Bakım sözleşmeleri — Asansör İşletme ve Bakım Yönetmeliği uyumlu</p>
-        </div>
         <OnboardingBeacon forStep={3} label="👆 Yeni sözleşme oluşturun">
           <button data-tour="new-contract-btn" onClick={() => setShowForm(!showForm)}
             style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#2563eb", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
