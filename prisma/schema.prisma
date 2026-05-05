@@ -17,6 +17,7 @@ model Organization {
   trialEndsAt DateTime @default(dbgenerated("NOW() + INTERVAL '30 days'"))
   createdAt DateTime @default(now())
   phone     String?
+  email     String?
   website   String?
   updatedAt DateTime @updatedAt
 
@@ -66,6 +67,8 @@ model Customer {
   phone          String?
   email          String?
   address        String?
+  latitude       Float?   // Google Places koordinat
+  longitude      Float?   // Google Places koordinat
   taxId          String?
   identityNo     String?  // TC Kimlik No (opsiyonel)
   notes          String?
@@ -111,6 +114,7 @@ model Asset {
 
   createdAt DateTime @default(now())
   phone     String?
+  email     String?
   website   String?
   updatedAt DateTime @updatedAt
 
@@ -251,6 +255,7 @@ model Invoice {
   paidAt    DateTime?
   createdAt DateTime @default(now())
   phone     String?
+  email     String?
   website   String?
   updatedAt DateTime @updatedAt
 }
@@ -308,6 +313,7 @@ model Contract {
 
   createdAt DateTime @default(now())
   phone     String?
+  email     String?
   website   String?
   updatedAt DateTime @updatedAt
 
@@ -354,6 +360,7 @@ model Inspection {
 
   createdAt DateTime @default(now())
   phone     String?
+  email     String?
   website   String?
   updatedAt DateTime @updatedAt
 }

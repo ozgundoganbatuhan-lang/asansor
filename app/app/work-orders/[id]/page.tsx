@@ -61,15 +61,22 @@ function fmtDate(v?: string | null) {
 }
 
 /* ─── Embedded Map (OpenStreetMap iframe — no API key) ─── */
-function EmbeddedMap({ address, label }: { address?: string | null; label?: string | null }) {
-  if (!address && !label) return null;
-  // Use address first, fallback to label for geocoding
-  const searchQuery = encodeURIComponent(address || label || "");
-  const labelQuery  = encodeURIComponent([label, address].filter(Boolean).join(", "));
-  // Google Maps embed (works without API key for basic search)
-  const gmapsEmbed = `https://maps.google.com/maps?q=${searchQuery}&output=embed&z=15`;
-  const gmapsLink  = `https://www.google.com/maps/search/?api=1&query=${labelQuery}`;
-  const directionsLink = `https://www.google.com/maps/dir/?api=1&destination=${searchQuery}`;
+function EmbeddedMap({ address, label, lat, lng }: { address?: string | null; label?: string | null; lat?: number | null; lng?: number | null }) {
+  if (!address && !label && !lat) return null;
+  // If we have coordinates, use them — much more accurate than text search
+  const hasCoords  = lat != null && lng != null;
+  const coordStr   = hasCoords ? `${lat},${lng}` : null;
+  const searchQuery= encodeURIComponent(address || label || "");
+  const labelQuery = encodeURIComponent([label, address].filter(Boolean).join(", "));
+  const gmapsEmbed = hasCoords
+    ? `https://maps.google.com/maps?q=${coordStr}&output=embed&z=16`
+    : `https://maps.google.com/maps?q=${searchQuery}&output=embed&z=15`;
+  const gmapsLink  = hasCoords
+    ? `https://www.google.com/maps/search/?api=1&query=${coordStr}`
+    : `https://www.google.com/maps/search/?api=1&query=${labelQuery}`;
+  const directionsLink = hasCoords
+    ? `https://www.google.com/maps/dir/?api=1&destination=${coordStr}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${searchQuery}`;
 
   return (
     <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", overflow: "hidden", marginBottom: 16 }}>
@@ -173,9 +180,11 @@ export default function WorkOrderDetailPage() {
   const completionPct = Math.round(completionList.filter(c => c.done).length / completionList.length * 100);
   const totalCost = useMemo(() => item ? item.laborCost + item.serviceFee + item.partsUsed.reduce((s, u) => s + (u.part.price ?? 0) * u.quantity, 0) : 0, [item]);
 
-  /* Map address — use customer address */
+  /* Map — prefer lat/lng coordinates from customer, fallback to address string */
+  const mapLat     = (item?.customer as any)?.latitude ?? null;
+  const mapLng     = (item?.customer as any)?.longitude ?? null;
   const mapAddress = item?.customer?.address;
-  const mapLabel   = [item?.asset?.buildingName ?? item?.asset?.name, item?.customer?.name].filter(Boolean).join(" — ");
+  const mapLabel   = item?.customer?.address ?? [item?.asset?.buildingName, item?.customer?.name].filter(Boolean).join(" — ");
 
   async function saveOrder() {
     setSaving(true); setError(null); setSuccess(null);
@@ -290,7 +299,7 @@ export default function WorkOrderDetailPage() {
             {(mapAddress || mapLabel) && (
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#9ca3af", marginBottom: 8 }}>📍 KONUM</div>
-                <EmbeddedMap address={mapAddress} label={mapLabel} />
+                <EmbeddedMap address={mapAddress} label={mapLabel} lat={mapLat} lng={mapLng} />
               </div>
             )}
 

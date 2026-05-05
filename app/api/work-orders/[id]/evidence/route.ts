@@ -33,6 +33,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     customerContact: body.customerContact ?? null,
     locationNote: body.locationNote ?? null,
     signatureDataUrl: body.signatureDataUrl ?? null,
+    technicianSignatureDataUrl: body.technicianSignatureDataUrl ?? null,
+    checklist: body.checklist ?? null,
+    checklistItems: body.checklistItems ?? null,
   });
   return NextResponse.json({ ok: true, item });
 }

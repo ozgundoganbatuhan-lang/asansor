@@ -40,6 +40,8 @@ const schema = z.object({
   phone:       z.string().optional(),
   email:       z.string().email().optional().or(z.literal("")),
   address:     z.string().optional(),
+  latitude:    z.number().optional(),
+  longitude:   z.number().optional(),
   taxId:       z.string().optional(),
   identityNo:  z.string().optional(),
   notes:       z.string().optional(),

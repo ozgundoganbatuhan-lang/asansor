@@ -1,4 +1,5 @@
 "use client";
+import { PlaceAutocomplete } from "@/components/PlaceAutocomplete";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
@@ -15,6 +16,8 @@ export default function CustomersPage() {
   const [name,setName]=useState(""),[contactName,setContactName]=useState(""),
     [phone,setPhone]=useState(""),[ email,setEmail]=useState(""),
     [address,setAddress]=useState(""),
+    [lat,setLat]=useState<number|undefined>(undefined),
+    [lng,setLng]=useState<number|undefined>(undefined),
     [saving,setSaving]=useState(false);
 
   async function load(){setLoading(true);try{const r=await fetch("/api/customers");const d=await r.json();if(d.error)setError(d.error);else setCustomers(d.items??[]);}catch(e:any){setError(e.message);}setLoading(false);}
@@ -25,10 +28,10 @@ export default function CustomersPage() {
   const totalW=filtered.reduce((s,c)=>s+c._count.workOrders,0);
 
   async function submit(e:React.FormEvent){e.preventDefault();setError(null);setSaving(true);
-    const res=await fetch("/api/customers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,contactName:contactName||undefined,phone:phone||undefined,email:email||undefined,address:address||undefined})});
+    const res=await fetch("/api/customers",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,contactName:contactName||undefined,phone:phone||undefined,email:email||undefined,address:address||undefined,latitude:lat,longitude:lng})});
     const d=await res.json().catch(()=>({}));setSaving(false);
     if(!res.ok){setError(d.error??"Müşteri oluşturulamadı");return;}
-    setName("");setContactName("");setPhone("");setEmail("");setAddress("");setShowForm(false);await load();}
+    setName("");setContactName("");setPhone("");setEmail("");setAddress("");setLat(undefined);setLng(undefined);setShowForm(false);await load();}
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:18}}>
@@ -71,20 +74,33 @@ export default function CustomersPage() {
           <div style={{fontSize:14,fontWeight:800,color:"#0f172a",marginBottom:18,letterSpacing:"-0.03em"}}>Yeni Müşteri</div>
           <form onSubmit={submit}>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14}}>
-              {[{l:"Firma / Bina Adı *",v:name,set:setName,t:"text",ph:"ABC Apartman Yönetimi",req:true},
-                {l:"İletişim Kişisi",v:contactName,set:setContactName,t:"text",ph:"Ali Yılmaz"},
-                {l:"Telefon",v:phone,set:setPhone,t:"tel",ph:"05XX XXX XX XX"},
-                {l:"E-posta",v:email,set:setEmail,t:"email",ph:"ali@apartman.com"},
-                {l:"Adres",v:address,set:setAddress,t:"text",ph:"Atatürk Cad. No:5, Kadıköy / İstanbul"}
-              ].map((fi,i)=>(
+              {([
+                {l:"Firma / Bina Adı *",v:name,  set:setName,        t:"text",  ph:"ABC Apartman Yönetimi",req:true},
+                {l:"İletişim Kişisi",  v:contactName,set:setContactName,t:"text",ph:"Ali Yılmaz"},
+                {l:"Telefon",          v:phone,  set:setPhone,        t:"tel",   ph:"05XX XXX XX XX"},
+                {l:"E-posta",          v:email,  set:setEmail,        t:"email", ph:"ali@apartman.com"},
+              ] as {l:string;v:string;set:(v:string)=>void;t:string;ph:string;req?:boolean}[]).map((fi,i)=>(
                 <div key={i}>
                   <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#64748b",marginBottom:7}}>{fi.l}</label>
                   <input className="fi" value={fi.v} onChange={e=>fi.set(e.target.value)} type={fi.t} placeholder={fi.ph} required={fi.req} style={F}/>
                 </div>
               ))}
+              {/* Adres — Google Places Autocomplete */}
+              <div style={{gridColumn:"1 / -1"}}>
+                <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#64748b",marginBottom:7}}>Adres</label>
+                <PlaceAutocomplete
+                  value={address}
+                  onChange={(addr,la,lo)=>{setAddress(addr);if(la!=null)setLat(la);if(lo!=null)setLng(lo);}}
+                  placeholder="Atatürk Cad. No:5, Kadıköy / İstanbul"
+                  style={F}
+                />
+                {lat!=null&&lng!=null&&(
+                  <div style={{fontSize:11,color:"#22c55e",marginTop:4}}>✓ Konum doğrulandı — {lat.toFixed(5)}, {lng.toFixed(5)}</div>
+                )}
+              </div>
             </div>
             <div style={{display:"flex",gap:8,marginTop:18}}>
-              <button type="submit" disabled={saving||!name.trim()} style={{background:"#2563eb",color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 3px 12px rgba(37,99,235,.28)",opacity:saving?.7:1}}>
+              <button type="submit" disabled={saving||!name.trim()} style={{background:"#2563eb",color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer",fontFamily:"inherit",opacity:saving?.7:1}}>
                 {saving?"Oluşturuluyor…":"Müşteri Oluştur"}
               </button>
               <button type="button" onClick={()=>setShowForm(false)} style={{background:"#fff",color:"#0f172a",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:13,fontWeight:600,padding:"10px 18px",cursor:"pointer",fontFamily:"inherit"}}>İptal</button>

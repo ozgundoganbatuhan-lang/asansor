@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { readWorkOrderEvidence } from "@/lib/work-order-evidence";
 import { prisma } from "@/lib/prisma";
 import { verifyAssetShareToken } from "@/lib/asset-share";
 import { statusLabel, inspectionDueDate, daysBetween } from "@/lib/utils";
@@ -31,7 +32,7 @@ export default async function PublicAssetPage({
           contractAssets:{include:{contract:{select:{id:true,contractNumber:true,fileUrl:true,startDate:true,endDate:true,status:true}}}},
         },
       }),
-      orgId ? prisma.organization.findUnique({where:{id:orgId},select:{name:true,phone:true,website:true}}) : Promise.resolve(null),
+      orgId ? prisma.organization.findUnique({where:{id:orgId},select:{name:true,phone:true,email:true,website:true}}) : Promise.resolve(null),
     ]);
   } catch(err) {
     console.error("[PublicAssetPage] error:", err);
@@ -39,6 +40,33 @@ export default async function PublicAssetPage({
   }
 
   if(!asset) return <Err title="Asansör bulunamadı" desc="Bu QR koda ait asansör kaydı sistemde mevcut değil." />;
+
+  // Load evidence for each work order (parallel, no throw)
+  const evidenceMap: Record<string, any> = {};
+  if(asset.workOrders?.length) {
+    const results = await Promise.allSettled(
+      asset.workOrders.map(async (w: any) => {
+        const ev = await readWorkOrderEvidence(asset.organizationId, w.id);
+        return { id: w.id, ev };
+      })
+    );
+    for(const r of results) {
+      if(r.status === "fulfilled") evidenceMap[r.value.id] = r.value.ev;
+    }
+  }
+
+  // Load attachments for each work order
+  const attachmentsMap: Record<string, string[]> = {};
+  for(const w of (asset.workOrders ?? [])) {
+    try {
+      const { readdir } = await import("node:fs/promises");
+      const { join } = await import("node:path");
+      const dir = join(process.cwd(), "public", "uploads", "work-orders", asset.organizationId, w.id, "attachments");
+      const files = await readdir(dir).catch(() => []);
+      attachmentsMap[w.id] = files.filter((f: string) => /\.(jpg|jpeg|png|webp)$/i.test(f))
+        .map((f: string) => `/uploads/work-orders/${asset.organizationId}/${w.id}/attachments/${f}`);
+    } catch {}
+  }
 
   // ── Computed ──────────────────────────────────────────────
   const latestInsp = asset.inspections[0];
@@ -54,6 +82,7 @@ export default async function PublicAssetPage({
   const orgName    = org?.name ?? (process.env.NEXT_PUBLIC_ORG_NAME ?? "Servis Firması");
   const orgPhone   = org?.phone ?? (process.env.NEXT_PUBLIC_SUPPORT_PHONE_DISPLAY ?? "+90 555 000 00 00");
   const orgPhoneRaw= (org?.phone ?? process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "+905550000000").replace(/\D/g,"");
+  const orgEmail   = org?.email ?? null;
   const orgWebsite = org?.website ?? process.env.NEXT_PUBLIC_ORG_WEBSITE ?? null;
   const orgEmail   = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "info@servisim.app";
   const waLink     = `https://wa.me/${orgPhoneRaw}?text=Servis%20bilgisi%20almak%20istiyorum`;
@@ -150,18 +179,112 @@ export default async function PublicAssetPage({
             {asset.workOrders.length===0 ? (
               <div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"14px",fontSize:13,color:"rgba(255,255,255,0.4)"}}>Henüz servis kaydı bulunmuyor.</div>
             ) : asset.workOrders.map((w:any)=>(
-              <article key={w.id} style={{background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"14px 18px"}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,flexWrap:"wrap",marginBottom:8}}>
-                  <div>
-                    <div style={{fontSize:13,fontWeight:700}}>{w.code}</div>
-                    <div style={{fontSize:11.5,color:"rgba(255,255,255,0.45)",marginTop:2}}>{new Date(w.createdAt).toLocaleDateString("tr-TR")} · {w.technician?.name??"—"}</div>
-                  </div>
-                  <span style={{background:"rgba(255,255,255,0.12)",borderRadius:999,padding:"3px 10px",fontSize:10.5,fontWeight:700}}>{statusLabel(w.status)}</span>
-                </div>
-                <div style={{background:"rgba(255,255,255,0.06)",borderRadius:10,padding:"10px 13px",fontSize:12.5,lineHeight:1.6,color:"rgba(255,255,255,0.55)"}}>
-                  {(w as any).note||"Servis özeti eklenmedi."}
-                </div>
-              </article>
+              {(() => {
+                const ev = evidenceMap[w.id] ?? {};
+                const photos = attachmentsMap[w.id] ?? [];
+                const chk = ev.checklist ?? [];
+                const chkItems = ev.checklistItems ?? chk;
+                const chkTotal = chkItems.length || 6;
+                const chkPct = chkTotal > 0 ? Math.round((chk.length / chkTotal) * 100) : 0;
+                const hasCustomerSig = !!ev.signatureDataUrl;
+                const hasTechSig = !!ev.technicianSignatureDataUrl;
+                return (
+                  <article key={w.id} style={{background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"14px 18px"}}>
+                    {/* Header */}
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,flexWrap:"wrap",marginBottom:10}}>
+                      <div>
+                        <div style={{fontSize:13,fontWeight:700}}>{w.code}</div>
+                        <div style={{fontSize:11.5,color:"rgba(255,255,255,0.45)",marginTop:2}}>{new Date(w.createdAt).toLocaleDateString("tr-TR")} · {w.technician?.name??"Teknisyen atanmadı"}</div>
+                      </div>
+                      <span style={{background:"rgba(255,255,255,0.12)",borderRadius:999,padding:"3px 10px",fontSize:10.5,fontWeight:700}}>{statusLabel(w.status)}</span>
+                    </div>
+
+                    {/* Summary note */}
+                    {(ev.summary || (w as any).note) && (
+                      <div style={{background:"rgba(255,255,255,0.06)",borderRadius:10,padding:"10px 13px",fontSize:12.5,lineHeight:1.6,color:"rgba(255,255,255,0.7)",marginBottom:10}}>
+                        {ev.summary || (w as any).note}
+                      </div>
+                    )}
+
+                    {/* Evidence badges */}
+                    {(chk.length > 0 || hasCustomerSig || hasTechSig || photos.length > 0) && (
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+                        {chk.length > 0 && (
+                          <span style={{background:"rgba(34,197,94,0.15)",border:"1px solid rgba(34,197,94,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#86efac"}}>
+                            ✓ Kontrol %{chkPct}
+                          </span>
+                        )}
+                        {hasCustomerSig && (
+                          <span style={{background:"rgba(59,130,246,0.15)",border:"1px solid rgba(59,130,246,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#93c5fd"}}>
+                            ✍️ Müşteri imzası
+                          </span>
+                        )}
+                        {hasTechSig && (
+                          <span style={{background:"rgba(168,85,247,0.15)",border:"1px solid rgba(168,85,247,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#c4b5fd"}}>
+                            👷 Teknisyen imzası
+                          </span>
+                        )}
+                        {photos.length > 0 && (
+                          <span style={{background:"rgba(251,191,36,0.15)",border:"1px solid rgba(251,191,36,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#fcd34d"}}>
+                            📷 {photos.length} fotoğraf
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Photos grid */}
+                    {photos.length > 0 && (
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+                        {photos.slice(0,6).map((url:string) => (
+                          <a key={url} href={url} target="_blank" rel="noopener noreferrer"
+                            style={{width:72,height:72,borderRadius:10,overflow:"hidden",display:"block",flexShrink:0}}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={url} alt="Servis fotoğrafı" style={{width:"100%",height:"100%",objectFit:"cover"}} />
+                          </a>
+                        ))}
+                        {photos.length > 6 && (
+                          <div style={{width:72,height:72,borderRadius:10,background:"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.6)"}}>
+                            +{photos.length-6}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Checklist items */}
+                    {chk.length > 0 && (
+                      <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                        {chk.map((item:string) => (
+                          <div key={item} style={{display:"flex",alignItems:"center",gap:7,fontSize:12,color:"rgba(255,255,255,0.65)"}}>
+                            <span style={{color:"#86efac",fontWeight:700}}>✓</span>{item}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Signature previews */}
+                    {(hasCustomerSig || hasTechSig) && (
+                      <div style={{display:"flex",gap:12,marginTop:10,flexWrap:"wrap"}}>
+                        {hasCustomerSig && (
+                          <div style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"10px 14px",flex:1,minWidth:140}}>
+                            <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.4)",marginBottom:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>Müşteri İmzası</div>
+                            <svg viewBox="0 0 320 80" style={{width:"100%",height:60,background:"rgba(255,255,255,0.04)",borderRadius:6}}>
+                              <path d={ev.signatureDataUrl} fill="none" stroke="#93c5fd" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        )}
+                        {hasTechSig && (
+                          <div style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"10px 14px",flex:1,minWidth:140}}>
+                            <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.4)",marginBottom:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>Teknisyen İmzası</div>
+                            <svg viewBox="0 0 320 80" style={{width:"100%",height:60,background:"rgba(255,255,255,0.04)",borderRadius:6}}>
+                              <path d={ev.technicianSignatureDataUrl} fill="none" stroke="#c4b5fd" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </article>
+                );
+              })()}
             ))}
           </div>
         </section>

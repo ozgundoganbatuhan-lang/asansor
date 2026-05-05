@@ -44,10 +44,21 @@ export default function InspectionsPage() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault(); setCreating(true); setErr(null);
-    const res = await fetch("/api/inspections", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ assetId: fAsset, inspectionDate: fDate, nextDueDate: fNext, inspectionBody: fBody || undefined, inspectorName: fInspector || undefined, result: fResult, deficiencies: fDeficiencies || undefined, notes: fNotes || undefined }) });
+    // Upload photos first
+    const photoUrls: string[] = [];
+    for (const photo of fPhotos) {
+      const fd = new FormData();
+      fd.append("file", photo);
+      try {
+        const uploadRes = await fetch("/api/inspections/upload-photo", { method: "POST", body: fd });
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) photoUrls.push(uploadData.url);
+      } catch { /* skip failed uploads */ }
+    }
+    const res = await fetch("/api/inspections", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ assetId: fAsset, inspectionDate: fDate, nextDueDate: fNext, inspectionBody: fBody || undefined, inspectorName: fInspector || undefined, result: fResult, deficiencies: fDeficiencies || undefined, notes: fNotes || undefined, photos: photoUrls.length > 0 ? photoUrls : undefined }) });
     const data = await res.json(); setCreating(false);
     if (!res.ok) { setErr(data.error ?? "Hata"); return; }
-    setSuccess("Muayene kaydedildi ✓"); setShowForm(false); setTimeout(() => setSuccess(null), 4000); await load();
+    setSuccess("Muayene kaydedildi ✓"); setShowForm(false); setFPhotos([]); setTimeout(() => setSuccess(null), 4000); await load();
   }
 
   const upcoming = useMemo(() => assets.filter(a => a.nextInspectionAt).sort((a, b) => new Date(a.nextInspectionAt!).getTime() - new Date(b.nextInspectionAt!).getTime()).slice(0, 10), [assets]);

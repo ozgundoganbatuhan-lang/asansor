@@ -9,7 +9,10 @@ export type WorkOrderEvidence = {
   signoffName?: string | null;
   customerContact?: string | null;
   locationNote?: string | null;
-  signatureDataUrl?: string | null;
+  signatureDataUrl?: string | null;          // Müşteri imzası (SVG path)
+  technicianSignatureDataUrl?: string | null; // Teknisyen imzası (SVG path)
+  checklist?: string[] | null;               // Tamamlanan görev listesi
+  checklistItems?: string[] | null;          // Mevcut görev şablonu
 };
 
 function evidencePath(orgId: string, workOrderId: string) {
