@@ -178,8 +178,7 @@ export default async function PublicAssetPage({
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {asset.workOrders.length===0 ? (
               <div style={{background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"14px",fontSize:13,color:"rgba(255,255,255,0.4)"}}>Henüz servis kaydı bulunmuyor.</div>
-            ) : asset.workOrders.map((w:any)=>(
-              {(() => {
+            ) : asset.workOrders.map((w:any)=>{
                 const ev = evidenceMap[w.id] ?? {};
                 const photos = attachmentsMap[w.id] ?? [];
                 const chk = ev.checklist ?? [];
@@ -284,8 +283,7 @@ export default async function PublicAssetPage({
                     )}
                   </article>
                 );
-              })()}
-            ))}
+              })}
           </div>
         </section>
 
