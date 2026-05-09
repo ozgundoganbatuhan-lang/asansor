@@ -18,10 +18,10 @@ type Contract = {
 };
 
 const ST: Record<string, { label: string; bg: string; color: string; dot: string; border: string }> = {
-  ACTIVE:     { label: "Aktif",         bg: "#f0fdf4", color: "#166534", dot: "#22c55e", border: "#bbf7d0" },
-  DRAFT:      { label: "Taslak",        bg: "#f9fafb", color: "#6b7280", dot: "#9ca3af", border: "#e5e7eb" },
-  EXPIRED:    { label: "Süresi Doldu",  bg: "#fefce8", color: "#92400e", dot: "#f59e0b", border: "#fde68a" },
-  TERMINATED: { label: "Feshedildi",    bg: "#fef2f2", color: "#b91c1c", dot: "#ef4444", border: "#fecaca" },
+  ACTIVE:     { label: "Aktif",         bg: "#E8F5EE", color: "#166534", dot: "#2E7D4F", border: "#9DCFB0" },
+  DRAFT:      { label: "Taslak",        bg: "#F5F2EC", color: "#6b7280", dot: "#9ca3af", border: "#e5e7eb" },
+  EXPIRED:    { label: "Süresi Doldu",  bg: "#fefce8", color: "#92400e", dot: "#C87800", border: "#fde68a" },
+  TERMINATED: { label: "Feshedildi",    bg: "#FCECE8", color: "#C0311A", dot: "#C0311A", border: "#E8A090" },
 };
 const STATUS_FILTERS = ["ALL", "ACTIVE", "EXPIRED", "DRAFT", "TERMINATED"];
 
@@ -98,20 +98,20 @@ export default function ContractsPage() {
       {/* Header */}
       <OnboardingBeacon forStep={3} label="👆 Yeni sözleşme oluşturun">
           <button data-tour="new-contract-btn" onClick={() => setShowForm(!showForm)}
-            style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#2563eb", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
             {showForm ? "✕ Kapat" : "+ Yeni Sözleşme"}
           </button>
         </OnboardingBeacon>
       
             {/* Alerts */}
-      {err && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#b91c1c" }}>✕</button></div>}
-      {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
+      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#C0311A" }}>✕</button></div>}
+      {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
       {/* KPIs */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
         {[
           { label: "Aktif Sözleşme", value: kpis.active, color: "#111827" },
-          { label: "30 Günde Bitiyor", value: kpis.expiring30, color: kpis.expiring30 > 0 ? "#b45309" : "#111827" },
+          { label: "30 Günde Bitiyor", value: kpis.expiring30, color: kpis.expiring30 > 0 ? "#B86800" : "#111827" },
           { label: "Aylık Ciro", value: money(kpis.totalMonthly), color: "#111827", small: true },
         ].map(k => (
           <div key={k.label} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
@@ -125,7 +125,7 @@ export default function ContractsPage() {
       {showForm && (
         <div style={{ background: "#fff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 22 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Yeni Bakım Sözleşmesi</div>
-          <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#1d4ed8", marginBottom: 16 }}>
+          <div style={{ background: "#E4EFF9", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginBottom: 16 }}>
             <strong>📋 Yasal Dayanaklar:</strong> Asansör İşletme ve Bakım Yönetmeliği (6 Nisan 2019) &amp; TS EN 13015
           </div>
           <form onSubmit={create} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -160,9 +160,9 @@ export default function ContractsPage() {
                 <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 8 }}>Kapsam Asansörler</label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {customerAssets.map(a => (
-                    <label key={a.id} style={{ display: "flex", alignItems: "center", gap: 7, padding: "7px 12px", borderRadius: 8, border: `1px solid ${fAssets.includes(a.id) ? "#bfdbfe" : "#e5e7eb"}`, background: fAssets.includes(a.id) ? "#eff6ff" : "#fff", cursor: "pointer", fontSize: 13 }}>
+                    <label key={a.id} style={{ display: "flex", alignItems: "center", gap: 7, padding: "7px 12px", borderRadius: 8, border: `1px solid ${fAssets.includes(a.id) ? "#90BEE0" : "#e5e7eb"}`, background: fAssets.includes(a.id) ? "#E4EFF9" : "#fff", cursor: "pointer", fontSize: 13 }}>
                       <input type="checkbox" checked={fAssets.includes(a.id)} onChange={ev => setFAssets(ev.target.checked ? [...fAssets, a.id] : fAssets.filter(x => x !== a.id))} />
-                      <span style={{ color: fAssets.includes(a.id) ? "#1d4ed8" : "#374151" }}>{a.name}</span>
+                      <span style={{ color: fAssets.includes(a.id) ? "#0F121A" : "#374151" }}>{a.name}</span>
                     </label>
                   ))}
                 </div>
@@ -198,7 +198,7 @@ export default function ContractsPage() {
 
             <div style={{ display: "flex", gap: 8 }}>
               <button type="submit" disabled={!fCustomer || creating}
-                style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fCustomer || creating) ? 0.6 : 1 }}>
+                style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fCustomer || creating) ? 0.6 : 1 }}>
                 {creating ? "Oluşturuluyor…" : "Sözleşme Oluştur →"}
               </button>
               <button type="button" onClick={() => setShowForm(false)}
@@ -230,7 +230,7 @@ export default function ContractsPage() {
       <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, overflow: "hidden" }}>
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
-            <div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin .7s linear infinite" }} />
+            <div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#1B1F2B", borderRadius: "50%", animation: "spin .7s linear infinite" }} />
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
           </div>
         ) : filtered.length === 0 ? (
@@ -243,7 +243,7 @@ export default function ContractsPage() {
             <div key={c.id} style={{
               padding: "14px 18px",
               borderBottom: i < filtered.length - 1 ? "1px solid #f3f4f6" : "none",
-              borderLeft: `4px solid ${expiring ? "#f59e0b" : st.dot}`,
+              borderLeft: `4px solid ${expiring ? "#C87800" : st.dot}`,
               display: "flex", alignItems: "flex-start", gap: 14,
             }}>
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -260,13 +260,13 @@ export default function ContractsPage() {
                   <span>📅 {new Date(c.startDate).toLocaleDateString("tr-TR")} — {c.endDate ? new Date(c.endDate).toLocaleDateString("tr-TR") : "Süresiz"}</span>
                   {c.monthlyFee > 0 && <span style={{ fontWeight: 600, color: "#374151" }}>{money(c.monthlyFee)}/ay</span>}
                   {c.technicianName && <span>👷 {c.technicianName}</span>}
-                  {c.autoRenew && <span style={{ color: "#22c55e" }}>↺ Otomatik yenileme</span>}
-                  {c.hasEncryptionDevice && <span style={{ color: "#f59e0b" }}>🔒 Şifreleme</span>}
+                  {c.autoRenew && <span style={{ color: "#2E7D4F" }}>↺ Otomatik yenileme</span>}
+                  {c.hasEncryptionDevice && <span style={{ color: "#C87800" }}>🔒 Şifreleme</span>}
                 </div>
                 {c.assets.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                     {c.assets.map(ca => (
-                      <span key={ca.asset.id} style={{ background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 500 }}>
+                      <span key={ca.asset.id} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #bfdbfe", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 500 }}>
                         🏢 {ca.asset.name}{ca.asset.elevatorIdNo ? ` #${ca.asset.elevatorIdNo}` : ""}
                       </span>
                     ))}
@@ -275,7 +275,7 @@ export default function ContractsPage() {
               </div>
               {c.status === "ACTIVE" && (
                 <button onClick={async () => { await fetch(`/api/contracts/${c.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: "TERMINATED" }) }); await load(); }}
-                  style={{ background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
+                  style={{ background: "#FCECE8", color: "#C0311A", border: "1px solid #fecaca", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", flexShrink: 0 }}>
                   Feshet
                 </button>
               )}
@@ -285,12 +285,12 @@ export default function ContractsPage() {
       </div>
 
       {/* Legal info */}
-      <div style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
+      <div style={{ background: "#F5F2EC", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
         <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 10 }}>📚 Yasal Zorunluluklar</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
           {["Aylık bakım zorunlu — En az ayda 1 kez","Yıllık periyodik kontrol — A Tipi Muayene Kuruluşu","Bakım föyü zorunlu — Her bakımda imzalanmalı","Teknik sorumlu beyanı — Sözleşmede zorunlu","Şifreleme beyanı — 2019 yönetmeliği gereği","Mesleki sorumluluk sigortası — Min. 500.000 ₺"].map(t => (
             <div key={t} style={{ display: "flex", gap: 7, fontSize: 12, color: "#6b7280" }}>
-              <span style={{ color: "#22c55e", flexShrink: 0 }}>✓</span><span>{t}</span>
+              <span style={{ color: "#2E7D4F", flexShrink: 0 }}>✓</span><span>{t}</span>
             </div>
           ))}
         </div>

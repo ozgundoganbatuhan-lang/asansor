@@ -16,9 +16,9 @@ export default function RoleBadge() {
       display: "inline-flex", alignItems: "center",
       fontSize: 10, fontWeight: 700,
       padding: "3px 8px", borderRadius: 999,
-      background: isTech ? "#fffbeb" : "#eff6ff",
-      color: isTech ? "#92400e" : "#1d4ed8",
-      border: `1px solid ${isTech ? "#fde68a" : "#bfdbfe"}`,
+      background: isTech ? "#FFF3DC" : "#E4EFF9",
+      color: isTech ? "#92400e" : "#0F121A",
+      border: `1px solid ${isTech ? "#fde68a" : "#90BEE0"}`,
     }}>
       {label}
     </span>

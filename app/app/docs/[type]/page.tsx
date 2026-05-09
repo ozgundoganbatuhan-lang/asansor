@@ -238,7 +238,7 @@ export default function DocEditorPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden",
       fontFamily: "'DM Sans','Plus Jakarta Sans',system-ui,sans-serif",
-      background: "#f1f5f9", margin: "-28px -32px" }}>
+      background: "#F0EDE6", margin: "-28px -32px" }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
@@ -258,7 +258,7 @@ export default function DocEditorPage() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <button onClick={() => router.back()}
             style={{ background: "none", border: "none", cursor: "pointer",
-              color: "#64748b", display: "flex", alignItems: "center", gap: 5,
+              color: "#6E6455", display: "flex", alignItems: "center", gap: 5,
               fontSize: 13, fontWeight: 500, padding: "5px 0" }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -267,11 +267,11 @@ export default function DocEditorPage() {
             </svg>
             Geri
           </button>
-          <div style={{ width: 1, height: 20, background: "#e2e8f0" }} />
+          <div style={{ width: 1, height: 20, background: "#D6D0C4" }} />
           <div>
             <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase",
-              letterSpacing: "0.12em", color: "#94a3b8" }}>Araçlar / </span>
-            <span style={{ fontSize: 14, fontWeight: 800, color: "#0f172a" }}>
+              letterSpacing: "0.12em", color: "#9C9080" }}>Araçlar / </span>
+            <span style={{ fontSize: 14, fontWeight: 800, color: "#1A1510" }}>
               {isTeklif ? "Teklif Şablonu" : "Sözleşme Şablonu"}
             </span>
           </div>
@@ -280,13 +280,13 @@ export default function DocEditorPage() {
         {/* Progress + send */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 120, height: 5, background: "#e2e8f0", borderRadius: 99, overflow: "hidden" }}>
+            <div style={{ width: 120, height: 5, background: "#D6D0C4", borderRadius: 99, overflow: "hidden" }}>
               <div style={{ height: "100%", width: `${pct}%`,
-                background: allFilled ? "#22c55e" : "#2563eb",
+                background: allFilled ? "#2E7D4F" : "#1B1F2B",
                 borderRadius: 99, transition: "width .3s, background .3s" }} />
             </div>
             <span style={{ fontSize: 11, fontWeight: 700,
-              color: allFilled ? "#16a34a" : "#64748b" }}>
+              color: allFilled ? "#16a34a" : "#6E6455" }}>
               {filled}/{fields.length} alan
             </span>
           </div>
@@ -296,7 +296,7 @@ export default function DocEditorPage() {
             type="submit"
             className="send-btn"
             style={{ display: "inline-flex", alignItems: "center", gap: 7,
-              background: "#2563eb", color: "#fff", border: "none",
+              background: "#1B1F2B", color: "#fff", border: "none",
               fontSize: 13, fontWeight: 700, padding: "8px 18px",
               borderRadius: 9, cursor: "pointer", transition: "background .15s" }}>
             {sending ? (
@@ -327,9 +327,9 @@ export default function DocEditorPage() {
           {/* Status */}
           {status && (
             <div style={{ margin: "12px 16px 0",
-              background: status.ok ? "#f0fdf4" : "#fef2f2",
-              border: `1px solid ${status.ok ? "#bbf7d0" : "#fecaca"}`,
-              color: status.ok ? "#166534" : "#b91c1c",
+              background: status.ok ? "#E8F5EE" : "#FCECE8",
+              border: `1px solid ${status.ok ? "#9DCFB0" : "#E8A090"}`,
+              color: status.ok ? "#166534" : "#C0311A",
               borderRadius: 9, padding: "10px 14px", fontSize: 12, fontWeight: 500 }}>
               {status.msg}
             </div>
@@ -338,7 +338,7 @@ export default function DocEditorPage() {
           {/* Fields */}
           <div style={{ padding: "20px 16px 0" }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-              letterSpacing: "0.1em", color: "#94a3b8", marginBottom: 16 }}>
+              letterSpacing: "0.1em", color: "#9C9080", marginBottom: 16 }}>
               📝 Belge Alanları
             </div>
             {fields.map((f, i) => (
@@ -350,7 +350,7 @@ export default function DocEditorPage() {
                   {f.label}
                   {values[f.key]?.trim() && (
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                      stroke="#22c55e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                      stroke="#2E7D4F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                       style={{ display: "inline-flex", flexShrink: 0 }}>
                       <polyline points="20,6 9,17 4,12"/>
                     </svg>
@@ -361,8 +361,8 @@ export default function DocEditorPage() {
                     className="doc-field-input"
                     style={{ width: "100%", padding: "9px 12px", border: "1.5px solid #e2e8f0",
                       borderRadius: 9, fontSize: 12.5, fontFamily: "inherit", resize: "vertical",
-                      minHeight: 70, color: "#0f172a", background: activeField === f.key ? "#fafafe" : "#fff",
-                      borderColor: activeField === f.key ? "#2563eb" : values[f.key]?.trim() ? "#bbf7d0" : "#e2e8f0",
+                      minHeight: 70, color: "#1A1510", background: activeField === f.key ? "#fafafe" : "#fff",
+                      borderColor: activeField === f.key ? "#1B1F2B" : values[f.key]?.trim() ? "#9DCFB0" : "#D6D0C4",
                       boxSizing: "border-box" }}
                     placeholder={f.placeholder}
                     value={values[f.key] ?? ""}
@@ -376,9 +376,9 @@ export default function DocEditorPage() {
                     type={f.type ?? "text"}
                     style={{ width: "100%", padding: "9px 12px", border: "1.5px solid",
                       borderRadius: 9, fontSize: 12.5, fontFamily: "inherit",
-                      color: "#0f172a", boxSizing: "border-box",
+                      color: "#1A1510", boxSizing: "border-box",
                       background: activeField === f.key ? "#fafafe" : "#fff",
-                      borderColor: activeField === f.key ? "#2563eb" : values[f.key]?.trim() ? "#bbf7d0" : "#e2e8f0" }}
+                      borderColor: activeField === f.key ? "#1B1F2B" : values[f.key]?.trim() ? "#9DCFB0" : "#D6D0C4" }}
                     placeholder={f.placeholder}
                     value={values[f.key] ?? ""}
                     onFocus={() => setActiveField(f.key)}
@@ -395,7 +395,7 @@ export default function DocEditorPage() {
             style={{ padding: "20px 16px 24px",
               borderTop: "1px solid #f1f5f9", marginTop: 8 }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-              letterSpacing: "0.1em", color: "#94a3b8", marginBottom: 14 }}>
+              letterSpacing: "0.1em", color: "#9C9080", marginBottom: 14 }}>
               📧 E-posta ile Gönder
             </div>
             <input
@@ -403,14 +403,14 @@ export default function DocEditorPage() {
               type="email" required
               style={{ width: "100%", padding: "9px 12px", border: "1.5px solid #e2e8f0",
                 borderRadius: 9, fontSize: 12.5, fontFamily: "inherit",
-                color: "#0f172a", boxSizing: "border-box", marginBottom: 10 }}
+                color: "#1A1510", boxSizing: "border-box", marginBottom: 10 }}
               placeholder="yonetici@bina.com"
               value={to}
               onChange={e => setTo(e.target.value)}
             />
             <button type="submit" disabled={!to || sending} className="send-btn"
               style={{ width: "100%", display: "flex", alignItems: "center",
-                justifyContent: "center", gap: 7, background: "#2563eb", color: "#fff",
+                justifyContent: "center", gap: 7, background: "#1B1F2B", color: "#fff",
                 border: "none", fontSize: 13, fontWeight: 700,
                 padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
               {sending ? (
@@ -472,8 +472,8 @@ export default function DocEditorPage() {
                 a.download = `${isTeklif ? "teklif" : "sozlesme"}-${Date.now()}.html`; a.click();
               }}
               style={{ display: "inline-flex", alignItems: "center", gap: 6,
-                background: allFilled ? "#0f172a" : "#f1f5f9",
-                color: allFilled ? "#fff" : "#94a3b8",
+                background: allFilled ? "#1A1510" : "#F0EDE6",
+                color: allFilled ? "#fff" : "#9C9080",
                 border: "none", fontSize: 12.5, fontWeight: 600,
                 padding: "8px 16px", borderRadius: 8, cursor: allFilled ? "pointer" : "not-allowed" }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"

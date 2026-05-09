@@ -5,7 +5,7 @@ import Link from "next/link";
 
 type Customer = { id:string;name:string;contactName?:string|null;phone?:string|null;email?:string|null;address?:string|null;_count:{assets:number;workOrders:number} };
 const Ic=({d,size=15,stroke="currentColor"}:{d:string;size?:number;stroke?:string})=>(<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>);
-const F:React.CSSProperties={width:"100%",height:42,padding:"0 13px",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:14,fontFamily:"inherit",outline:"none",background:"#fff",color:"#0f172a",transition:"border-color .15s"};
+const F:React.CSSProperties={width:"100%",height:42,padding:"0 13px",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:14,fontFamily:"inherit",outline:"none",background:"#fff",color:"#1A1510",transition:"border-color .15s"};
 
 export default function CustomersPage() {
   const [customers,setCustomers]=useState<Customer[]>([]);
@@ -39,12 +39,12 @@ export default function CustomersPage() {
 
       <div style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:14}}>
         <div>
-          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em",color:"#94a3b8",marginBottom:6}}>Portföy</div>
-          <h1 style={{fontSize:26,fontWeight:900,letterSpacing:"-0.05em",color:"#0f172a",lineHeight:1.05,margin:0}}>Müşteriler</h1>
-          <p style={{marginTop:6,fontSize:13.5,lineHeight:1.65,color:"#64748b",margin:"6px 0 0"}}>Bina yöneticileri, site yönetimleri ve kurumsal müşteriler.</p>
+          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em",color:"#9C9080",marginBottom:6}}>Portföy</div>
+          <h1 style={{fontSize:26,fontWeight:900,letterSpacing:"-0.05em",color:"#1A1510",lineHeight:1.05,margin:0}}>Müşteriler</h1>
+          <p style={{marginTop:6,fontSize:13.5,lineHeight:1.65,color:"#6E6455",margin:"6px 0 0"}}>Bina yöneticileri, site yönetimleri ve kurumsal müşteriler.</p>
         </div>
         <button onClick={()=>setShowForm(v=>!v)} style={{display:"inline-flex",alignItems:"center",gap:6,
-          background:showForm?"#fff":"#2563eb",color:showForm?"#0f172a":"#fff",
+          background:showForm?"#fff":"#1B1F2B",color:showForm?"#1A1510":"#fff",
           border:showForm?"1.5px solid #e2e8f0":"none",fontSize:13,fontWeight:700,
           padding:"9px 18px",borderRadius:10,cursor:"pointer",fontFamily:"inherit",
           boxShadow:showForm?"none":"0 3px 12px rgba(37,99,235,.28)"}}>
@@ -54,9 +54,9 @@ export default function CustomersPage() {
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12}}>
         {[
-          {l:"Toplam Müşteri",v:customers.length,c:"#0f172a",bg:"#f1f5f9",d:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z"},
-          {l:"Filtrelenen",v:filtered.length,c:"#2563eb",bg:"#eff6ff",d:"M3 4a1 1 0 000 2h18a1 1 0 000-2H3zm2 7a1 1 0 000 2h14a1 1 0 000-2H5zm4 7a1 1 0 000 2h6a1 1 0 000-2H9z"},
-          {l:"Toplam Asansör",v:totalA,c:"#059669",bg:"#f0fdf4",d:"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10"},
+          {l:"Toplam Müşteri",v:customers.length,c:"#1A1510",bg:"#F0EDE6",d:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z"},
+          {l:"Filtrelenen",v:filtered.length,c:"#1B1F2B",bg:"#E4EFF9",d:"M3 4a1 1 0 000 2h18a1 1 0 000-2H3zm2 7a1 1 0 000 2h14a1 1 0 000-2H5zm4 7a1 1 0 000 2h6a1 1 0 000-2H9z"},
+          {l:"Toplam Asansör",v:totalA,c:"#059669",bg:"#E8F5EE",d:"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10"},
           {l:"İş Emirleri",v:totalW,c:"#7c3aed",bg:"#f5f3ff",d:"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4"},
         ].map((k,i)=>(
           <div key={i} style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:14,padding:"18px 20px",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
@@ -67,11 +67,11 @@ export default function CustomersPage() {
         ))}
       </div>
 
-      {error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",color:"#b91c1c",padding:"12px 16px",borderRadius:12,fontSize:13}}>{error}</div>}
+      {error&&<div style={{background:"#FCECE8",border:"1px solid #fecaca",color:"#C0311A",padding:"12px 16px",borderRadius:12,fontSize:13}}>{error}</div>}
 
       {showForm&&(
         <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"22px 24px",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
-          <div style={{fontSize:14,fontWeight:800,color:"#0f172a",marginBottom:18,letterSpacing:"-0.03em"}}>Yeni Müşteri</div>
+          <div style={{fontSize:14,fontWeight:800,color:"#1A1510",marginBottom:18,letterSpacing:"-0.03em"}}>Yeni Müşteri</div>
           <form onSubmit={submit}>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14}}>
               {([
@@ -81,13 +81,13 @@ export default function CustomersPage() {
                 {l:"E-posta",          v:email,  set:setEmail,        t:"email", ph:"ali@apartman.com"},
               ] as {l:string;v:string;set:(v:string)=>void;t:string;ph:string;req?:boolean}[]).map((fi,i)=>(
                 <div key={i}>
-                  <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#64748b",marginBottom:7}}>{fi.l}</label>
+                  <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#6E6455",marginBottom:7}}>{fi.l}</label>
                   <input className="fi" value={fi.v} onChange={e=>fi.set(e.target.value)} type={fi.t} placeholder={fi.ph} required={fi.req} style={F}/>
                 </div>
               ))}
               {/* Adres — Google Places Autocomplete */}
               <div style={{gridColumn:"1 / -1"}}>
-                <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#64748b",marginBottom:7}}>Adres</label>
+                <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#6E6455",marginBottom:7}}>Adres</label>
                 <PlaceAutocomplete
                   value={address}
                   onChange={(addr,la,lo)=>{setAddress(addr);if(la!=null)setLat(la);if(lo!=null)setLng(lo);}}
@@ -95,55 +95,55 @@ export default function CustomersPage() {
                   style={F}
                 />
                 {lat!=null&&lng!=null&&(
-                  <div style={{fontSize:11,color:"#22c55e",marginTop:4}}>✓ Konum doğrulandı — {lat.toFixed(5)}, {lng.toFixed(5)}</div>
+                  <div style={{fontSize:11,color:"#2E7D4F",marginTop:4}}>✓ Konum doğrulandı — {lat.toFixed(5)}, {lng.toFixed(5)}</div>
                 )}
               </div>
             </div>
             <div style={{display:"flex",gap:8,marginTop:18}}>
-              <button type="submit" disabled={saving||!name.trim()} style={{background:"#2563eb",color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer",fontFamily:"inherit",opacity:saving?.7:1}}>
+              <button type="submit" disabled={saving||!name.trim()} style={{background:"#1B1F2B",color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer",fontFamily:"inherit",opacity:saving?.7:1}}>
                 {saving?"Oluşturuluyor…":"Müşteri Oluştur"}
               </button>
-              <button type="button" onClick={()=>setShowForm(false)} style={{background:"#fff",color:"#0f172a",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:13,fontWeight:600,padding:"10px 18px",cursor:"pointer",fontFamily:"inherit"}}>İptal</button>
+              <button type="button" onClick={()=>setShowForm(false)} style={{background:"#fff",color:"#1A1510",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:13,fontWeight:600,padding:"10px 18px",cursor:"pointer",fontFamily:"inherit"}}>İptal</button>
             </div>
           </form>
         </div>
       )}
 
       <div style={{position:"relative",maxWidth:380}}>
-        <div style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",color:"#94a3b8"}}><Ic d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></div>
+        <div style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",color:"#9C9080"}}><Ic d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></div>
         <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Müşteri, kişi veya telefon ara..." className="fi" style={{...F,paddingLeft:38}}/>
       </div>
 
       {loading?(
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:200,gap:12,color:"#64748b"}}>
-          <div style={{width:28,height:28,border:"3px solid #e2e8f0",borderTopColor:"#2563eb",borderRadius:"50%",animation:"spin .7s linear infinite"}}/>Yükleniyor...
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:200,gap:12,color:"#6E6455"}}>
+          <div style={{width:28,height:28,border:"3px solid #e2e8f0",borderTopColor:"#1B1F2B",borderRadius:"50%",animation:"spin .7s linear infinite"}}/>Yükleniyor...
         </div>
       ):filtered.length===0?(
         <div style={{background:"#fff",border:"1.5px dashed #e2e8f0",borderRadius:16,padding:"44px 24px",textAlign:"center"}}>
           <div style={{fontSize:42,marginBottom:12}}>👥</div>
-          <div style={{fontSize:15,fontWeight:800,color:"#0f172a",marginBottom:6}}>{q?"Eşleşen müşteri bulunamadı":"Henüz müşteri yok"}</div>
-          <div style={{fontSize:13,color:"#64748b"}}>{q?"Farklı bir arama deneyin.":"İlk müşterinizi ekleyerek başlayın."}</div>
+          <div style={{fontSize:15,fontWeight:800,color:"#1A1510",marginBottom:6}}>{q?"Eşleşen müşteri bulunamadı":"Henüz müşteri yok"}</div>
+          <div style={{fontSize:13,color:"#6E6455"}}>{q?"Farklı bir arama deneyin.":"İlk müşterinizi ekleyerek başlayın."}</div>
         </div>
       ):(
         <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 90px 80px",padding:"11px 22px",background:"#f8fafc",borderBottom:"1px solid #f1f5f9"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 90px 80px",padding:"11px 22px",background:"#F0EDE6",borderBottom:"1px solid #f1f5f9"}}>
             {["Müşteri","İletişim","Asansör","İş Emri",""].map((h,i)=>(
-              <div key={i} style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#94a3b8"}}>{h}</div>
+              <div key={i} style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#9C9080"}}>{h}</div>
             ))}
           </div>
           {filtered.map((c,i)=>(
             <Link key={c.id} href={`/app/customers/${c.id}`} className="c-row" style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 90px 80px",alignItems:"center",padding:"14px 22px",borderBottom:i<filtered.length-1?"1px solid #f1f5f9":"none",textDecoration:"none",color:"inherit",transition:"all .12s"}}>
               <div>
-                <div style={{fontSize:13.5,fontWeight:700,color:"#0f172a"}}>{c.name}</div>
-                {c.email&&<div style={{fontSize:11.5,color:"#94a3b8",marginTop:2}}>{c.email}</div>}
+                <div style={{fontSize:13.5,fontWeight:700,color:"#1A1510"}}>{c.name}</div>
+                {c.email&&<div style={{fontSize:11.5,color:"#9C9080",marginTop:2}}>{c.email}</div>}
               </div>
               <div>
                 {c.contactName&&<div style={{fontSize:13,fontWeight:600,color:"#334155"}}>{c.contactName}</div>}
-                {c.phone&&<div style={{fontSize:11.5,color:"#94a3b8",marginTop:1}}>{c.phone}</div>}{c.address&&<div style={{fontSize:11,color:"#9ca3af",marginTop:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {c.address}</div>}
+                {c.phone&&<div style={{fontSize:11.5,color:"#9C9080",marginTop:1}}>{c.phone}</div>}{c.address&&<div style={{fontSize:11,color:"#9ca3af",marginTop:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {c.address}</div>}
               </div>
-              <div style={{fontSize:20,fontWeight:900,color:c._count.assets>0?"#2563eb":"#cbd5e1",letterSpacing:"-0.04em"}}>{c._count.assets}</div>
-              <div style={{fontSize:20,fontWeight:900,color:c._count.workOrders>0?"#7c3aed":"#cbd5e1",letterSpacing:"-0.04em"}}>{c._count.workOrders}</div>
-              <div style={{display:"flex",justifyContent:"flex-end"}}><span style={{fontSize:11.5,fontWeight:700,color:"#2563eb",background:"#eff6ff",padding:"4px 10px",borderRadius:7}}>Detay →</span></div>
+              <div style={{fontSize:20,fontWeight:900,color:c._count.assets>0?"#1B1F2B":"#B8B0A0",letterSpacing:"-0.04em"}}>{c._count.assets}</div>
+              <div style={{fontSize:20,fontWeight:900,color:c._count.workOrders>0?"#7c3aed":"#B8B0A0",letterSpacing:"-0.04em"}}>{c._count.workOrders}</div>
+              <div style={{display:"flex",justifyContent:"flex-end"}}><span style={{fontSize:11.5,fontWeight:700,color:"#1B1F2B",background:"#E4EFF9",padding:"4px 10px",borderRadius:7}}>Detay →</span></div>
             </Link>
           ))}
         </div>

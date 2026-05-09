@@ -7,7 +7,7 @@ export function AuthBrand({ light = false }: { light?: boolean }) {
         <defs>
           <linearGradient id="alg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor={light ? "rgba(255,255,255,0.3)" : "#1e3a8a"} />
-            <stop offset="100%" stopColor={light ? "rgba(255,255,255,0.1)" : "#1d4ed8"} />
+            <stop offset="100%" stopColor={light ? "rgba(255,255,255,0.1)" : "#0F121A"} />
           </linearGradient>
         </defs>
         <rect width="40" height="40" rx="12" fill={light ? "rgba(255,255,255,0.1)" : "#0d1526"} />
@@ -17,10 +17,10 @@ export function AuthBrand({ light = false }: { light?: boolean }) {
       </svg>
       <div>
         <div style={{ fontSize: 16, fontWeight: 900, letterSpacing: "-0.06em",
-          color: light ? "#fff" : "#0f172a", lineHeight: 1 }}>
-          Servi<span style={{ color: light ? "#93c5fd" : "#2563eb" }}>sim</span>
+          color: light ? "#fff" : "#1A1510", lineHeight: 1 }}>
+          Servi<span style={{ color: light ? "#93c5fd" : "#1B1F2B" }}>sim</span>
         </div>
-        <div style={{ fontSize: 9, color: light ? "rgba(255,255,255,0.3)" : "#94a3b8",
+        <div style={{ fontSize: 9, color: light ? "rgba(255,255,255,0.3)" : "#9C9080",
           marginTop: 3, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>
           Asansör Operasyon
         </div>
@@ -108,7 +108,7 @@ export function AuthLeft({ variant }: { variant: "login" | "register" }) {
 
         <div style={{ paddingTop: 22, borderTop: "1px solid rgba(255,255,255,0.07)",
           display: "flex", alignItems: "center", gap: 9 }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e",
+          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#2E7D4F",
             boxShadow: "0 0 0 3px rgba(34,197,94,0.22)", flexShrink: 0 }} />
           <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>
             Sistem aktif · %99.9 uptime

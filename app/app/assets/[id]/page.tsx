@@ -16,10 +16,10 @@ type Asset = {
 
 const TYPE_L:Record<string,string>={FAULT:"Arıza",PERIODIC_MAINTENANCE:"Periyodik Bakım",ANNUAL_INSPECTION:"Yıllık Muayene",REVISION:"Revizyon",INSTALLATION:"Kurulum"};
 const S_CFG:Record<string,{bg:string;color:string;dot:string}>={
-  URGENT:{bg:"#fef2f2",color:"#b91c1c",dot:"#dc2626"},IN_PROGRESS:{bg:"#fffbeb",color:"#b45309",dot:"#d97706"},
-  DONE:{bg:"#f0fdf4",color:"#15803d",dot:"#22c55e"},PENDING:{bg:"#eff6ff",color:"#1d4ed8",dot:"#3b82f6"},CANCELED:{bg:"#f1f5f9",color:"#475569",dot:"#94a3b8"},
+  URGENT:{bg:"#FCECE8",color:"#C0311A",dot:"#dc2626"},IN_PROGRESS:{bg:"#FFF3DC",color:"#B86800",dot:"#d97706"},
+  DONE:{bg:"#E8F5EE",color:"#2E7D4F",dot:"#2E7D4F"},PENDING:{bg:"#E4EFF9",color:"#0F121A",dot:"#C87800"},CANCELED:{bg:"#F0EDE6",color:"#6E6455",dot:"#9C9080"},
 };
-const LABEL_DOT:Record<string,string>={YESIL:"#22c55e",MAVI:"#3b82f6",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
+const LABEL_DOT:Record<string,string>={YESIL:"#2E7D4F",MAVI:"#C87800",SARI:"#C87800",KIRMIZI:"#dc2626"};
 const PLAN_L:Record<string,string>={PERIODIC:"🔧 Periyodik",ANNUAL_INSPECTION:"📋 Yıllık Muayene",CUSTOM:"⚙️ Özel"};
 
 function InfoRow({label,value}:{label:string;value:string}) {
@@ -104,8 +104,8 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
       </div>
 
       {/* Instructions */}
-      <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:8,padding:"10px 12px",marginBottom:14}}>
-        <div style={{fontSize:11,fontWeight:700,color:"#1d4ed8",display:"flex",alignItems:"center",gap:5,marginBottom:6}}>
+      <div style={{background:"#E4EFF9",border:"1px solid #bfdbfe",borderRadius:8,padding:"10px 12px",marginBottom:14}}>
+        <div style={{fontSize:11,fontWeight:700,color:"#0F121A",display:"flex",alignItems:"center",gap:5,marginBottom:6}}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
@@ -125,10 +125,10 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
           <button key={s.key} onClick={() => setSelectedSize(s.key)}
             style={{flex:1,padding:"7px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
               border: selectedSize===s.key ? "1.5px solid #3b82f6" : "1.5px solid #e5e7eb",
-              background: selectedSize===s.key ? "#eff6ff" : "#fff",
+              background: selectedSize===s.key ? "#E4EFF9" : "#fff",
               transition:"all 0.12s"}}>
-            <div style={{fontSize:12,fontWeight:700,color: selectedSize===s.key ? "#2563eb" : "#111827"}}>{s.key}</div>
-            <div style={{fontSize:9,color: selectedSize===s.key ? "#3b82f6" : "#9ca3af",marginTop:2}}>{s.dim}</div>
+            <div style={{fontSize:12,fontWeight:700,color: selectedSize===s.key ? "#1B1F2B" : "#111827"}}>{s.key}</div>
+            <div style={{fontSize:9,color: selectedSize===s.key ? "#C87800" : "#9ca3af",marginTop:2}}>{s.dim}</div>
           </button>
         ))}
       </div>
@@ -136,7 +136,7 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
       {/* Print button */}
       <button onClick={handlePrint}
         style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-          background:"#2563eb",color:"#fff",border:"none",borderRadius:9,
+          background:"#1B1F2B",color:"#fff",border:"none",borderRadius:9,
           padding:"10px",fontSize:13,fontWeight:700,cursor:"pointer",marginBottom:8}}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="6,9 6,2 18,2 18,9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
@@ -187,18 +187,18 @@ export default function AssetDetailPage() {
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
   const publicUrl = `${siteUrl}/public/assets/${asset?.id ?? id}`;
 
-  if(error) return <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:14,padding:"20px",color:"#b91c1c"}}>{error}</div>;
+  if(error) return <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:14,padding:"20px",color:"#C0311A"}}>{error}</div>;
   if(!asset) return (
     <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,gap:12,color:"#6b7280"}}>
-      <div style={{width:24,height:24,border:"3px solid #e5e7eb",borderTopColor:"#2563eb",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
+      <div style={{width:24,height:24,border:"3px solid #e5e7eb",borderTopColor:"#1B1F2B",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>
       Yükleniyor...
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 
   const latestLabel = latestInsp?.label ?? "";
-  const labelDot = LABEL_DOT[latestLabel] ?? "#94a3b8";
-  const riskColor = asset.riskScore!=null ? (asset.riskScore>=70?"#dc2626":asset.riskScore>=40?"#d97706":"#22c55e") : "#94a3b8";
+  const labelDot = LABEL_DOT[latestLabel] ?? "#9C9080";
+  const riskColor = asset.riskScore!=null ? (asset.riskScore>=70?"#dc2626":asset.riskScore>=40?"#d97706":"#2E7D4F") : "#9C9080";
 
   return (
     <div style={{maxWidth:1080,margin:"0 auto"}}>
@@ -232,7 +232,7 @@ export default function AssetDetailPage() {
         </div>
         <div style={{display:"flex",gap:8,flexShrink:0}}>
           <Link href={`/app/work-orders?assetId=${id}`}
-            style={{display:"inline-flex",alignItems:"center",gap:6,background:"#2563eb",color:"#fff",
+            style={{display:"inline-flex",alignItems:"center",gap:6,background:"#1B1F2B",color:"#fff",
               fontSize:12.5,fontWeight:700,padding:"8px 16px",borderRadius:8,textDecoration:"none"}}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             İş emri oluştur
@@ -269,7 +269,7 @@ export default function AssetDetailPage() {
             {asset.customer.phone && (
               <a href={`tel:${asset.customer.phone}`}
                 style={{display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,
-                  color:"#2563eb",textDecoration:"none",marginTop:12}}>
+                  color:"#1B1F2B",textDecoration:"none",marginTop:12}}>
                 📞 {asset.customer.phone}
               </a>
             )}
@@ -277,7 +277,7 @@ export default function AssetDetailPage() {
 
           {/* Tabs */}
           <div>
-            <div style={{display:"flex",gap:4,background:"#f3f4f6",borderRadius:10,padding:4,marginBottom:14}}>
+            <div style={{display:"flex",gap:4,background:"#E8E3D8",borderRadius:10,padding:4,marginBottom:14}}>
               {([
                 {k:"timeline",l:"📋 Servis Geçmişi"},
                 {k:"inspections",l:"🔍 Kontroller"},
@@ -299,7 +299,7 @@ export default function AssetDetailPage() {
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 <div style={{display:"flex",justifyContent:"flex-end",marginBottom:4}}>
                   <Link href={`/app/work-orders?assetId=${id}`}
-                    style={{fontSize:13,fontWeight:700,color:"#2563eb",textDecoration:"none"}}>
+                    style={{fontSize:13,fontWeight:700,color:"#1B1F2B",textDecoration:"none"}}>
                     + Yeni İş Emri
                   </Link>
                 </div>
@@ -309,7 +309,7 @@ export default function AssetDetailPage() {
                     <div style={{fontSize:14,fontWeight:700,color:"#374151"}}>Servis kaydı yok</div>
                   </div>
                 ) : asset.workOrders.map(wo=>{
-                  const cfg=S_CFG[wo.status]??{bg:"#f1f5f9",color:"#475569",dot:"#94a3b8"};
+                  const cfg=S_CFG[wo.status]??{bg:"#F0EDE6",color:"#6E6455",dot:"#9C9080"};
                   return (
                     <Link key={wo.id} href={`/app/work-orders/${wo.id}`}
                       style={{display:"block",background:"#fff",border:"1px solid #e5e7eb",
@@ -341,7 +341,7 @@ export default function AssetDetailPage() {
                     <div style={{fontSize:14,fontWeight:700,color:"#374151"}}>Kontrol kaydı yok</div>
                   </div>
                 ) : asset.inspections.map(ins=>{
-                  const dot=LABEL_DOT[ins.label]??"#94a3b8";
+                  const dot=LABEL_DOT[ins.label]??"#9C9080";
                   return (
                     <div key={ins.id} style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:12,padding:"14px 18px",borderLeft:`4px solid ${dot}`}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
@@ -376,7 +376,7 @@ export default function AssetDetailPage() {
                           <div style={{fontSize:14,fontWeight:800,color:"#111827"}}>{plan.name||PLAN_L[plan.planType]||plan.planType}</div>
                           <div style={{fontSize:12,color:"#6b7280",marginTop:2}}>Sonraki: {due.toLocaleDateString("tr-TR")}</div>
                         </div>
-                        <span style={{background:overdue?"#fef2f2":"#f0fdf4",color:overdue?"#b91c1c":"#15803d",borderRadius:99,padding:"3px 12px",fontSize:12,fontWeight:700}}>
+                        <span style={{background:overdue?"#FCECE8":"#E8F5EE",color:overdue?"#C0311A":"#2E7D4F",borderRadius:99,padding:"3px 12px",fontSize:12,fontWeight:700}}>
                           {overdue?"Gecikmiş":"Aktif"}
                         </span>
                       </div>
@@ -398,18 +398,18 @@ export default function AssetDetailPage() {
             <div style={{display:"flex",flexDirection:"column",gap:6}}>
               <Link href={`/app/customers/${asset.customer.id}`}
                 style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",
-                  borderRadius:8,background:"#f9fafb",border:"1px solid #f3f4f6",
+                  borderRadius:8,background:"#F5F2EC",border:"1px solid #f3f4f6",
                   textDecoration:"none",fontSize:13,fontWeight:500,color:"#374151",transition:"background 0.12s"}}>
                 👤 {asset.customer.name}
               </Link>
               <Link href={`/app/assets/${id}/label`}
                 style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",
-                  borderRadius:8,background:"#f9fafb",border:"1px solid #f3f4f6",
+                  borderRadius:8,background:"#F5F2EC",border:"1px solid #f3f4f6",
                   textDecoration:"none",fontSize:13,fontWeight:500,color:"#374151",transition:"background 0.12s"}}>
                 🏷 QR Etiket Sayfası
               </Link>
               {asset.locationNote && (
-                <div style={{padding:"8px 10px",borderRadius:8,background:"#f9fafb",
+                <div style={{padding:"8px 10px",borderRadius:8,background:"#F5F2EC",
                   border:"1px solid #f3f4f6",fontSize:12,color:"#6b7280"}}>
                   📍 {asset.locationNote}
                 </div>

@@ -31,11 +31,11 @@ type Asset = { id: string; name: string; buildingName?: string | null };
 
 /* ─── Status config ─── */
 const ST: Record<string, { label: string; bg: string; color: string; dot: string; border: string }> = {
-  PENDING:     { label: "Planlı",        bg: "#eff6ff", color: "#1d4ed8", dot: "#3b82f6", border: "#bfdbfe" },
-  IN_PROGRESS: { label: "Devam Ediyor",  bg: "#fefce8", color: "#92400e", dot: "#f59e0b", border: "#fde68a" },
-  URGENT:      { label: "Acil",          bg: "#fef2f2", color: "#b91c1c", dot: "#ef4444", border: "#fecaca" },
-  DONE:        { label: "Tamamlandı",    bg: "#f0fdf4", color: "#166534", dot: "#22c55e", border: "#bbf7d0" },
-  CANCELED:    { label: "İptal",         bg: "#f9fafb", color: "#6b7280", dot: "#9ca3af", border: "#e5e7eb" },
+  PENDING:     { label: "Planlı",        bg: "#E4EFF9", color: "#0F121A", dot: "#C87800", border: "#90BEE0" },
+  IN_PROGRESS: { label: "Devam Ediyor",  bg: "#fefce8", color: "#92400e", dot: "#C87800", border: "#fde68a" },
+  URGENT:      { label: "Acil",          bg: "#FCECE8", color: "#C0311A", dot: "#C0311A", border: "#E8A090" },
+  DONE:        { label: "Tamamlandı",    bg: "#E8F5EE", color: "#166534", dot: "#2E7D4F", border: "#9DCFB0" },
+  CANCELED:    { label: "İptal",         bg: "#F5F2EC", color: "#6b7280", dot: "#9ca3af", border: "#e5e7eb" },
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -106,11 +106,11 @@ function EmbeddedMap({ address, label, lat, lng }: { address?: string | null; la
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <a href={gmapsLink} target="_blank" rel="noreferrer"
-            style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#f3f4f6", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
+            style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#E8E3D8", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
             🗺️ Haritada Gör
           </a>
           <a href={directionsLink} target="_blank" rel="noreferrer"
-            style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#2563eb", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
+            style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#1B1F2B", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
             🧭 Yol Tarifi
           </a>
         </div>
@@ -204,8 +204,8 @@ export default function WorkOrderDetailPage() {
 
   if (!item) return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "50vh" }}>
-      {error ? <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px", color: "#b91c1c", fontSize: 13 }}>{error}</div>
-             : <div style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid #e5e7eb", borderTopColor: "#2563eb", animation: "spin .7s linear infinite" }} />}
+      {error ? <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px", color: "#C0311A", fontSize: 13 }}>{error}</div>
+             : <div style={{ width: 32, height: 32, borderRadius: "50%", border: "3px solid #e5e7eb", borderTopColor: "#1B1F2B", animation: "spin .7s linear infinite" }} />}
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
@@ -244,14 +244,14 @@ export default function WorkOrderDetailPage() {
           </div>
           {/* Completion ring */}
           <div style={{ textAlign: "center", flexShrink: 0 }}>
-            <div style={{ fontSize: 32, fontWeight: 900, color: completionPct === 100 ? "#22c55e" : completionPct >= 60 ? "#f59e0b" : "#ef4444", letterSpacing: "-1px" }}>%{completionPct}</div>
+            <div style={{ fontSize: 32, fontWeight: 900, color: completionPct === 100 ? "#2E7D4F" : completionPct >= 60 ? "#C87800" : "#C0311A", letterSpacing: "-1px" }}>%{completionPct}</div>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.5px" }}>Hazırlık</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div style={{ marginTop: 16, height: 6, background: "#f3f4f6", borderRadius: 99, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#22c55e" : "#2563eb", borderRadius: 99, transition: "width .3s" }} />
+        <div style={{ marginTop: 16, height: 6, background: "#E8E3D8", borderRadius: 99, overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#2E7D4F" : "#1B1F2B", borderRadius: 99, transition: "width .3s" }} />
         </div>
 
         {/* Quick actions */}
@@ -262,7 +262,7 @@ export default function WorkOrderDetailPage() {
           </a>
           {item.customer.phone && (
             <a href={`tel:${item.customer.phone}`}
-              style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", background: "#f3f4f6", color: "#374151", borderRadius: 8, textDecoration: "none" }}>
+              style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", background: "#E8E3D8", color: "#374151", borderRadius: 8, textDecoration: "none" }}>
               📞 {item.customer.phone}
             </a>
           )}
@@ -271,8 +271,8 @@ export default function WorkOrderDetailPage() {
       </div>
 
       {/* Alerts */}
-      {error && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c", display: "flex", justifyContent: "space-between" }}>{error}<button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#b91c1c", fontWeight: 700 }}>✕</button></div>}
-      {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
+      {error && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{error}<button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#C0311A", fontWeight: 700 }}>✕</button></div>}
+      {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
       {/* ── Tab bar ── */}
       <div style={{ display: "flex", gap: 2, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 5 }}>
@@ -340,7 +340,7 @@ export default function WorkOrderDetailPage() {
                 </div>
               </div>
               <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
-                <button onClick={saveOrder} disabled={saving} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: saving ? 0.6 : 1 }}>
+                <button onClick={saveOrder} disabled={saving} style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: saving ? 0.6 : 1 }}>
                   {saving ? "Kaydediliyor..." : "Kaydet"}
                 </button>
                 {form.status !== "IN_PROGRESS" && (
@@ -349,7 +349,7 @@ export default function WorkOrderDetailPage() {
                   </button>
                 )}
                 {form.status !== "DONE" && (
-                  <button onClick={() => setForm(f => ({ ...f, status: "DONE" }))} style={{ background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
+                  <button onClick={() => setForm(f => ({ ...f, status: "DONE" }))} style={{ background: "#E8F5EE", color: "#166534", border: "1px solid #bbf7d0", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
                     Tamamlandı
                   </button>
                 )}
@@ -361,7 +361,7 @@ export default function WorkOrderDetailPage() {
               <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 14 }}>Finans</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
                 {[{ label: "İşçilik", val: money(item.laborCost) }, { label: "Servis", val: money(item.serviceFee) }, { label: "Parçalar", val: money(item.partsUsed.reduce((s, u) => s + (u.part.price ?? 0) * u.quantity, 0)) }, { label: "Toplam", val: money(totalCost) }].map(k => (
-                  <div key={k.label} style={{ background: "#f9fafb", borderRadius: 10, padding: "12px 14px" }}>
+                  <div key={k.label} style={{ background: "#F5F2EC", borderRadius: 10, padding: "12px 14px" }}>
                     <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 4 }}>{k.label}</div>
                     <div style={{ fontSize: 16, fontWeight: 800, color: "#111827" }}>{k.val}</div>
                   </div>
@@ -370,7 +370,7 @@ export default function WorkOrderDetailPage() {
               {item.partsUsed.length > 0 && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {item.partsUsed.map(u => (
-                    <div key={u.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#f9fafb", borderRadius: 9, fontSize: 13 }}>
+                    <div key={u.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#F5F2EC", borderRadius: 9, fontSize: 13 }}>
                       <div><div style={{ fontWeight: 600, color: "#111827" }}>{u.part.name}</div><div style={{ color: "#9ca3af", fontSize: 11 }}>Adet: {u.quantity}</div></div>
                       <div style={{ fontWeight: 700 }}>{u.part.price ? money(u.part.price * u.quantity) : "—"}</div>
                     </div>
@@ -378,7 +378,7 @@ export default function WorkOrderDetailPage() {
                 </div>
               )}
               {item.invoice && (
-                <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, background: "#f0fdf4", borderRadius: 9, padding: "10px 14px" }}>
+                <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8, background: "#E8F5EE", borderRadius: 9, padding: "10px 14px" }}>
                   <span style={{ fontSize: 12, color: "#166534", fontWeight: 600 }}>Fatura:</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: "#166534" }}>{item.invoice.number}</span>
                 </div>
@@ -393,16 +393,16 @@ export default function WorkOrderDetailPage() {
             <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 18 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>Kapanış Hazırlığı</div>
-                <span style={{ fontSize: 18, fontWeight: 900, color: completionPct === 100 ? "#22c55e" : completionPct >= 60 ? "#f59e0b" : "#ef4444" }}>%{completionPct}</span>
+                <span style={{ fontSize: 18, fontWeight: 900, color: completionPct === 100 ? "#2E7D4F" : completionPct >= 60 ? "#C87800" : "#C0311A" }}>%{completionPct}</span>
               </div>
-              <div style={{ height: 5, background: "#f3f4f6", borderRadius: 99, overflow: "hidden", marginBottom: 14 }}>
-                <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#22c55e" : "#2563eb", borderRadius: 99 }} />
+              <div style={{ height: 5, background: "#E8E3D8", borderRadius: 99, overflow: "hidden", marginBottom: 14 }}>
+                <div style={{ height: "100%", width: `${completionPct}%`, background: completionPct === 100 ? "#2E7D4F" : "#1B1F2B", borderRadius: 99 }} />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {completionList.map(c => (
-                  <div key={c.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "#f9fafb", borderRadius: 8 }}>
+                  <div key={c.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "#F5F2EC", borderRadius: 8 }}>
                     <span style={{ fontSize: 12, color: "#374151" }}>{c.label}</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 99, background: c.done ? "#f0fdf4" : "#f3f4f6", color: c.done ? "#166534" : "#6b7280" }}>{c.done ? "✓" : "Eksik"}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 99, background: c.done ? "#E8F5EE" : "#E8E3D8", color: c.done ? "#166534" : "#6b7280" }}>{c.done ? "✓" : "Eksik"}</span>
                   </div>
                 ))}
               </div>
@@ -454,10 +454,10 @@ export default function WorkOrderDetailPage() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-            <button onClick={saveEv} disabled={savingEvidence} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: savingEvidence ? 0.6 : 1 }}>
+            <button onClick={saveEv} disabled={savingEvidence} style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer", opacity: savingEvidence ? 0.6 : 1 }}>
               {savingEvidence ? "Kaydediliyor..." : "Kanıtı Kaydet"}
             </button>
-            <button onClick={() => setEvidence(ev => ({ ...ev, summary: item.note ?? ev.summary }))} style={{ background: "#f3f4f6", color: "#374151", border: "none", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
+            <button onClick={() => setEvidence(ev => ({ ...ev, summary: item.note ?? ev.summary }))} style={{ background: "#E8E3D8", color: "#374151", border: "none", fontSize: 13, fontWeight: 600, padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
               İş emri notunu aktar
             </button>
           </div>
@@ -490,7 +490,7 @@ export default function WorkOrderDetailPage() {
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Müşteri İmzası</div>
           <SignaturePad value={evidence.signatureDataUrl} onChange={signatureDataUrl => setEvidence(ev => ({ ...ev, signatureDataUrl }))} />
           {evidence.signatureDataUrl && (
-            <button onClick={saveEv} style={{ marginTop: 14, background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer" }}>
+            <button onClick={saveEv} style={{ marginTop: 14, background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "10px 20px", borderRadius: 9, cursor: "pointer" }}>
               İmzayı Kaydet
             </button>
           )}

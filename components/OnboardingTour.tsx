@@ -25,7 +25,7 @@ type DashStep = {
 };
 
 const SETUP: SetupStep[] = [
-  { phase:"setup", id:"welcome", emoji:"🎉", color:"#2563eb", bg:"#eff6ff",
+  { phase:"setup", id:"welcome", emoji:"🎉", color:"#1B1F2B", bg:"#E4EFF9",
     title:"Servisim'e Hoş Geldiniz!",
     desc:"Asansör bakım operasyonunuzu birkaç dakikada dijitale taşıyalım. Kısa bir kurulum turu ile her şeyi hazır hale getirelim.",
     href:null },
@@ -56,7 +56,7 @@ const SETUP: SetupStep[] = [
     beaconLabel:"👆 Yeni sözleşme oluşturun",
     pageGuideTitle:"Bakım sözleşmesi ekleyin",
     pageGuideDesc:"+ Yeni Sözleşme ile yasal sözleşmeyi dijitale taşıyın." },
-  { phase:"setup", id:"plan", emoji:"📅", color:"#d97706", bg:"#fffbeb",
+  { phase:"setup", id:"plan", emoji:"📅", color:"#d97706", bg:"#FFF3DC",
     title:"Adım 4 — Bakım Planı Kurun",
     desc:"Türk hukuku gereği asansörlerin en az ayda bir bakımı zorunludur. Periyot ve asansörü seçip plan oluşturun.",
     tip:"Bir asansöre birden fazla plan eklenebilir (periyodik + yıllık muayene).",
@@ -77,7 +77,7 @@ const SETUP: SetupStep[] = [
 ];
 
 const DASH: DashStep[] = [
-  { phase:"dashboard", id:"stats", emoji:"📊", color:"#2563eb",
+  { phase:"dashboard", id:"stats", emoji:"📊", color:"#1B1F2B",
     title:"Özet Kartlar",
     desc:"Müşteri, asansör, iş emri, acil ve gecikmiş sayılarınızı anlık görün. Her karta tıklayarak ilgili listeye gidebilirsiniz.",
     selector:"stat-cards", placement:"below" },
@@ -210,7 +210,7 @@ export default function OnboardingTour() {
               <p style={{margin:"0 0 12px",fontSize:12.5,color:"#4b5a6e",lineHeight:1.7}}>{cd.desc}</p>
               <div style={{display:"flex",gap:7,justifyContent:"space-between",alignItems:"center"}}>
                 <div style={{display:"flex",gap:4}}>
-                  {DASH.map((_,i)=><div key={i} style={{height:3,width:i===st.di?16:5,borderRadius:10,background:i<=st.di?cd.color:"#e2e8f0",transition:"all .3s"}}/>)}
+                  {DASH.map((_,i)=><div key={i} style={{height:3,width:i===st.di?16:5,borderRadius:10,background:i<=st.di?cd.color:"#D6D0C4",transition:"all .3s"}}/>)}
                 </div>
                 <div style={{display:"flex",gap:7}}>
                   {st.di>0 && <button onClick={back} className="otour-btn-ghost" style={{fontSize:11.5,padding:"6px 11px"}}>← Geri</button>}
@@ -256,7 +256,7 @@ export default function OnboardingTour() {
             <div style={{minWidth:0}}>
               <div style={{fontSize:10.5,fontWeight:800,color:cs.color,letterSpacing:"0.07em",textTransform:"uppercase" as const,marginBottom:1}}>Adım {st.si}/{SETUP.length-1}</div>
               <div style={{fontSize:12.5,fontWeight:700,color:"#0f1623",whiteSpace:"nowrap" as const,overflow:"hidden",textOverflow:"ellipsis"}}>{cs.pageGuideTitle??cs.title}</div>
-              <div style={{fontSize:11.5,color:"#64748b",whiteSpace:"nowrap" as const,overflow:"hidden",textOverflow:"ellipsis"}}>{cs.pageGuideDesc??cs.desc}</div>
+              <div style={{fontSize:11.5,color:"#6E6455",whiteSpace:"nowrap" as const,overflow:"hidden",textOverflow:"ellipsis"}}>{cs.pageGuideDesc??cs.desc}</div>
             </div>
           </div>
           <div style={{display:"flex",gap:8,flexShrink:0}}>
@@ -295,7 +295,7 @@ export default function OnboardingTour() {
         <div className="otour-modal" onClick={e=>e.stopPropagation()}>
           <div style={{height:4,background:`linear-gradient(90deg,${cs.color},${cs.color}80)`}}/>
           <div style={{display:"flex",justifyContent:"center",gap:5,padding:"13px 24px 0"}}>
-            {SETUP.map((_,i)=><div key={i} style={{height:3,borderRadius:10,transition:"all .35s cubic-bezier(.16,1,.3,1)",background:i<=st.si?cs.color:"#e2e8f0",width:i===st.si?22:6}}/>)}
+            {SETUP.map((_,i)=><div key={i} style={{height:3,borderRadius:10,transition:"all .35s cubic-bezier(.16,1,.3,1)",background:i<=st.si?cs.color:"#D6D0C4",width:i===st.si?22:6}}/>)}
           </div>
           <div style={{padding:"18px 24px 0",display:"flex",alignItems:"flex-start",gap:14}}>
             <div style={{width:52,height:52,borderRadius:14,background:cs.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,flexShrink:0}}>
@@ -317,7 +317,7 @@ export default function OnboardingTour() {
           <div style={{padding:"14px 24px 0"}}>
             <p style={{margin:0,fontSize:13.5,color:"#4b5a6e",lineHeight:1.75}}>{cs.desc}</p>
             {cs.tip && (
-              <div style={{marginTop:12,display:"flex",gap:9,background:"#fffbeb",border:"1px solid #fde68a",borderRadius:10,padding:"9px 13px"}}>
+              <div style={{marginTop:12,display:"flex",gap:9,background:"#FFF3DC",border:"1px solid #fde68a",borderRadius:10,padding:"9px 13px"}}>
                 <span style={{fontSize:14,flexShrink:0}}>💡</span>
                 <p style={{margin:0,fontSize:12,color:"#92400e",lineHeight:1.65}}>{cs.tip}</p>
               </div>

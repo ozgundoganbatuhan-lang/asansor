@@ -35,7 +35,7 @@ export default function SignaturePad({
     context.lineCap = "round";
     context.lineJoin = "round";
     context.lineWidth = 2.3;
-    context.strokeStyle = "#0f172a";
+    context.strokeStyle = "#1A1510";
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, size.width, size.height);
     drawGuide(context, size.width, size.height);

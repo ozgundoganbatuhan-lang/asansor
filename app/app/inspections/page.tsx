@@ -11,10 +11,10 @@ type Inspection = {
 };
 
 const LM: Record<string, { label: string; bg: string; color: string; border: string; icon: string; desc: string }> = {
-  YESIL:   { label: "Yeşil",   bg: "#f0fdf4", color: "#166534", border: "#bbf7d0", icon: "🟢", desc: "Kusursuz — Güvenli kullanım" },
-  MAVI:    { label: "Mavi",    bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe", icon: "🔵", desc: "Hafif Kusurlu — 120 gün içinde düzeltilmeli" },
+  YESIL:   { label: "Yeşil",   bg: "#E8F5EE", color: "#166534", border: "#9DCFB0", icon: "🟢", desc: "Kusursuz — Güvenli kullanım" },
+  MAVI:    { label: "Mavi",    bg: "#E4EFF9", color: "#0F121A", border: "#90BEE0", icon: "🔵", desc: "Hafif Kusurlu — 120 gün içinde düzeltilmeli" },
   SARI:    { label: "Sarı",    bg: "#fefce8", color: "#92400e", border: "#fde68a", icon: "🟡", desc: "Kusurlu — Takip muayenesi gerekli" },
-  KIRMIZI: { label: "Kırmızı", bg: "#fef2f2", color: "#b91c1c", border: "#fecaca", icon: "🔴", desc: "GÜVENSİZ — 30 gün içinde durdurulacak!" },
+  KIRMIZI: { label: "Kırmızı", bg: "#FCECE8", color: "#C0311A", border: "#E8A090", icon: "🔴", desc: "GÜVENSİZ — 30 gün içinde durdurulacak!" },
 };
 
 function daysLeft(d: string) { return Math.ceil((new Date(d).getTime() - Date.now()) / 86400000); }
@@ -68,15 +68,15 @@ export default function InspectionsPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-      <button onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#2563eb", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
+      <button onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
           {showForm ? "✕ Kapat" : "+ Muayene Kaydet"}
         </button>
 
-      {err && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c" }}>{err}</div>}
-      {success && <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
+      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A" }}>{err}</div>}
+      {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
-      {overdue.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}><span style={{ fontSize: 18 }}>🔴</span><div><div style={{ fontSize: 13, fontWeight: 700, color: "#b91c1c" }}>{overdue.length} asansörün periyodik kontrolü gecikti!</div><div style={{ fontSize: 11, color: "#ef4444", marginTop: 3 }}>{overdue.map((a, i) => <span key={a.id}>{i > 0 && " · "}{a.name} ({a.customer.name})</span>)}</div></div></div>}
-      {dueSoon.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}><span style={{ fontSize: 18 }}>🟡</span><div><div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>{dueSoon.length} asansörün muayene tarihi 60 gün içinde!</div><div style={{ fontSize: 11, color: "#b45309", marginTop: 3 }}>{dueSoon.map((a, i) => <span key={a.id}>{i > 0 && " · "}{a.name} — {daysLeft(a.nextInspectionAt!)} gün</span>)}</div></div></div>}
+      {overdue.length > 0 && <div style={{ display: "flex", gap: 10, background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}><span style={{ fontSize: 18 }}>🔴</span><div><div style={{ fontSize: 13, fontWeight: 700, color: "#C0311A" }}>{overdue.length} asansörün periyodik kontrolü gecikti!</div><div style={{ fontSize: 11, color: "#C0311A", marginTop: 3 }}>{overdue.map((a, i) => <span key={a.id}>{i > 0 && " · "}{a.name} ({a.customer.name})</span>)}</div></div></div>}
+      {dueSoon.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}><span style={{ fontSize: 18 }}>🟡</span><div><div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>{dueSoon.length} asansörün muayene tarihi 60 gün içinde!</div><div style={{ fontSize: 11, color: "#B86800", marginTop: 3 }}>{dueSoon.map((a, i) => <span key={a.id}>{i > 0 && " · "}{a.name} — {daysLeft(a.nextInspectionAt!)} gün</span>)}</div></div></div>}
 
       {/* Label legend */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
@@ -132,7 +132,7 @@ export default function InspectionsPage() {
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button type="submit" disabled={!fAsset || creating} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fAsset || creating) ? 0.6 : 1 }}>{creating ? "Kaydediliyor…" : "Muayene Kaydet →"}</button>
+              <button type="submit" disabled={!fAsset || creating} style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fAsset || creating) ? 0.6 : 1 }}>{creating ? "Kaydediliyor…" : "Muayene Kaydet →"}</button>
               <button type="button" onClick={() => setShowForm(false)} style={{ background: "none", border: "1px solid #e5e7eb", color: "#6b7280", fontSize: 13, fontWeight: 600, padding: "9px 16px", borderRadius: 9, cursor: "pointer" }}>İptal</button>
             </div>
           </form>
@@ -146,7 +146,7 @@ export default function InspectionsPage() {
           <div style={{ fontSize: 12, color: "#9ca3af" }}>{items.length} kayıt</div>
         </div>
         {loading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 48 }}><div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin .7s linear infinite" }} /></div>
+          <div style={{ display: "flex", justifyContent: "center", padding: 48 }}><div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#1B1F2B", borderRadius: "50%", animation: "spin .7s linear infinite" }} /></div>
         ) : items.length === 0 ? (
           <div style={{ padding: 48, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>Henüz muayene kaydı yok.</div>
         ) : items.map((insp, i) => {

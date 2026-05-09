@@ -55,7 +55,7 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
           color: "#111827", margin: "0 0 6px" }}>
           {asset.name}
         </h1>
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#2563eb", marginBottom: 4 }}>{companyName}</div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: "#1B1F2B", marginBottom: 4 }}>{companyName}</div>
         <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 32 }}>
           {asset.customer.name}{asset.buildingName ? ` · ${asset.buildingName}` : ""}
         </div>
@@ -71,14 +71,14 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
 
         {asset.elevatorIdNo && (
           <div style={{ fontFamily: "monospace", fontSize: 13, color: "#6b7280",
-            background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 8,
+            background: "#F5F2EC", border: "1px solid #f3f4f6", borderRadius: 8,
             padding: "6px 16px", display: "inline-block", marginBottom: 20, letterSpacing: "0.5px" }}>
             {asset.elevatorIdNo}
           </div>
         )}
 
         {/* Info box */}
-        <div style={{ background: "#f9fafb", border: "1px solid #f3f4f6", borderRadius: 12,
+        <div style={{ background: "#F5F2EC", border: "1px solid #f3f4f6", borderRadius: 12,
           padding: "14px 18px", textAlign: "left", marginBottom: 28 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginBottom: 6 }}>Kullanım Talimatı</div>
           <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.7 }}>
@@ -92,7 +92,7 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
           <PrintButton className="print-btn-dark" />
           <a href={publicUrl} target="_blank" rel="noreferrer"
             style={{ display: "inline-flex", alignItems: "center", gap: 6,
-              background: "#2563eb", color: "#fff", fontSize: 13, fontWeight: 700,
+              background: "#1B1F2B", color: "#fff", fontSize: 13, fontWeight: 700,
               padding: "10px 20px", borderRadius: 9, textDecoration: "none" }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/>

@@ -8,30 +8,58 @@
    SERVISIM — Design System v10
 ═══════════════════════════════════════════ */
 :root {
-  /* Colors */
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-soft: #eff6ff;
-  --accent: #7c3aed;
-  --background: #f9fafb;
-  --surface: #ffffff;
-  --surface-2: #f8fafc;
-  --foreground: #0f172a;
-  --foreground-2: #1e293b;
-  --muted: #64748b;
-  --muted-2: #94a3b8;
-  --border: #e2e8f0;
-  --border-2: #cbd5e1;
-  --success: #059669;
-  --success-soft: #f0fdf4;
-  --warning: #d97706;
-  --warning-soft: #fffbeb;
-  --danger: #dc2626;
-  --danger-soft: #fef2f2;
+  /* ═══ Endüstriyel Açık Tema ═══ */
+  --primary:       #1B1F2B;
+  --primary-dark:  #0F121A;
+  --primary-soft:  #E8E9EC;
+  --primary-hover: #252B3B;
+
+  --amber:         #C87800;
+  --amber-dark:    #A06000;
+  --amber-light:   #FFF0D0;
+  --amber-border:  #F0C060;
+
+  --background:    #F5F2EC;
+  --surface:       #FFFFFF;
+  --surface-2:     #F0EDE6;
+  --surface-3:     #E8E3D8;
+
+  --foreground:    #1A1510;
+  --foreground-2:  #3A3028;
+  --muted:         #6E6455;
+  --muted-2:       #9C9080;
+
+  --border:        #D6D0C4;
+  --border-2:      #B8B0A0;
+
+  --success:       #2E7D4F;
+  --success-soft:  #E8F5EE;
+  --success-border:#9DCFB0;
+
+  --warning:       #B86800;
+  --warning-soft:  #FFF3DC;
+  --warning-border:#F0C060;
+
+  --danger:        #C0311A;
+  --danger-soft:   #FCECE8;
+  --danger-border: #E8A090;
+
+  --info:          #1A5C96;
+  --info-soft:     #E4EFF9;
+  --info-border:   #90BEE0;
+
+  /* Sidebar dark */
+  --sidebar-bg:      #1B1F2B;
+  --sidebar-border:  #2A3040;
+  --sidebar-hover:   #252B3B;
+  --sidebar-active:  #1d2d3e;
+  --sidebar-text:    rgba(245,242,236,0.5);
+  --sidebar-text-active: #F5F2EC;
+  --sidebar-accent:  #F0C060;
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
-  --shadow-sm: 0 2px 6px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-xs: 0 1px 2px rgba(27,21,16,0.05);
+  --shadow-sm: 0 2px 0 rgba(27,21,16,0.07), 0 1px 4px rgba(27,21,16,0.05);
   --shadow-md: 0 4px 16px rgba(15,23,42,0.08), 0 2px 4px rgba(15,23,42,0.04);
   --shadow-lg: 0 12px 32px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
 
@@ -42,11 +70,11 @@
   --radius-xl: 20px;
 
   /* Legacy compat */
-  --border-strong: #bfdbfe;
-  --surface-soft: #f1f5f9;
-  --surface-soft-2: #f8fafc;
-  --foreground-soft: #334155;
-  --muted-2: #94a3b8;
+  --border-strong: #B8B0A0;
+  --surface-soft: #F0EDE6;
+  --surface-soft-2: #E8E3D8;
+  --foreground-soft: #3A3028;
+  --muted-2: #9C9080;
   --shadow-soft: var(--shadow-md);
   --shadow-hard: var(--shadow-lg);
 }
@@ -242,7 +270,7 @@ input:focus, select:focus, textarea:focus {
 }
 .kpi-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 20px rgba(27,21,16,0.1);
 }
 .metric-value {
   font-size: 2.2rem;
@@ -315,12 +343,14 @@ input:focus, select:focus, textarea:focus {
 
 /* Chip */
 .chip { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; border: 1px solid; white-space: nowrap; }
-.chip-blue   { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
-.chip-red    { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
-.chip-amber  { background:#fffbeb; color:#b45309; border-color:#fcd34d; }
-.chip-green  { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+.chip-blue   { background:#E4EFF9; color:#1A5C96; border-color:#90BEE0; }
+.chip-red    { background:#FCECE8; color:#C0311A; border-color:#E8A090; }
+.chip-amber  { background:#FFF3DC; color:#B86800; border-color:#F0C060; }
+.chip-green  { background:#E8F5EE; color:#2E7D4F; border-color:#9DCFB0; }
 .chip-purple { background:#f5f3ff; color:#5b21b6; border-color:#ddd6fe; }
-.chip-gray   { background:#f1f5f9; color:#475569; border-color:#e2e8f0; }
+.chip-gray    { background:#F0EDE6; color:#6E6455; border-color:#D6D0C4; }
+.chip-primary  { background:#E8E9EC; color:#1B1F2B; border-color:#B0B4BE; }
+.chip-amber    { background:#FFF0D0; color:#C87800; border-color:#F0C060; }
 
 /* Trial bar */
 /* trial-bar is now inside the sidebar — not a fixed bottom bar */
@@ -340,3 +370,29 @@ input:focus, select:focus, textarea:focus {
   width: 100%;
   box-sizing: border-box;
 }
+
+/* ── Industrial buttons ── */
+.btn-dark {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--primary); color: #F5F2EC; border: 1.5px solid var(--primary-dark);
+  font-size: 13px; font-weight: 700; padding: 9px 18px;
+  border-radius: 9px; cursor: pointer; font-family: inherit;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.18); transition: opacity .15s;
+}
+.btn-dark:hover { opacity: .88; }
+.btn-amber {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--amber); color: #fff; border: 1.5px solid var(--amber-dark);
+  font-size: 13px; font-weight: 700; padding: 9px 18px;
+  border-radius: 9px; cursor: pointer; font-family: inherit;
+  box-shadow: 0 2px 0 rgba(168,100,0,0.3); transition: opacity .15s;
+}
+.btn-amber:hover { opacity: .88; }
+.btn-outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--surface); color: var(--foreground); border: 1.5px solid var(--border-2);
+  font-size: 13px; font-weight: 700; padding: 9px 18px;
+  border-radius: 9px; cursor: pointer; font-family: inherit;
+  transition: background .12s;
+}
+.btn-outline:hover { background: var(--surface-2); }

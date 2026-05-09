@@ -15,9 +15,9 @@ type Plan = {
 };
 
 const PT: Record<string, { label: string; icon: string; bg: string; color: string; border: string }> = {
-  PERIODIC:          { label: "Periyodik Bakım",    icon: "🔧", bg: "#eff6ff", color: "#1d4ed8", border: "#bfdbfe" },
-  ANNUAL_INSPECTION: { label: "Yıllık Muayene",     icon: "📋", bg: "#f5f3ff", color: "#6d28d9", border: "#ddd6fe" },
-  CUSTOM:            { label: "Özel Bakım",          icon: "⚙️",  bg: "#f9fafb", color: "#6b7280", border: "#e5e7eb" },
+  PERIODIC:          { label: "Periyodik Bakım",    icon: "🔧", bg: "#E4EFF9", color: "#0F121A", border: "#90BEE0" },
+  ANNUAL_INSPECTION: { label: "Yıllık Muayene",     icon: "📋", bg: "#f5f3ff", color: "#1A5C96", border: "#ddd6fe" },
+  CUSTOM:            { label: "Özel Bakım",          icon: "⚙️",  bg: "#F5F2EC", color: "#6b7280", border: "#e5e7eb" },
 };
 
 function daysLeft(d: string) { return Math.ceil((new Date(d).getTime() - Date.now()) / 86400000); }
@@ -84,18 +84,18 @@ export default function MaintenancePlansPage() {
 
       {/* Header */}
       <OnboardingBeacon forStep={4} label="👆 Bakım planı oluşturun">
-          <button data-tour="new-plan-btn" onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#2563eb", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
+          <button data-tour="new-plan-btn" onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
             {showForm ? "✕ Kapat" : "+ Yeni Plan"}
           </button>
         </OnboardingBeacon>
 
-      {err && <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#b91c1c" }}>{err}</div>}
+      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A" }}>{err}</div>}
 
       {/* Alerts */}
-      {overdue.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}>
+      {overdue.length > 0 && <div style={{ display: "flex", gap: 10, background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}>
         <span style={{ fontSize: 18 }}>⚠️</span>
-        <div><div style={{ fontSize: 13, fontWeight: 700, color: "#b91c1c" }}>{overdue.length} bakım planı gecikti!</div>
-          <div style={{ fontSize: 11, color: "#ef4444", marginTop: 3 }}>{overdue.slice(0, 4).map((p, i) => <span key={p.id}>{i > 0 && " · "}{p.asset.name} — {new Date(p.nextDueAt).toLocaleDateString("tr-TR")}</span>)}</div></div>
+        <div><div style={{ fontSize: 13, fontWeight: 700, color: "#C0311A" }}>{overdue.length} bakım planı gecikti!</div>
+          <div style={{ fontSize: 11, color: "#C0311A", marginTop: 3 }}>{overdue.slice(0, 4).map((p, i) => <span key={p.id}>{i > 0 && " · "}{p.asset.name} — {new Date(p.nextDueAt).toLocaleDateString("tr-TR")}</span>)}</div></div>
       </div>}
       {thisWeek.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 16px", alignItems: "center" }}>
         <span style={{ fontSize: 18 }}>🔔</span>
@@ -104,7 +104,7 @@ export default function MaintenancePlansPage() {
 
       {/* KPIs */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
-        {[{ label: "Toplam Plan", val: plans.length, color: "#111827" }, { label: "Gecikmiş", val: overdue.length, color: overdue.length > 0 ? "#b91c1c" : "#111827" }, { label: "Bu Hafta", val: thisWeek.length, color: thisWeek.length > 0 ? "#b45309" : "#111827" }, { label: "Asansör", val: byAsset.size, color: "#111827" }].map(k => (
+        {[{ label: "Toplam Plan", val: plans.length, color: "#111827" }, { label: "Gecikmiş", val: overdue.length, color: overdue.length > 0 ? "#C0311A" : "#111827" }, { label: "Bu Hafta", val: thisWeek.length, color: thisWeek.length > 0 ? "#B86800" : "#111827" }, { label: "Asansör", val: byAsset.size, color: "#111827" }].map(k => (
           <div key={k.label} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
             <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 6 }}>{k.label}</div>
             <div style={{ fontSize: 28, fontWeight: 700, color: k.color, letterSpacing: "-1px" }}>{k.val}</div>
@@ -116,7 +116,7 @@ export default function MaintenancePlansPage() {
       {showForm && (
         <div style={{ background: "#fff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 22 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Yeni Bakım Planı</div>
-          <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#1d4ed8", marginBottom: 16 }}>
+          <div style={{ background: "#E4EFF9", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginBottom: 16 }}>
             💡 Bir asansöre birden fazla plan ekleyebilirsiniz. Örneğin: Aylık periyodik bakım + Yıllık muayene hazırlığı.
           </div>
           <form onSubmit={create} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -168,7 +168,7 @@ export default function MaintenancePlansPage() {
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button type="submit" disabled={!fAsset || creating} style={{ background: "#2563eb", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fAsset || creating) ? 0.6 : 1 }}>{creating ? "Oluşturuluyor…" : "Plan Oluştur →"}</button>
+              <button type="submit" disabled={!fAsset || creating} style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fAsset || creating) ? 0.6 : 1 }}>{creating ? "Oluşturuluyor…" : "Plan Oluştur →"}</button>
               <button type="button" onClick={() => setShowForm(false)} style={{ background: "none", border: "1px solid #e5e7eb", color: "#6b7280", fontSize: 13, fontWeight: 600, padding: "9px 16px", borderRadius: 9, cursor: "pointer" }}>İptal</button>
             </div>
           </form>
@@ -177,7 +177,7 @@ export default function MaintenancePlansPage() {
 
       {/* Plans list */}
       {loading ? (
-        <div style={{ display: "flex", justifyContent: "center", padding: 48 }}><div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin .7s linear infinite" }} /></div>
+        <div style={{ display: "flex", justifyContent: "center", padding: 48 }}><div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#1B1F2B", borderRadius: "50%", animation: "spin .7s linear infinite" }} /></div>
       ) : plans.length === 0 ? (
         <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 48, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>Henüz bakım planı yok.</div>
       ) : (
@@ -186,7 +186,7 @@ export default function MaintenancePlansPage() {
             const asset = assetPlans[0].asset;
             return (
               <div key={assetId} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, overflow: "hidden" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: "#F5F2EC", borderBottom: "1px solid #f3f4f6" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span>🏢</span>
                     <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{asset.name}</span>
@@ -201,17 +201,17 @@ export default function MaintenancePlansPage() {
                     const isOverdue = days < 0; const isSoon = days >= 0 && days <= 7;
                     const pt = PT[p.planType] ?? PT.PERIODIC;
                     return (
-                      <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderBottom: i < assetPlans.length - 1 ? "1px solid #f3f4f6" : "none", background: isOverdue ? "#fef2f2" : isSoon ? "#fefce8" : "#fff", flexWrap: "wrap" }}>
+                      <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderBottom: i < assetPlans.length - 1 ? "1px solid #f3f4f6" : "none", background: isOverdue ? "#FCECE8" : isSoon ? "#fefce8" : "#fff", flexWrap: "wrap" }}>
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: pt.bg, color: pt.color, border: `1px solid ${pt.border}`, borderRadius: 99, padding: "2px 10px", fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{pt.icon} {pt.label}</span>
                         {p.name && <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{p.name}</span>}
                         <span style={{ fontSize: 12, color: "#9ca3af" }}>{periodLabel(p.periodDays)}</span>
                         <div style={{ flex: 1 }} />
                         <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: isOverdue ? "#b91c1c" : isSoon ? "#b45309" : "#111827" }}>{isOverdue ? `${Math.abs(days)} gün gecikti` : days === 0 ? "Bugün!" : `${days} gün sonra`}</div>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: isOverdue ? "#C0311A" : isSoon ? "#B86800" : "#111827" }}>{isOverdue ? `${Math.abs(days)} gün gecikti` : days === 0 ? "Bugün!" : `${days} gün sonra`}</div>
                           <div style={{ fontSize: 11, color: "#9ca3af" }}>{new Date(p.nextDueAt).toLocaleDateString("tr-TR")}</div>
                         </div>
                         {p.monthlyFee > 0 && <span style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>{new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(p.monthlyFee / 100)}/ay</span>}
-                        <button onClick={() => createWorkOrderFromPlan(p)} disabled={woCreating === p.id} style={{ background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", opacity: woCreating === p.id ? 0.6 : 1 }}>{woCreating === p.id ? "Oluşturuluyor…" : "İş Emri Oluştur →"}</button>
+                        <button onClick={() => createWorkOrderFromPlan(p)} disabled={woCreating === p.id} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #bfdbfe", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", opacity: woCreating === p.id ? 0.6 : 1 }}>{woCreating === p.id ? "Oluşturuluyor…" : "İş Emri Oluştur →"}</button>
                       </div>
                     );
                   })}

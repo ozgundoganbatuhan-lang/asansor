@@ -39,7 +39,7 @@ export default function OnboardingBeacon({ forStep, label, children }: Props) {
       <div style={{
         position: "absolute", bottom: "calc(100% + 10px)", left: "50%",
         transform: "translateX(-50%)",
-        background: "#1d4ed8", color: "#fff",
+        background: "#0F121A", color: "#fff",
         fontSize: 11.5, fontWeight: 700, whiteSpace: "nowrap",
         padding: "5px 10px", borderRadius: 7,
         boxShadow: "0 4px 14px rgba(37,99,235,.4)",

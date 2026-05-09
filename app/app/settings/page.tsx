@@ -12,8 +12,8 @@ function roleLabel(r: string) {
   if (r === "OFFICE") return "Ofis"; if (r === "TECHNICIAN") return "Teknisyen"; return r;
 }
 function roleDot(r: string) {
-  if (r === "OWNER") return "#7c3aed"; if (r === "ADMIN") return "#2563eb";
-  if (r === "TECHNICIAN") return "#059669"; return "#64748b";
+  if (r === "OWNER") return "#7c3aed"; if (r === "ADMIN") return "#1B1F2B";
+  if (r === "TECHNICIAN") return "#059669"; return "#6E6455";
 }
 function planLabel(ent: Ent | null) {
   if (!ent) return "—"; if (ent.isTrial) return `Deneme — ${ent.daysLeft} gün`;
@@ -26,8 +26,8 @@ function SectionHeader({ icon, title, sub }: { icon: string; title: string; sub?
     <div style={{ display:"flex", alignItems:"flex-start", gap:14, marginBottom:24 }}>
       <div style={{ width:42, height:42, borderRadius:12, background:"linear-gradient(135deg,#f5f3ff,#ede9fe)", border:"1px solid #ddd6fe", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>{icon}</div>
       <div>
-        <div style={{ fontSize:15, fontWeight:800, color:"#0f172a", letterSpacing:"-0.02em" }}>{title}</div>
-        {sub && <div style={{ fontSize:12.5, color:"#64748b", marginTop:2 }}>{sub}</div>}
+        <div style={{ fontSize:15, fontWeight:800, color:"#1A1510", letterSpacing:"-0.02em" }}>{title}</div>
+        {sub && <div style={{ fontSize:12.5, color:"#6E6455", marginTop:2 }}>{sub}</div>}
       </div>
     </div>
   );
@@ -115,25 +115,25 @@ export default function SettingsPage() {
   ];
 
   const inputStyle: React.CSSProperties = { width:"100%", padding:"11px 14px", border:"1px solid #e2e8f0", borderRadius:12, fontSize:14, background:"#fff", outline:"none", fontFamily:"inherit", transition:"border-color 0.15s" };
-  const btnPrimary: React.CSSProperties = { display:"inline-flex", alignItems:"center", gap:8, background:"#0f172a", color:"#fff", border:"none", borderRadius:12, padding:"11px 22px", fontSize:13.5, fontWeight:700, cursor:"pointer", transition:"all 0.15s", fontFamily:"inherit" };
+  const btnPrimary: React.CSSProperties = { display:"inline-flex", alignItems:"center", gap:8, background:"#1A1510", color:"#fff", border:"none", borderRadius:12, padding:"11px 22px", fontSize:13.5, fontWeight:700, cursor:"pointer", transition:"all 0.15s", fontFamily:"inherit" };
 
   return (
     <div style={{ maxWidth:860, margin:"0 auto" }}>
       <div style={{ marginBottom:28 }}>
-        <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:"#94a3b8", marginBottom:6 }}>Hesap & Yapılandırma</div>
-        <h1 style={{ fontSize:28, fontWeight:900, letterSpacing:"-0.04em", color:"#0f172a", margin:0 }}>Ayarlar</h1>
+        <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.16em", textTransform:"uppercase", color:"#9C9080", marginBottom:6 }}>Hesap & Yapılandırma</div>
+        <h1 style={{ fontSize:28, fontWeight:900, letterSpacing:"-0.04em", color:"#1A1510", margin:0 }}>Ayarlar</h1>
       </div>
 
-      {err && <div style={{ background:"#fef2f2", border:"1px solid #fecaca", borderRadius:12, padding:"12px 16px", marginBottom:20, fontSize:13.5, color:"#b91c1c" }}>⚠️ {err}</div>}
+      {err && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:12, padding:"12px 16px", marginBottom:20, fontSize:13.5, color:"#C0311A" }}>⚠️ {err}</div>}
 
       {/* Tabs */}
-      <div style={{ display:"flex", gap:4, background:"#f1f5f9", borderRadius:14, padding:4, marginBottom:24 }}>
+      <div style={{ display:"flex", gap:4, background:"#F0EDE6", borderRadius:14, padding:4, marginBottom:24 }}>
         {TABS.filter(t => !t.admin || isAdmin).map(t => (
           <button key={t.key} onClick={() => setActiveTab(t.key as typeof activeTab)} style={{
             flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7,
             padding:"9px 16px", borderRadius:10, border:"none", cursor:"pointer", fontSize:13, fontWeight:700,
             transition:"all 0.15s", background:activeTab===t.key?"#fff":"transparent",
-            color:activeTab===t.key?"#0f172a":"#64748b", boxShadow:activeTab===t.key?"0 1px 4px rgba(0,0,0,0.08)":"none", fontFamily:"inherit",
+            color:activeTab===t.key?"#1A1510":"#6E6455", boxShadow:activeTab===t.key?"0 1px 4px rgba(0,0,0,0.08)":"none", fontFamily:"inherit",
           }}>
             <span>{t.icon}</span> <span>{t.label}</span>
           </button>
@@ -146,35 +146,35 @@ export default function SettingsPage() {
           <SectionHeader icon="🏢" title="Organizasyon Bilgileri" sub="Firma adı ve sektör yapılandırması" />
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:20 }}>
             <div>
-              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8", marginBottom:8 }}>Firma Adı</label>
-              <input value={org?.name ?? ""} onChange={e => setOrg(o => o ? {...o, name:e.target.value} : o)} placeholder="Örn. Güvenli Asansör Ltd." disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e2e8f0"} />
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Firma Adı</label>
+              <input value={org?.name ?? ""} onChange={e => setOrg(o => o ? {...o, name:e.target.value} : o)} placeholder="Örn. Güvenli Asansör Ltd." disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
-              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8", marginBottom:8 }}>Telefon (QR sayfasında görünür)</label>
-              <input value={org?.phone ?? ""} onChange={e => setOrg(o => o ? {...o, phone:e.target.value} : o)} placeholder="+90 212 000 00 00" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e2e8f0"} />
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Telefon (QR sayfasında görünür)</label>
+              <input value={org?.phone ?? ""} onChange={e => setOrg(o => o ? {...o, phone:e.target.value} : o)} placeholder="+90 212 000 00 00" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
-              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8", marginBottom:8 }}>Web Sitesi (QR sayfasında görünür)</label>
-              <input value={org?.website ?? ""} onChange={e => setOrg(o => o ? {...o, website:e.target.value} : o)} placeholder="www.firmaniz.com" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e2e8f0"} />
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Web Sitesi (QR sayfasında görünür)</label>
+              <input value={org?.website ?? ""} onChange={e => setOrg(o => o ? {...o, website:e.target.value} : o)} placeholder="www.firmaniz.com" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
-              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8", marginBottom:8 }}>Slug / URL</label>
+              <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Slug / URL</label>
               <div style={{ display:"flex", alignItems:"center", border:"1px solid #e2e8f0", borderRadius:12, overflow:"hidden", background:"#f9f9fb" }}>
-                <span style={{ padding:"11px 12px", fontSize:13, color:"#94a3b8", borderRight:"1px solid #e2e8f0", background:"#f1f1f4", whiteSpace:"nowrap" }}>servisim.app/</span>
-                <span style={{ padding:"11px 14px", fontSize:14, color:"#475569", fontFamily:"monospace" }}>{org?.slug ?? "..."}</span>
+                <span style={{ padding:"11px 12px", fontSize:13, color:"#9C9080", borderRight:"1px solid #e2e8f0", background:"#f1f1f4", whiteSpace:"nowrap" }}>servisim.app/</span>
+                <span style={{ padding:"11px 14px", fontSize:14, color:"#6E6455", fontFamily:"monospace" }}>{org?.slug ?? "..."}</span>
               </div>
             </div>
           </div>
           <div style={{ padding:"14px 16px", background:"#f9f9fb", borderRadius:12, marginBottom:20, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div><div style={{ fontSize:13, fontWeight:700, color:"#0f172a" }}>Sektör</div><div style={{ fontSize:12, color:"#64748b", marginTop:2 }}>Asansör Servisi & Bakım</div></div>
-            <span style={{ background:"#eff6ff", color:"#1d4ed8", border:"1px solid #bfdbfe", padding:"4px 12px", borderRadius:999, fontSize:12, fontWeight:700 }}>ELEVATOR</span>
+            <div><div style={{ fontSize:13, fontWeight:700, color:"#1A1510" }}>Sektör</div><div style={{ fontSize:12, color:"#6E6455", marginTop:2 }}>Asansör Servisi & Bakım</div></div>
+            <span style={{ background:"#E4EFF9", color:"#0F121A", border:"1px solid #bfdbfe", padding:"4px 12px", borderRadius:999, fontSize:12, fontWeight:700 }}>ELEVATOR</span>
           </div>
-          {saved && <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#15803d" }}>✅ Değişiklikler kaydedildi.</div>}
+          {saved && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#2E7D4F" }}>✅ Değişiklikler kaydedildi.</div>}
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <button onClick={saveOrg} disabled={saving || !isAdmin} style={{...btnPrimary, background:saving?"#94a3b8":"#0f172a", cursor:saving||!isAdmin?"not-allowed":"pointer"}}>
+            <button onClick={saveOrg} disabled={saving || !isAdmin} style={{...btnPrimary, background:saving?"#9C9080":"#1A1510", cursor:saving||!isAdmin?"not-allowed":"pointer"}}>
               {saving ? "⏳ Kaydediliyor..." : "💾 Kaydet"}
             </button>
-            {!isAdmin && <span style={{ fontSize:12.5, color:"#94a3b8" }}>Yalnızca OWNER / ADMIN düzenleyebilir</span>}
+            {!isAdmin && <span style={{ fontSize:12.5, color:"#9C9080" }}>Yalnızca OWNER / ADMIN düzenleyebilir</span>}
           </div>
         </Card>
       )}
@@ -193,21 +193,21 @@ export default function SettingsPage() {
                 { label:"Telefon", field:"phone", type:"tel" },
               ] as const).map(f => (
                 <div key={f.field}>
-                  <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8", marginBottom:8 }}>{f.label}</label>
+                  <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>{f.label}</label>
                   {f.type === "select" ? (
                     <select value={userForm[f.field as keyof typeof userForm]} onChange={e => setUserForm(x => ({...x, [f.field]:e.target.value}))} style={{...inputStyle, cursor:"pointer"}}>
                       {f.options?.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   ) : (
-                    <input type={f.type} value={userForm[f.field as keyof typeof userForm]} onChange={e => setUserForm(x => ({...x, [f.field]:e.target.value}))} placeholder={"placeholder" in f ? f.placeholder : ""} style={inputStyle} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#e2e8f0"} />
+                    <input type={f.type} value={userForm[f.field as keyof typeof userForm]} onChange={e => setUserForm(x => ({...x, [f.field]:e.target.value}))} placeholder={"placeholder" in f ? f.placeholder : ""} style={inputStyle} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
                   )}
                 </div>
               ))}
             </div>
-            {userErr && <div style={{ background:"#fef2f2", border:"1px solid #fecaca", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#b91c1c" }}>⚠️ {userErr}</div>}
-            {userSuccess && <div style={{ background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#15803d" }}>✅ {userSuccess}</div>}
+            {userErr && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#C0311A" }}>⚠️ {userErr}</div>}
+            {userSuccess && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#2E7D4F" }}>✅ {userSuccess}</div>}
             <div style={{ display:"flex", justifyContent:"flex-end" }}>
-              <button onClick={createUser} disabled={!userForm.email.trim()} style={{...btnPrimary, background:userForm.email.trim()?"#2563eb":"#e2e8f0", color:userForm.email.trim()?"#fff":"#94a3b8", cursor:userForm.email.trim()?"pointer":"not-allowed"}}>
+              <button onClick={createUser} disabled={!userForm.email.trim()} style={{...btnPrimary, background:userForm.email.trim()?"#1B1F2B":"#D6D0C4", color:userForm.email.trim()?"#fff":"#9C9080", cursor:userForm.email.trim()?"pointer":"not-allowed"}}>
                 👤 Kullanıcı Ekle
               </button>
             </div>
@@ -215,24 +215,24 @@ export default function SettingsPage() {
           <Card>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
               <div>
-                <div style={{ fontSize:15, fontWeight:800, color:"#0f172a" }}>👥 Mevcut Kullanıcılar</div>
-                <div style={{ fontSize:12.5, color:"#64748b", marginTop:2 }}>{userLoading ? "Yükleniyor..." : `${users.length} hesap`}</div>
+                <div style={{ fontSize:15, fontWeight:800, color:"#1A1510" }}>👥 Mevcut Kullanıcılar</div>
+                <div style={{ fontSize:12.5, color:"#6E6455", marginTop:2 }}>{userLoading ? "Yükleniyor..." : `${users.length} hesap`}</div>
               </div>
-              <button onClick={loadUsers} style={{ background:"#f1f5f9", border:"none", borderRadius:9, padding:"8px 14px", fontSize:12.5, fontWeight:600, cursor:"pointer", color:"#475569", fontFamily:"inherit" }}>🔄 Yenile</button>
+              <button onClick={loadUsers} style={{ background:"#F0EDE6", border:"none", borderRadius:9, padding:"8px 14px", fontSize:12.5, fontWeight:600, cursor:"pointer", color:"#6E6455", fontFamily:"inherit" }}>🔄 Yenile</button>
             </div>
             <div style={{ border:"1px solid #e2e8f0", borderRadius:14, overflow:"hidden" }}>
               <div style={{ display:"grid", gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"10px 16px", background:"#f9f9fb", borderBottom:"1px solid #e2e8f0" }}>
-                {["E-posta","İsim","Telefon","Rol","Kayıt"].map(h => <div key={h} style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#94a3b8" }}>{h}</div>)}
+                {["E-posta","İsim","Telefon","Rol","Kayıt"].map(h => <div key={h} style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080" }}>{h}</div>)}
               </div>
               {users.length === 0 ? (
-                <div style={{ padding:"32px 16px", textAlign:"center", color:"#94a3b8", fontSize:14 }}>{userLoading ? "Yükleniyor..." : "Henüz kullanıcı yok."}</div>
+                <div style={{ padding:"32px 16px", textAlign:"center", color:"#9C9080", fontSize:14 }}>{userLoading ? "Yükleniyor..." : "Henüz kullanıcı yok."}</div>
               ) : users.map((u, i) => (
                 <div key={u.id} style={{ display:"grid", gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"13px 16px", fontSize:13, borderBottom:i<users.length-1?"1px solid #f1f5f9":"none", alignItems:"center" }}>
-                  <div style={{ color:"#0f172a", fontWeight:600, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
-                  <div style={{ color:"#475569" }}>{u.name || "—"}</div>
-                  <div style={{ color:"#64748b" }}>{u.phone || "—"}</div>
-                  <div><span style={{ display:"inline-flex", alignItems:"center", gap:5, background:"#f1f5f9", borderRadius:999, padding:"3px 10px", fontSize:11.5, fontWeight:700, color:"#475569" }}><span style={{ width:6, height:6, borderRadius:"50%", background:roleDot(u.role), display:"inline-block" }} />{roleLabel(u.role)}</span></div>
-                  <div style={{ color:"#94a3b8" }}>{new Date(u.createdAt).toLocaleDateString("tr-TR")}</div>
+                  <div style={{ color:"#1A1510", fontWeight:600, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
+                  <div style={{ color:"#6E6455" }}>{u.name || "—"}</div>
+                  <div style={{ color:"#6E6455" }}>{u.phone || "—"}</div>
+                  <div><span style={{ display:"inline-flex", alignItems:"center", gap:5, background:"#F0EDE6", borderRadius:999, padding:"3px 10px", fontSize:11.5, fontWeight:700, color:"#6E6455" }}><span style={{ width:6, height:6, borderRadius:"50%", background:roleDot(u.role), display:"inline-block" }} />{roleLabel(u.role)}</span></div>
+                  <div style={{ color:"#9C9080" }}>{new Date(u.createdAt).toLocaleDateString("tr-TR")}</div>
                 </div>
               ))}
             </div>
@@ -245,10 +245,10 @@ export default function SettingsPage() {
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <Card>
             <SectionHeader icon="💎" title="Abonelik Durumu" sub="Mevcut plan ve kullanım bilgileri" />
-            <div style={{ background:ent?.isExpired?"linear-gradient(135deg,#fff7ed,#ffedd5)":ent?.isTrial?"linear-gradient(135deg,#f5f3ff,#ede9fe)":"linear-gradient(135deg,#f0fdf4,#dcfce7)", border:`1px solid ${ent?.isExpired?"#fed7aa":ent?.isTrial?"#ddd6fe":"#bbf7d0"}`, borderRadius:16, padding:"20px 24px", marginBottom:20, display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, flexWrap:"wrap" }}>
+            <div style={{ background:ent?.isExpired?"linear-gradient(135deg,#fff7ed,#ffedd5)":ent?.isTrial?"linear-gradient(135deg,#f5f3ff,#ede9fe)":"linear-gradient(135deg,#f0fdf4,#dcfce7)", border:`1px solid ${ent?.isExpired?"#fed7aa":ent?.isTrial?"#ddd6fe":"#9DCFB0"}`, borderRadius:16, padding:"20px 24px", marginBottom:20, display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, flexWrap:"wrap" }}>
               <div>
-                <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#64748b", marginBottom:6 }}>Aktif Plan</div>
-                <div style={{ fontSize:26, fontWeight:900, letterSpacing:"-0.04em", color:"#0f172a" }}>{pl}</div>
+                <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#6E6455", marginBottom:6 }}>Aktif Plan</div>
+                <div style={{ fontSize:26, fontWeight:900, letterSpacing:"-0.04em", color:"#1A1510" }}>{pl}</div>
                 {ent?.isTrial && !ent.isExpired && <div style={{ fontSize:13, color:"#7c3aed", marginTop:4, fontWeight:600 }}>⏳ {new Date(ent.trialEndsAt).toLocaleDateString("tr-TR")} tarihinde sona erer</div>}
                 {ent?.isExpired && <div style={{ fontSize:13, color:"#ea580c", marginTop:4, fontWeight:600 }}>🔒 Salt-okunur mod aktif</div>}
               </div>
@@ -260,14 +260,14 @@ export default function SettingsPage() {
             </div>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
               <div style={{ border:"1px solid #e2e8f0", borderRadius:14, padding:"16px 20px" }}>
-                <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#94a3b8", marginBottom:10 }}>WhatsApp</div>
+                <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9C9080", marginBottom:10 }}>WhatsApp</div>
                 <a href="https://wa.me/905551234567" target="_blank" rel="noopener noreferrer" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#059669", textDecoration:"none" }}>📱 +90 555 123 45 67</a>
-                <div style={{ fontSize:12, color:"#94a3b8", marginTop:6 }}>Hft içi 09:00 – 18:00</div>
+                <div style={{ fontSize:12, color:"#9C9080", marginTop:6 }}>Hft içi 09:00 – 18:00</div>
               </div>
               <div style={{ border:"1px solid #e2e8f0", borderRadius:14, padding:"16px 20px" }}>
-                <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#94a3b8", marginBottom:10 }}>E-posta</div>
-                <a href="mailto:satis@servisim.app" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#2563eb", textDecoration:"none" }}>✉️ satis@servisim.app</a>
-                <div style={{ fontSize:12, color:"#94a3b8", marginTop:6 }}>1 iş günü içinde yanıt</div>
+                <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9C9080", marginBottom:10 }}>E-posta</div>
+                <a href="mailto:satis@servisim.app" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#1B1F2B", textDecoration:"none" }}>✉️ satis@servisim.app</a>
+                <div style={{ fontSize:12, color:"#9C9080", marginTop:6 }}>1 iş günü içinde yanıt</div>
               </div>
             </div>
           </Card>
@@ -278,10 +278,10 @@ export default function SettingsPage() {
               { title:"Sözleşme Şablonu", desc:"Asansör bakım sözleşmesi için örnek PDF", href:"/docs/sozlesme-sablonu.pdf", editHref:"/app/docs/sozlesme" },
             ].map(doc => (
               <div key={doc.title} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", border:"1px solid #e2e8f0", borderRadius:12, marginBottom:10, gap:16, flexWrap:"wrap" }}>
-                <div><div style={{ fontSize:14, fontWeight:700, color:"#0f172a" }}>{doc.title}</div><div style={{ fontSize:12.5, color:"#64748b", marginTop:2 }}>{doc.desc}</div></div>
+                <div><div style={{ fontSize:14, fontWeight:700, color:"#1A1510" }}>{doc.title}</div><div style={{ fontSize:12.5, color:"#6E6455", marginTop:2 }}>{doc.desc}</div></div>
                 <div style={{ display:"flex", gap:8 }}>
-                  <a href={doc.href} target="_blank" rel="noopener noreferrer" style={{ background:"#0f172a", color:"#fff", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>⬇ İndir</a>
-                  <Link href={doc.editHref} style={{ border:"1px solid #e2e8f0", color:"#475569", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>✏️ Düzenle</Link>
+                  <a href={doc.href} target="_blank" rel="noopener noreferrer" style={{ background:"#1A1510", color:"#fff", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>⬇ İndir</a>
+                  <Link href={doc.editHref} style={{ border:"1px solid #e2e8f0", color:"#6E6455", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>✏️ Düzenle</Link>
                 </div>
               </div>
             ))}
@@ -299,13 +299,13 @@ export default function SettingsPage() {
               { title:"İki Faktörlü Doğrulama", desc:"SMS veya authenticator ile oturum güvenliği", btn:"Yakında", disabled:true },
             ].map(item => (
               <div key={item.title} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", border:"1px solid #e2e8f0", borderRadius:14, gap:16, flexWrap:"wrap" }}>
-                <div><div style={{ fontSize:14, fontWeight:700, color:"#0f172a" }}>{item.title}</div><div style={{ fontSize:12.5, color:"#64748b", marginTop:3 }}>{item.desc}</div></div>
-                <button disabled style={{ background:"#f1f5f9", border:"1px solid #e2e8f0", borderRadius:9, padding:"8px 16px", fontSize:12.5, fontWeight:700, color:"#94a3b8", cursor:"not-allowed", fontFamily:"inherit" }}>{item.btn}</button>
+                <div><div style={{ fontSize:14, fontWeight:700, color:"#1A1510" }}>{item.title}</div><div style={{ fontSize:12.5, color:"#6E6455", marginTop:3 }}>{item.desc}</div></div>
+                <button disabled style={{ background:"#F0EDE6", border:"1px solid #e2e8f0", borderRadius:9, padding:"8px 16px", fontSize:12.5, fontWeight:700, color:"#9C9080", cursor:"not-allowed", fontFamily:"inherit" }}>{item.btn}</button>
               </div>
             ))}
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", border:"1px solid #e2e8f0", borderRadius:14, gap:16 }}>
-              <div><div style={{ fontSize:14, fontWeight:700, color:"#0f172a" }}>KVKK & Gizlilik Politikası</div><div style={{ fontSize:12.5, color:"#64748b", marginTop:3 }}>Kişisel veri işleme politikası ve aydınlatma metni</div></div>
-              <a href="/kvkk" target="_blank" rel="noopener noreferrer" style={{ border:"1px solid #e2e8f0", borderRadius:9, padding:"8px 16px", fontSize:12.5, fontWeight:700, color:"#475569", textDecoration:"none" }}>Görüntüle →</a>
+              <div><div style={{ fontSize:14, fontWeight:700, color:"#1A1510" }}>KVKK & Gizlilik Politikası</div><div style={{ fontSize:12.5, color:"#6E6455", marginTop:3 }}>Kişisel veri işleme politikası ve aydınlatma metni</div></div>
+              <a href="/kvkk" target="_blank" rel="noopener noreferrer" style={{ border:"1px solid #e2e8f0", borderRadius:9, padding:"8px 16px", fontSize:12.5, fontWeight:700, color:"#6E6455", textDecoration:"none" }}>Görüntüle →</a>
             </div>
           </div>
         </Card>
