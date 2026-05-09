@@ -82,9 +82,8 @@ export default async function PublicAssetPage({
   const orgName    = org?.name ?? (process.env.NEXT_PUBLIC_ORG_NAME ?? "Servis Firması");
   const orgPhone   = org?.phone ?? (process.env.NEXT_PUBLIC_SUPPORT_PHONE_DISPLAY ?? "+90 555 000 00 00");
   const orgPhoneRaw= (org?.phone ?? process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "+905550000000").replace(/\D/g,"");
-  const orgEmail   = org?.email ?? null;
+  const orgEmail   = org?.email ?? process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "info@servisim.app";
   const orgWebsite = org?.website ?? process.env.NEXT_PUBLIC_ORG_WEBSITE ?? null;
-  const orgEmail   = process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "info@servisim.app";
   const waLink     = `https://wa.me/${orgPhoneRaw}?text=Servis%20bilgisi%20almak%20istiyorum`;
 
   const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#3b82f6",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
