@@ -70,6 +70,7 @@ function RegisterForm() {
       const data = await res.json().catch(() => ({}));
       setLoading(false);
       if (!res.ok) { setError(data?.error ?? "Kayıt başarısız."); return; }
+      (window as { seansim?: (name: string) => void }).seansim?.("signup");
       if (data.needsVerification) router.push("/auth/check-email");
       else { router.push("/app/dashboard?welcome=1"); router.refresh(); }
     } catch {
