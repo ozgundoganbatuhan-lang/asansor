@@ -33,121 +33,86 @@ export default function CustomersPage() {
     if(!res.ok){setError(d.error??"Müşteri oluşturulamadı");return;}
     setName("");setContactName("");setPhone("");setEmail("");setAddress("");setLat(undefined);setLng(undefined);setShowForm(false);await load();}
 
+  const COLS="minmax(0,1.3fr) minmax(0,1fr) 70px 70px";
   return (
-    <div style={{display:"flex",flexDirection:"column",gap:18}}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}.c-row:hover{background:#f8fafc!important}.fi:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.12)!important}`}</style>
-
-      <div style={{display:"flex",flexWrap:"wrap",alignItems:"flex-end",justifyContent:"space-between",gap:14}}>
+    <div className="pg">
+      <div className="ph">
         <div>
-          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.18em",color:"#9C9080",marginBottom:6}}>Portföy</div>
-          <h1 style={{fontSize:26,fontWeight:900,letterSpacing:"-0.05em",color:"#1A1510",lineHeight:1.05,margin:0}}>Müşteriler</h1>
-          <p style={{marginTop:6,fontSize:13.5,lineHeight:1.65,color:"#6E6455",margin:"6px 0 0"}}>Bina yöneticileri, site yönetimleri ve kurumsal müşteriler.</p>
+          <div className="ph-eyebrow">Portföy</div>
+          <h1 className="ph-title">Müşteriler</h1>
+          <p className="ph-sub">Bakımını yaptığınız binalar, siteler ve yönetimler.</p>
         </div>
-        <button onClick={()=>setShowForm(v=>!v)} style={{display:"inline-flex",alignItems:"center",gap:6,
-          background:showForm?"#fff":"#1B1F2B",color:showForm?"#1A1510":"#fff",
-          border:showForm?"1.5px solid #e2e8f0":"none",fontSize:13,fontWeight:700,
-          padding:"9px 18px",borderRadius:10,cursor:"pointer",fontFamily:"inherit",
-          boxShadow:showForm?"none":"0 3px 12px rgba(37,99,235,.28)"}}>
-          {showForm?"Formu kapat":<><Ic d="M12 5v14M5 12h14" size={13} stroke="#fff"/>Yeni Müşteri</>}
-        </button>
+        <div className="ph-actions">
+          <Link href="/app/customers/import" className="b b-line">Excel'den aktar</Link>
+          <button className={`b ${showForm?"b-line":"b-ink"}`} onClick={()=>setShowForm(v=>!v)}>{showForm?"Formu kapat":<><Ic d="M12 5v14M5 12h14" size={14}/>Yeni müşteri</>}</button>
+        </div>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12}}>
-        {[
-          {l:"Toplam Müşteri",v:customers.length,c:"#1A1510",bg:"#F0EDE6",d:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z"},
-          {l:"Filtrelenen",v:filtered.length,c:"#1B1F2B",bg:"#E4EFF9",d:"M3 4a1 1 0 000 2h18a1 1 0 000-2H3zm2 7a1 1 0 000 2h14a1 1 0 000-2H5zm4 7a1 1 0 000 2h6a1 1 0 000-2H9z"},
-          {l:"Toplam Asansör",v:totalA,c:"#059669",bg:"#E8F5EE",d:"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10"},
-          {l:"İş Emirleri",v:totalW,c:"#7c3aed",bg:"#f5f3ff",d:"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4"},
-        ].map((k,i)=>(
-          <div key={i} style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:14,padding:"18px 20px",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
-            <div style={{width:32,height:32,borderRadius:9,background:k.bg,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12}}><Ic d={k.d} size={15} stroke={k.c}/></div>
-            <div className="metric-label">{k.l}</div>
-            <div style={{fontSize:"1.9rem",fontWeight:900,letterSpacing:"-0.06em",color:k.c,lineHeight:1}}>{k.v}</div>
-          </div>
-        ))}
+      <div className="kpis stagger">
+        <div className="kpi"><span>Müşteri</span><b>{customers.length}</b></div>
+        <div className="kpi"><span>Asansör</span><b>{totalA}</b></div>
+        <div className="kpi"><span>İş emri</span><b>{totalW}</b></div>
+        <div className="kpi"><span>Asansörsüz</span><b style={{color:customers.some(c=>c._count.assets===0)?"#B86800":undefined}}>{customers.filter(c=>c._count.assets===0).length}</b></div>
       </div>
 
-      {error&&<div style={{background:"#FCECE8",border:"1px solid #fecaca",color:"#C0311A",padding:"12px 16px",borderRadius:12,fontSize:13}}>{error}</div>}
+      {error&&<div className="alert" role="alert">{error}</div>}
 
       {showForm&&(
-        <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"22px 24px",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
-          <div style={{fontSize:14,fontWeight:800,color:"#1A1510",marginBottom:18,letterSpacing:"-0.03em"}}>Yeni Müşteri</div>
-          <form onSubmit={submit}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14}}>
-              {([
-                {l:"Firma / Bina Adı *",v:name,  set:setName,        t:"text",  ph:"ABC Apartman Yönetimi",req:true},
-                {l:"İletişim Kişisi",  v:contactName,set:setContactName,t:"text",ph:"Ali Yılmaz"},
-                {l:"Telefon",          v:phone,  set:setPhone,        t:"tel",   ph:"05XX XXX XX XX"},
-                {l:"E-posta",          v:email,  set:setEmail,        t:"email", ph:"ali@apartman.com"},
-              ] as {l:string;v:string;set:(v:string)=>void;t:string;ph:string;req?:boolean}[]).map((fi,i)=>(
-                <div key={i}>
-                  <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#6E6455",marginBottom:7}}>{fi.l}</label>
-                  <input className="fi" value={fi.v} onChange={e=>fi.set(e.target.value)} type={fi.t} placeholder={fi.ph} required={fi.req} style={F}/>
-                </div>
-              ))}
-              {/* Adres — Google Places Autocomplete */}
-              <div style={{gridColumn:"1 / -1"}}>
-                <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.06em",color:"#6E6455",marginBottom:7}}>Adres</label>
-                <PlaceAutocomplete
-                  value={address}
-                  onChange={(addr,la,lo)=>{setAddress(addr);if(la!=null)setLat(la);if(lo!=null)setLng(lo);}}
-                  placeholder="Atatürk Cad. No:5, Kadıköy / İstanbul"
-                  style={F}
-                />
-                {lat!=null&&lng!=null&&(
-                  <div style={{fontSize:11,color:"#2E7D4F",marginTop:4}}>✓ Konum doğrulandı — {lat.toFixed(5)}, {lng.toFixed(5)}</div>
-                )}
-              </div>
-            </div>
-            <div style={{display:"flex",gap:8,marginTop:18}}>
-              <button type="submit" disabled={saving||!name.trim()} style={{background:"#1B1F2B",color:"#fff",border:"none",borderRadius:10,fontSize:13,fontWeight:700,padding:"10px 20px",cursor:"pointer",fontFamily:"inherit",opacity:saving?.7:1}}>
-                {saving?"Oluşturuluyor…":"Müşteri Oluştur"}
-              </button>
-              <button type="button" onClick={()=>setShowForm(false)} style={{background:"#fff",color:"#1A1510",border:"1.5px solid #e2e8f0",borderRadius:10,fontSize:13,fontWeight:600,padding:"10px 18px",cursor:"pointer",fontFamily:"inherit"}}>İptal</button>
-            </div>
-          </form>
-        </div>
+        <form onSubmit={submit} className="card2 reveal" style={{padding:"16px 18px",display:"grid",gap:12}}>
+          <div style={{fontSize:14,fontWeight:750,letterSpacing:"-.02em"}}>Yeni müşteri</div>
+          <div className="fgrid">
+            {([
+              {l:"Bina / firma adı *",v:name,set:setName,t:"text",ph:"Gül Apartmanı Yönetimi",req:true},
+              {l:"Yetkili kişi",v:contactName,set:setContactName,t:"text",ph:"Ali Yılmaz"},
+              {l:"Telefon",v:phone,set:setPhone,t:"tel",ph:"05XX XXX XX XX"},
+              {l:"E-posta",v:email,set:setEmail,t:"email",ph:"yonetim@ornek.com"},
+            ] as {l:string;v:string;set:(v:string)=>void;t:string;ph:string;req?:boolean}[]).map((fi,i)=>(
+              <label key={i} className="fl">{fi.l}<input className="inp" value={fi.v} onChange={e=>fi.set(e.target.value)} type={fi.t} placeholder={fi.ph} required={fi.req}/></label>
+            ))}
+          </div>
+          <label className="fl">Adres
+            <PlaceAutocomplete value={address} onChange={(addr,la,lo)=>{setAddress(addr);if(la!=null)setLat(la);if(lo!=null)setLng(lo);}} placeholder="Atatürk Cad. No:5, Kadıköy / İstanbul" style={{width:"100%",height:36,padding:"0 12px",border:"1px solid var(--border)",borderRadius:9,fontSize:13.5,fontFamily:"inherit",background:"#fff"}}/>
+            {lat!=null&&lng!=null&&<span style={{fontSize:11.5,color:"var(--success)",fontWeight:600}}>Konum haritada doğrulandı</span>}
+          </label>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            <button type="submit" className="b b-ink" disabled={saving||!name.trim()}>{saving?"Kaydediliyor…":"Müşteriyi kaydet"}</button>
+            <button type="button" className="b b-line" onClick={()=>setShowForm(false)}>Vazgeç</button>
+          </div>
+        </form>
       )}
 
-      <div style={{position:"relative",maxWidth:380}}>
-        <div style={{position:"absolute",left:13,top:"50%",transform:"translateY(-50%)",color:"#9C9080"}}><Ic d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></div>
-        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Müşteri, kişi veya telefon ara..." className="fi" style={{...F,paddingLeft:38}}/>
+      <div className="bar">
+        <label className="srch" style={{flexBasis:380}}>
+          <Ic d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" size={14}/>
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Bina, yetkili ya da telefon" aria-label="Müşteri ara"/>
+        </label>
       </div>
 
       {loading?(
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:200,gap:12,color:"#6E6455"}}>
-          <div style={{width:28,height:28,border:"3px solid #e2e8f0",borderTopColor:"#1B1F2B",borderRadius:"50%",animation:"spin .7s linear infinite"}}/>Yükleniyor...
-        </div>
+        <div className="lt">{[0,1,2].map(i=><div key={i} style={{padding:"12px 16px"}}><div className="skel" style={{height:30}}/></div>)}</div>
       ):filtered.length===0?(
-        <div style={{background:"#fff",border:"1.5px dashed #e2e8f0",borderRadius:16,padding:"44px 24px",textAlign:"center"}}>
-          <div style={{fontSize:42,marginBottom:12}}>👥</div>
-          <div style={{fontSize:15,fontWeight:800,color:"#1A1510",marginBottom:6}}>{q?"Eşleşen müşteri bulunamadı":"Henüz müşteri yok"}</div>
-          <div style={{fontSize:13,color:"#6E6455"}}>{q?"Farklı bir arama deneyin.":"İlk müşterinizi ekleyerek başlayın."}</div>
+        <div className="empty2">
+          <Ic d="M3 21V7l9-4 9 4v14M9 21v-6h6v6" size={28}/>
+          <b>{q?"Eşleşen müşteri yok":"Henüz müşteri yok"}</b>
+          <p>{q?"Farklı bir arama deneyin.":"İlk binanızı ekleyin ya da müşteri listenizi Excel'den aktarın."}</p>
+          {!q&&<div style={{display:"flex",gap:8,marginTop:8}}><button className="b b-ink" onClick={()=>setShowForm(true)}>Yeni müşteri</button><Link href="/app/customers/import" className="b b-line">Excel'den aktar</Link></div>}
         </div>
       ):(
-        <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,overflow:"hidden",boxShadow:"0 2px 8px rgba(15,23,42,.04)"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 90px 80px",padding:"11px 22px",background:"#F0EDE6",borderBottom:"1px solid #f1f5f9"}}>
-            {["Müşteri","İletişim","Asansör","İş Emri",""].map((h,i)=>(
-              <div key={i} style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#9C9080"}}>{h}</div>
-            ))}
-          </div>
+        <div className="lt" style={{["--cols" as string]:COLS}}>
+          <div className="lt-head"><span>Müşteri</span><span>Yetkili</span><span>Asansör</span><span>İş emri</span></div>
           {filtered.map((c,i)=>(
-            <Link key={c.id} href={`/app/customers/${c.id}`} className="c-row" style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 90px 80px",alignItems:"center",padding:"14px 22px",borderBottom:i<filtered.length-1?"1px solid #f1f5f9":"none",textDecoration:"none",color:"inherit",transition:"all .12s"}}>
-              <div>
-                <div style={{fontSize:13.5,fontWeight:700,color:"#1A1510"}}>{c.name}</div>
-                {c.email&&<div style={{fontSize:11.5,color:"#9C9080",marginTop:2}}>{c.email}</div>}
-              </div>
-              <div>
-                {c.contactName&&<div style={{fontSize:13,fontWeight:600,color:"#334155"}}>{c.contactName}</div>}
-                {c.phone&&<div style={{fontSize:11.5,color:"#9C9080",marginTop:1}}>{c.phone}</div>}{c.address&&<div style={{fontSize:11,color:"#9ca3af",marginTop:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍 {c.address}</div>}
-              </div>
-              <div style={{fontSize:20,fontWeight:900,color:c._count.assets>0?"#1B1F2B":"#B8B0A0",letterSpacing:"-0.04em"}}>{c._count.assets}</div>
-              <div style={{fontSize:20,fontWeight:900,color:c._count.workOrders>0?"#7c3aed":"#B8B0A0",letterSpacing:"-0.04em"}}>{c._count.workOrders}</div>
-              <div style={{display:"flex",justifyContent:"flex-end"}}><span style={{fontSize:11.5,fontWeight:700,color:"#1B1F2B",background:"#E4EFF9",padding:"4px 10px",borderRadius:7}}>Detay →</span></div>
+            <Link key={c.id} href={`/app/customers/${c.id}`} className="lt-row cu-row" style={{animationDelay:`${Math.min(i,10)*25}ms`}}>
+              <div className="lt-main"><b>{c.name}</b><small>{c.address||c.email||"Adres girilmedi"}</small></div>
+              <div className="lt-cell">{c.contactName||<span style={{color:"var(--muted-2)"}}>—</span>}{c.phone&&<div style={{fontSize:12,color:"var(--muted)"}}>{c.phone}</div>}</div>
+              <div className="lt-cell" style={{fontWeight:750,fontVariantNumeric:"tabular-nums"}}>{c._count.assets}</div>
+              <div className="lt-cell" style={{fontWeight:750,fontVariantNumeric:"tabular-nums"}}>{c._count.workOrders}</div>
+              <span className="lt-st st" style={{background:"var(--surface-2)",color:"var(--foreground-2)"}}>{c._count.assets} asansör</span>
+              <div className="lt-meta">{[c.contactName,c.phone].filter(Boolean).join(" · ")||"Yetkili girilmedi"}</div>
             </Link>
           ))}
         </div>
       )}
+      <style>{`.cu-row>.lt-st{display:none}@media(max-width:760px){.cu-row{grid-template-areas:"main st" "meta meta"!important;grid-template-columns:1fr auto!important}.cu-row>.lt-st{display:inline-flex}}`}</style>
     </div>
   );
 }

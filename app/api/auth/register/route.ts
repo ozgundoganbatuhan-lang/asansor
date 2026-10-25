@@ -165,6 +165,7 @@ export async function POST(req: NextRequest) {
         slug: organizationSlug,
         vertical: "ELEVATOR",
         planTier: "TRIAL",
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
     });
 

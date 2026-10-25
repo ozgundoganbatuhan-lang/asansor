@@ -33,7 +33,7 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
   const STATUS: Record<string, { label: string; color: string; bg: string }> = {
     DONE:        { label: "Tamamlandı",   color: "#166534", bg: "#f0fdf4" },
     IN_PROGRESS: { label: "Devam Ediyor", color: "#92400e", bg: "#fefce8" },
-    PENDING:     { label: "Planlandı",    color: "#1d4ed8", bg: "#eff6ff" },
+    PENDING:     { label: "Planlandı",    color: "#1B1F2B", bg: "#F0EDE6" },
     CANCELED:    { label: "İptal",        color: "#6b7280", bg: "#f9fafb" },
   };
   const st = STATUS[workOrder.status] ?? STATUS.PENDING;
@@ -68,7 +68,7 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
         <div className="page" style={{ background: "#fff", borderRadius: 20, overflow: "hidden", boxShadow: "0 4px 32px rgba(0,0,0,0.08)" }}>
 
           {/* ── HEADER ── */}
-          <div style={{ background: "linear-gradient(135deg,#0f172a 0%,#1e3a8a 60%,#2563eb 100%)", padding: "36px 40px", color: "#fff", position: "relative", overflow: "hidden" }}>
+          <div style={{ background: "linear-gradient(135deg,#0f172a 0%,#1B1F2B 60%,#1B1F2B 100%)", padding: "36px 40px", color: "#fff", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: -60, right: -60, width: 240, height: 240, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
             <div style={{ position: "absolute", top: 20, right: 40, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.04)" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
@@ -87,7 +87,7 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
                   </div>
                   {workOrder.customer.address && (
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
-                      📍 {workOrder.customer.address}
+                      {workOrder.customer.address}
                     </div>
                   )}
                 </div>
@@ -101,7 +101,7 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
                   </div>
                   {workOrder.scheduledAt && (
                     <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
-                      📅 {fmt(workOrder.scheduledAt)}
+                      {fmt(workOrder.scheduledAt)}
                     </div>
                   )}
                 </div>
@@ -179,7 +179,7 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
                     return (
                       <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: done ? "#f0fdf4" : "#f9fafb", borderRadius: 10, border: `1px solid ${done ? "#bbf7d0" : "#e5e7eb"}` }}>
                         <div style={{ width: 20, height: 20, borderRadius: "50%", background: done ? "#22c55e" : "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                          {done && <span style={{ color: "#fff", fontSize: 11, fontWeight: 900 }}>✓</span>}
+                          {done && <span style={{ color: "#fff", fontSize: 11, fontWeight: 900 }}></span>}
                         </div>
                         <span style={{ fontSize: 13, color: done ? "#166534" : "#6b7280", fontWeight: done ? 600 : 400 }}>{item}</span>
                       </div>
@@ -245,11 +245,11 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
             </div>
 
             {/* ── SIGNATURES ── */}
-            {(evidence.signatureSvg || evidence.technicianSignatureSvg) && (
+            {((evidence as any).signatureSvg || (evidence as any).technicianSignatureSvg) && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                 {([
-                  { label: "Müşteri İmzası", svg: evidence.signatureSvg, color: "#3b82f6" },
-                  { label: "Teknisyen İmzası", svg: evidence.technicianSignatureSvg, color: "#8b5cf6" },
+                  { label: "Müşteri İmzası", svg: (evidence as any).signatureSvg, color: "#2A3142" },
+                  { label: "Teknisyen İmzası", svg: (evidence as any).technicianSignatureSvg, color: "#1A5C96" },
                 ] as { label: string; svg?: string | null; color: string }[]).map(sig => (
                   sig.svg ? (
                     <div key={sig.label} style={{ border: "1px solid #e5e7eb", borderRadius: 14, padding: 16 }}>
@@ -268,9 +268,9 @@ export default async function ServiceFormPage({ params }: { params: Promise<{ id
               <div>
                 <div style={{ fontSize: 14, fontWeight: 800, color: "#111827", marginBottom: 4 }}>{org.name}</div>
                 <div style={{ fontSize: 12, color: "#6b7280", lineHeight: 1.7 }}>
-                  {org.phone && <div>📞 {org.phone}</div>}
-                  {org.email && <div>✉️ {org.email}</div>}
-                  {org.website && <div>🌐 {org.website}</div>}
+                  {org.phone && <div>{org.phone}</div>}
+                  {org.email && <div>{org.email}</div>}
+                  {org.website && <div>{org.website}</div>}
                 </div>
               </div>
               <div style={{ textAlign: "right" }}>

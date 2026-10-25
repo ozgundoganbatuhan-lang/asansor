@@ -88,7 +88,7 @@ export default function ContractsPage() {
     });
     const data = await res.json(); setCreating(false);
     if (!res.ok) { setErr(data.error ?? "Oluşturulamadı"); return; }
-    setSuccess("Sözleşme oluşturuldu ✓"); setShowForm(false);
+    setSuccess("Sözleşme oluşturuldu "); setShowForm(false);
     setTimeout(() => setSuccess(null), 4000); await load();
   }
 
@@ -96,19 +96,19 @@ export default function ContractsPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
       {/* Header */}
-      <OnboardingBeacon forStep={3} label="👆 Yeni sözleşme oluşturun">
+      <OnboardingBeacon forStep={3} label="Yeni sözleşme oluşturun">
           <button data-tour="new-contract-btn" onClick={() => setShowForm(!showForm)}
             style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
-            {showForm ? "✕ Kapat" : "+ Yeni Sözleşme"}
+            {showForm ? "Kapat" : "+ Yeni Sözleşme"}
           </button>
         </OnboardingBeacon>
       
             {/* Alerts */}
-      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#C0311A" }}>✕</button></div>}
+      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#C0311A" }}></button></div>}
       {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
       {/* KPIs */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+      <div className="r-many" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)", gap: 12 }}>
         {[
           { label: "Aktif Sözleşme", value: kpis.active, color: "#111827" },
           { label: "30 Günde Bitiyor", value: kpis.expiring30, color: kpis.expiring30 > 0 ? "#B86800" : "#111827" },
@@ -123,13 +123,13 @@ export default function ContractsPage() {
 
       {/* Create form */}
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 22 }}>
+        <div style={{ background: "#fff", border: "1px solid #D6D0C4", borderRadius: 14, padding: 22 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Yeni Bakım Sözleşmesi</div>
-          <div style={{ background: "#E4EFF9", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginBottom: 16 }}>
-            <strong>📋 Yasal Dayanaklar:</strong> Asansör İşletme ve Bakım Yönetmeliği (6 Nisan 2019) &amp; TS EN 13015
+          <div style={{ background: "#E4EFF9", border: "1px solid #D6D0C4", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginBottom: 16 }}>
+            <strong>Yasal Dayanaklar:</strong> Asansör İşletme ve Bakım Yönetmeliği (6 Nisan 2019) &amp; TS EN 13015
           </div>
           <form onSubmit={create} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+            <div className="r-many" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr", gap: 12 }}>
               <div style={{ gridColumn: "1 / 3" }}>
                 <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Müşteri *</label>
                 <select style={F} value={fCustomer} onChange={e => { setFCustomer(e.target.value); setFAssets([]); }} required>
@@ -254,20 +254,20 @@ export default function ContractsPage() {
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: st.dot }} />
                     {st.label}
                   </span>
-                  {expiring && <span style={{ background: "#fefce8", color: "#92400e", border: "1px solid #fde68a", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 600 }}>⚠ {days} gün kaldı</span>}
+                  {expiring && <span style={{ background: "#fefce8", color: "#92400e", border: "1px solid #fde68a", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 600 }}>{days} gün kaldı</span>}
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 12, fontSize: 12, color: "#6b7280" }}>
-                  <span>📅 {new Date(c.startDate).toLocaleDateString("tr-TR")} — {c.endDate ? new Date(c.endDate).toLocaleDateString("tr-TR") : "Süresiz"}</span>
+                  <span>{new Date(c.startDate).toLocaleDateString("tr-TR")} — {c.endDate ? new Date(c.endDate).toLocaleDateString("tr-TR") : "Süresiz"}</span>
                   {c.monthlyFee > 0 && <span style={{ fontWeight: 600, color: "#374151" }}>{money(c.monthlyFee)}/ay</span>}
-                  {c.technicianName && <span>👷 {c.technicianName}</span>}
+                  {c.technicianName && <span>{c.technicianName}</span>}
                   {c.autoRenew && <span style={{ color: "#2E7D4F" }}>↺ Otomatik yenileme</span>}
-                  {c.hasEncryptionDevice && <span style={{ color: "#C87800" }}>🔒 Şifreleme</span>}
+                  {c.hasEncryptionDevice && <span style={{ color: "#C87800" }}>Şifreleme</span>}
                 </div>
                 {c.assets.length > 0 && (
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                     {c.assets.map(ca => (
-                      <span key={ca.asset.id} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #bfdbfe", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 500 }}>
-                        🏢 {ca.asset.name}{ca.asset.elevatorIdNo ? ` #${ca.asset.elevatorIdNo}` : ""}
+                      <span key={ca.asset.id} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #D6D0C4", borderRadius: 99, padding: "2px 9px", fontSize: 11, fontWeight: 500 }}>
+                        {ca.asset.name}{ca.asset.elevatorIdNo ? ` #${ca.asset.elevatorIdNo}` : ""}
                       </span>
                     ))}
                   </div>
@@ -286,11 +286,11 @@ export default function ContractsPage() {
 
       {/* Legal info */}
       <div style={{ background: "#F5F2EC", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
-        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 10 }}>📚 Yasal Zorunluluklar</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 10 }}>Yasal Zorunluluklar</div>
+        <div className="r-many" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr", gap: 8 }}>
           {["Aylık bakım zorunlu — En az ayda 1 kez","Yıllık periyodik kontrol — A Tipi Muayene Kuruluşu","Bakım föyü zorunlu — Her bakımda imzalanmalı","Teknik sorumlu beyanı — Sözleşmede zorunlu","Şifreleme beyanı — 2019 yönetmeliği gereği","Mesleki sorumluluk sigortası — Min. 500.000 ₺"].map(t => (
             <div key={t} style={{ display: "flex", gap: 7, fontSize: 12, color: "#6b7280" }}>
-              <span style={{ color: "#2E7D4F", flexShrink: 0 }}>✓</span><span>{t}</span>
+              <span style={{ color: "#2E7D4F", flexShrink: 0 }}></span><span>{t}</span>
             </div>
           ))}
         </div>

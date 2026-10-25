@@ -60,14 +60,14 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
       <header style={{ borderBottom:"1px solid #e5e7eb", background:"#fff", position:"sticky", top:0, zIndex:50 }}>
         <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 24px", height:54, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <Link href="/" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none" }}>
-            <div style={{ width:28, height:28, borderRadius:7, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <div style={{ width:28, height:28, borderRadius:7, background:"linear-gradient(135deg,#1B1F2B,#1B1F2B)", display:"flex", alignItems:"center", justifyContent:"center" }}>
               <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10"/></svg>
             </div>
             <span style={{ fontSize:13, fontWeight:800, color:"#0f172a", letterSpacing:"-0.03em" }}>Servisim</span>
           </Link>
           <div style={{ display:"flex", gap:10 }}>
             <Link href="/blog" style={{ fontSize:12, fontWeight:500, color:"#6b7280", textDecoration:"none" }}>← Blog</Link>
-            <Link href="/auth/register" style={{ background:"#2563eb", color:"#fff", fontSize:12, fontWeight:700, padding:"6px 14px", borderRadius:7, textDecoration:"none" }}>Ücretsiz başla</Link>
+            <Link href="/auth/register" style={{ background:"#1B1F2B", color:"#fff", fontSize:12, fontWeight:700, padding:"6px 14px", borderRadius:7, textDecoration:"none" }}>Ücretsiz başla</Link>
           </div>
         </div>
       </header>
@@ -83,7 +83,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <span style={{ color:"#6b7280" }}>{post.title}</span>
           </nav>
           <div style={{ display:"flex", gap:7, marginBottom:14, flexWrap:"wrap", alignItems:"center" }}>
-            <span style={{ fontSize:10, fontWeight:700, color:"#2563eb", background:"#eff6ff", padding:"2px 8px", borderRadius:5 }}>Rehber</span>
+            <span style={{ fontSize:10, fontWeight:700, color:"#1B1F2B", background:"#F0EDE6", padding:"2px 8px", borderRadius:5 }}>Rehber</span>
             <span style={{ fontSize:11, color:"#94a3b8" }}>{post.readingMinutes} dk okuma · {publishDate}</span>
           </div>
           <h1 style={{ fontSize:"clamp(22px,4vw,38px)", fontWeight:900, letterSpacing:"-0.04em", lineHeight:1.1, color:"#0f172a", margin:"0 0 10px" }}>{post.title}</h1>
@@ -110,9 +110,9 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <ul style={{ margin:"12px 0 0", padding:0, listStyle:"none", display:"flex", flexDirection:"column", gap:8 }}>
                 {section.bullets.map((b, bi) => (
                   <li key={bi} style={{ display:"flex", alignItems:"flex-start", gap:9, fontSize:14, color:"#334155" }}>
-                    <span style={{ width:18, height:18, borderRadius:"50%", background:"#eff6ff", border:"1px solid #bfdbfe", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:2 }}>
+                    <span style={{ width:18, height:18, borderRadius:"50%", background:"#F0EDE6", border:"1px solid #D6D0C4", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:2 }}>
                       <svg width={8} height={8} viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6l3 3 5-5" stroke="#2563eb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M2 6l3 3 5-5" stroke="#1B1F2B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </span>
                     {b}
@@ -139,8 +139,8 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         )}
 
         {/* Inline CTA */}
-        <div style={{ background:"linear-gradient(135deg,#111827,#1e3a8a)", borderRadius:13, padding:"22px 26px", marginBottom:40 }}>
-          <div style={{ fontSize:16, fontWeight:800, color:"#fff", letterSpacing:"-0.03em", marginBottom:5 }}>Servisim&apos;i 14 gün ücretsiz deneyin.</div>
+        <div style={{ background:"linear-gradient(135deg,#111827,#1B1F2B)", borderRadius:13, padding:"22px 26px", marginBottom:40 }}>
+          <div style={{ fontSize:16, fontWeight:800, color:"#fff", letterSpacing:"-0.03em", marginBottom:5 }}>Servisim&apos;i 7 gün ücretsiz deneyin.</div>
           <p style={{ fontSize:13, color:"rgba(255,255,255,0.52)", margin:"0 0 16px" }}>Kurulum yok, kredi kartı gerekmez. Türkçe destek ile hemen başlayın.</p>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             <Link href="/auth/register" style={{ background:"#fff", color:"#0f172a", fontSize:12, fontWeight:800, padding:"8px 16px", borderRadius:7, textDecoration:"none" }}>Ücretsiz başla →</Link>
@@ -157,10 +157,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <div className="related-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:14 }}>
               {related.map(p => (
                 <Link key={p.slug} href={`/blog/${p.slug}`} className="related-card" style={{ background:"#fff", borderRadius:12, border:"1px solid #e5e7eb", padding:"17px", textDecoration:"none", display:"block" }}>
-                  <div style={{ fontSize:9.5, fontWeight:700, color:"#2563eb", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:5 }}>{p.readingMinutes} dk</div>
+                  <div style={{ fontSize:9.5, fontWeight:700, color:"#1B1F2B", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:5 }}>{p.readingMinutes} dk</div>
                   <h3 style={{ fontSize:13, fontWeight:700, color:"#0f172a", letterSpacing:"-0.02em", lineHeight:1.35, margin:"0 0 5px" }}>{p.title}</h3>
                   <p style={{ fontSize:11.5, lineHeight:1.55, color:"#6b7280", margin:"0 0 9px" }}>{p.excerpt}</p>
-                  <span style={{ fontSize:12, fontWeight:700, color:"#2563eb" }}>Oku →</span>
+                  <span style={{ fontSize:12, fontWeight:700, color:"#1B1F2B" }}>Oku →</span>
                 </Link>
               ))}
             </div>

@@ -125,14 +125,14 @@ export default function ImportCustomersPage() {
           <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="text-sm font-bold text-[#0f1623] mb-1">📋 Şablon İndir</div>
+                <div className="text-sm font-bold text-[#0f1623] mb-1">Şablon İndir</div>
                 <p className="text-xs text-[#64748b] leading-relaxed">
                   CSV şablonunu indirin, Excel&apos;de doldurun ve buraya yükleyin.<br/>
                   Excel&apos;den kayıt ederken <strong>CSV (UTF-8)</strong> formatını seçin.
                 </p>
               </div>
               <button onClick={downloadTemplate}
-                className="shrink-0 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2 text-sm font-semibold text-[#2563eb] hover:bg-[#eff6ff] hover:border-blue-200 transition-colors">
+                className="shrink-0 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2 text-sm font-semibold text-[#1B1F2B] hover:bg-[#F0EDE6] hover:border-[#D6D0C4] transition-colors">
                 ⬇ Şablon İndir
               </button>
             </div>
@@ -168,14 +168,14 @@ export default function ImportCustomersPage() {
           </div>
 
           {/* Drop zone */}
-          <div className="rounded-2xl border-2 border-dashed border-[#d0d7e2] bg-white p-10 text-center hover:border-blue-300 hover:bg-[#f0f7ff] transition-all cursor-pointer"
+          <div className="rounded-2xl border-2 border-dashed border-[#d0d7e2] bg-white p-10 text-center hover:border-[#D6D0C4] hover:bg-[#f0f7ff] transition-all cursor-pointer"
             onClick={() => fileRef.current?.click()}
             onDragOver={e => { e.preventDefault(); }}
             onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) { setFileName(f.name); parseFile(f); } }}>
-            <div className="text-4xl mb-3">📂</div>
+            <div className="text-4xl mb-3"></div>
             <div className="text-sm font-bold text-[#0f1623] mb-1">CSV dosyasını sürükleyin veya tıklayın</div>
             <div className="text-xs text-[#94a3b8]">.csv, .txt — Excel&apos;den &quot;CSV UTF-8&quot; olarak kaydedin</div>
-            {fileName && <div className="mt-3 text-xs font-semibold text-blue-600">{fileName}</div>}
+            {fileName && <div className="mt-3 text-xs font-semibold text-[#8A5500]">{fileName}</div>}
           </div>
           <input ref={fileRef} type="file" accept=".csv,.txt" className="hidden"
             onChange={e => { const f = e.target.files?.[0]; if (f) { setFileName(f.name); parseFile(f); } }} />
@@ -201,7 +201,7 @@ export default function ImportCustomersPage() {
                   ← Geri
                 </button>
                 <button onClick={doImport} disabled={loading}
-                  className="rounded-xl bg-blue-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-60 transition-colors shadow-sm">
+                  className="rounded-xl bg-[#1B1F2B] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#1B1F2B] disabled:opacity-60 transition-colors shadow-sm">
                   {loading ? "İçe Aktarılıyor…" : `${rows.length} Müşteri İçe Aktar →`}
                 </button>
               </div>
@@ -242,7 +242,7 @@ export default function ImportCustomersPage() {
       {/* STAGE: Done */}
       {stage === "done" && result && (
         <div className="rounded-2xl border border-[#e2e8f0] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
-          <div className="text-5xl">{result.errors.length === 0 ? "✅" : "⚠️"}</div>
+          <div className="text-5xl">{result.errors.length === 0 ? "" : ""}</div>
           <div>
             <h2 className="text-xl font-black text-[#0f1623] mb-2">
               {result.errors.length === 0 ? "İçe Aktarma Tamamlandı!" : "Kısmen Tamamlandı"}
@@ -274,7 +274,7 @@ export default function ImportCustomersPage() {
               Yeni Yükleme
             </button>
             <button onClick={() => router.push("/app/customers")}
-              className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700 shadow-sm transition-colors">
+              className="rounded-xl bg-[#1B1F2B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-colors">
               Müşterilere Git →
             </button>
           </div>

@@ -131,7 +131,7 @@ export default function LeaveRequestsPage() {
 
       {success && (
         <div style={{ background:"#E8F5EE",border:"1.5px solid #9DCFB0",color:"#2E7D4F",padding:"12px 18px",borderRadius:10,fontSize:13,fontWeight:700 }}>
-          ✓ İzin talebiniz gönderildi. Yönetici onayı bekleniyor.
+          İzin talebiniz gönderildi. Yönetici onayı bekleniyor.
         </div>
       )}
 
@@ -152,7 +152,7 @@ export default function LeaveRequestsPage() {
                 ))}
               </div>
             </div>
-            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:12 }}>
+            <div className="r-two" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12 }}>
               <div>
                 <label style={{ fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase",letterSpacing:"0.6px",display:"block",marginBottom:6 }}>Başlangıç Tarihi</label>
                 <input type="date" value={startDate} onChange={e=>setStartDate(e.target.value)} style={S.F}/>
@@ -193,21 +193,21 @@ export default function LeaveRequestsPage() {
       {/* Liste */}
       <div style={S.card}>
         {/* Tablo başlığı */}
-        <div style={{ display:"grid",gridTemplateColumns:"1fr 120px 100px 100px 120px",gap:12,padding:"10px 18px",fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase",letterSpacing:"0.6px",borderBottom:"1px solid #E8E3D8",background:"#F5F2EC" }}>
+        <div className="r-head" style={{display:"grid",gridTemplateColumns:"1fr 120px 100px 100px 120px",gap:12,padding:"10px 18px",fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase",letterSpacing:"0.6px",borderBottom:"1px solid #E8E3D8",background:"#F5F2EC" }}>
           <span>Personel / Tür</span><span>Başlangıç</span><span>Bitiş</span><span>Gün</span><span>Durum</span>
         </div>
         {loading ? (
           <div style={{ padding:40,textAlign:"center",color:"#9C9080" }}>Yükleniyor...</div>
         ) : filtered.length === 0 ? (
           <div style={{ padding:48,textAlign:"center" }}>
-            <div style={{ fontSize:32,marginBottom:12 }}>📅</div>
+            <div style={{ fontSize:32,marginBottom:12 }}></div>
             <div style={{ fontSize:15,fontWeight:700,color:"#1A1510" }}>Talep bulunamadı</div>
             <div style={{ fontSize:13,color:"#6E6455",marginTop:4 }}>Henüz izin talebi yok.</div>
           </div>
         ) : filtered.map((item)=>{
           const st = STATUS_CFG[item.status] ?? STATUS_CFG.PENDING;
           return (
-            <div key={item.id} style={{ display:"grid",gridTemplateColumns:"1fr 120px 100px 100px 120px",gap:12,padding:"14px 18px",borderBottom:"1px solid #F0EDE6",alignItems:"center" }}>
+            <div key={item.id} className="r-row" style={{display:"grid",gridTemplateColumns:"1fr 120px 100px 100px 120px",gap:12,padding:"14px 18px",borderBottom:"1px solid #F0EDE6",alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13,fontWeight:700,color:"#1A1510" }}>{item.technician?.name ?? "Bilinmiyor"}</div>
                 <div style={{ fontSize:11,color:"#6E6455",marginTop:2 }}>{LEAVE_TYPE_L[item.leaveType]??item.leaveType}</div>

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 type Part = { id:string; name:string; category?:string|null; unit?:string|null; supplier?:string|null; price?:number|null; stock:number; minStock:number };
 
 const fi: React.CSSProperties = {width:"100%",padding:"11px 14px",border:"1px solid #e2e8f0",borderRadius:12,fontSize:14,background:"#fff",outline:"none",fontFamily:"inherit",transition:"border-color 0.15s"};
-const fo = (e: React.FocusEvent<HTMLInputElement>) => e.target.style.borderColor="#7c3aed";
+const fo = (e: React.FocusEvent<HTMLInputElement>) => e.target.style.borderColor="#1A5C96";
 const fb = (e: React.FocusEvent<HTMLInputElement>) => e.target.style.borderColor="#D6D0C4";
 const LBL = ({c}:{c:string}) => <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#9C9080",marginBottom:8}}>{c}</label>;
 
@@ -53,9 +53,9 @@ export default function StockPage() {
           <h1 style={{fontSize:28,fontWeight:900,letterSpacing:"-0.04em",color:"#1A1510",margin:0}}>Stok</h1>
         </div>
         <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
-          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍  Ara..." style={{...fi,width:200}} onFocus={fo} onBlur={fb}/>
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder=" Ara..." style={{...fi,width:200}} onFocus={fo} onBlur={fb}/>
           <button onClick={()=>setShowForm(v=>!v)} style={{display:"inline-flex",alignItems:"center",gap:7,background:"#1A1510",color:"#fff",border:"none",borderRadius:12,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
-            {showForm?"✕ Kapat":"+ Parça Ekle"}
+            {showForm?"Kapat":"+ Parça Ekle"}
           </button>
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function StockPage() {
           {l:"Toplam Çeşit",v:parts.length,c:"#1A1510",bg:"#F0EDE6"},
           {l:"Kritik Stok",v:lowStock,c:"#C0311A",bg:"#FCECE8"},
           {l:"Toplam Kalem",v:parts.reduce((a,p)=>a+p.stock,0),c:"#059669",bg:"#E8F5EE"},
-          {l:"Stok Değeri",v:`₺${totalVal.toLocaleString("tr-TR")}`,c:"#7c3aed",bg:"#f5f3ff"},
+          {l:"Stok Değeri",v:`₺${totalVal.toLocaleString("tr-TR")}`,c:"#1A5C96",bg:"#f5f3ff"},
         ].map(s=>(
           <div key={s.l} style={{background:s.bg,borderRadius:14,padding:"14px 18px"}}>
             <div style={{fontSize:typeof s.v==="number"?22:16,fontWeight:900,color:s.c,letterSpacing:"-0.04em"}}>{s.v}</div>
@@ -78,7 +78,7 @@ export default function StockPage() {
       {/* Add form */}
       {showForm && (
         <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"24px",marginBottom:20}}>
-          <div style={{fontSize:14,fontWeight:800,color:"#1A1510",marginBottom:18}}>➕ Yeni Parça</div>
+          <div style={{fontSize:14,fontWeight:800,color:"#1A1510",marginBottom:18}}>Yeni Parça</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:16}}>
             {([
               {l:"Parça Adı *",f:"name",p:"Kapı sensörü"},
@@ -95,7 +95,7 @@ export default function StockPage() {
               </div>
             ))}
           </div>
-          {err && <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:10,padding:"10px 14px",marginBottom:12,fontSize:13,color:"#C0311A"}}>⚠️ {err}</div>}
+          {err && <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:10,padding:"10px 14px",marginBottom:12,fontSize:13,color:"#C0311A"}}>{err}</div>}
           <div style={{display:"flex",justifyContent:"flex-end",gap:10}}>
             <button onClick={()=>setShowForm(false)} style={{background:"#F0EDE6",border:"none",borderRadius:10,padding:"10px 18px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit",color:"#6E6455"}}>İptal</button>
             <button onClick={add} disabled={!form.name.trim()||saving} style={{background:form.name.trim()?"#1B1F2B":"#D6D0C4",color:form.name.trim()?"#fff":"#9C9080",border:"none",borderRadius:10,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:form.name.trim()?"pointer":"not-allowed",fontFamily:"inherit"}}>
@@ -107,7 +107,7 @@ export default function StockPage() {
 
       {/* Table */}
       <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,overflow:"hidden"}}>
-        <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 80px 80px 100px 1.5fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e2e8f0"}}>
+        <div className="r-head" style={{display:"grid",gridTemplateColumns:"2fr 1fr 80px 80px 100px 1.5fr",padding:"12px 20px",background:"#f9f9fb",borderBottom:"1px solid #e2e8f0"}}>
           {["Parça","Kategori","Stok","Min","Fiyat","Tedarikçi"].map(h=>(
             <div key={h} style={{fontSize:10.5,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#9C9080"}}>{h}</div>
           ))}
@@ -116,13 +116,13 @@ export default function StockPage() {
           <div style={{padding:"40px 20px",textAlign:"center",color:"#9C9080"}}>Yükleniyor...</div>
         ) : filtered.length===0 ? (
           <div style={{padding:"40px 20px",textAlign:"center"}}>
-            <div style={{fontSize:40,marginBottom:10}}>📦</div>
+            <div style={{fontSize:40,marginBottom:10}}></div>
             <div style={{fontSize:15,fontWeight:700,color:"#1A1510"}}>Stok kaydı yok</div>
           </div>
         ) : filtered.map((p,i)=>{
           const low = p.stock<p.minStock;
           return (
-            <div key={p.id} style={{display:"grid",gridTemplateColumns:"2fr 1fr 80px 80px 100px 1.5fr",padding:"14px 20px",borderBottom:i<filtered.length-1?"1px solid #f1f5f9":"none",alignItems:"center",transition:"background 0.1s"}}>
+            <div key={p.id} className="r-row" style={{display:"grid",gridTemplateColumns:"2fr 1fr 80px 80px 100px 1.5fr",padding:"14px 20px",borderBottom:i<filtered.length-1?"1px solid #f1f5f9":"none",alignItems:"center",transition:"background 0.1s"}}>
               <div style={{fontWeight:700,color:"#1A1510",fontSize:13}}>{p.name}</div>
               <div style={{fontSize:13,color:"#6E6455"}}>{p.category??"—"}</div>
               <div>

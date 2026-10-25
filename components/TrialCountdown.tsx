@@ -19,7 +19,7 @@ export default function TrialCountdown() {
   return (
     <div className="trial-bar">
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 14 }}>{days <= 2 ? "⚡" : "📅"}</span>
+        <span style={{ fontSize: 14 }}>{days <= 2 ? "" : ""}</span>
         <span style={{ fontSize: 13, fontWeight: 600 }}>
           {days === 0 ? "Deneme süreniz bugün bitiyor." : `Deneme sürenizde ${days} gün kaldı.`}
         </span>

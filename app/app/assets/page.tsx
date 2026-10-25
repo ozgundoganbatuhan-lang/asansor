@@ -13,7 +13,7 @@ type Customer = { id: string; name: string };
 
 const LABEL_CFG: Record<string, { label: string; bg: string; border: string; text: string; dot: string; desc: string }> = {
   YESIL:   { label: "Yeşil",   bg: "#ecfdf5", border: "#6ee7b7", text: "#065f46", dot: "#059669", desc: "Kusursuz" },
-  MAVI:    { label: "Mavi",    bg: "#E4EFF9", border: "#93c5fd", text: "#0F121A", dot: "#1B1F2B", desc: "Hafif kusurlu" },
+  MAVI:    { label: "Mavi",    bg: "#E4EFF9", border: "#90BEE0", text: "#1A4F80", dot: "#1A5C96", desc: "Hafif kusurlu" },
   SARI:    { label: "Sarı",    bg: "#FFF3DC", border: "#F0C060", text: "#92400e", dot: "#d97706", desc: "Kusurlu" },
   KIRMIZI: { label: "Kırmızı", bg: "#FCECE8", border: "#fca5a5", text: "#991b1b", dot: "#dc2626", desc: "GÜVENSİZ" },
 };
@@ -34,9 +34,9 @@ function LabelBadge({ label }: { label?: string | null }) {
 function Countdown({ nextAt }: { nextAt?: string | null }) {
   if (!nextAt) return null;
   const days = Math.ceil((new Date(nextAt).getTime() - Date.now()) / 86400000);
-  if (days < 0)  return <span style={{ fontSize: 11, fontWeight: 700, color: "#dc2626" }}>⚠ {Math.abs(days)} gün gecikti</span>;
-  if (days <=30) return <span style={{ fontSize: 11, fontWeight: 700, color: "#d97706" }}>⏰ {days} gün kaldı</span>;
-  if (days <=90) return <span style={{ fontSize: 11, fontWeight: 600, color: "#0891b2" }}>{days} gün kaldı</span>;
+  if (days < 0)  return <span style={{ fontSize: 11.5, fontWeight: 700, color: "#C0311A" }}>Kontrol {Math.abs(days)} gün gecikti</span>;
+  if (days <=30) return <span style={{ fontSize: 11.5, fontWeight: 700, color: "#B86800" }}>Kontrole {days} gün</span>;
+  if (days <=90) return <span style={{ fontSize: 11.5, fontWeight: 600, color: "#6E6455" }}>Kontrole {days} gün</span>;
   return <span style={{ fontSize: 11, color: "#9C9080" }}>{new Date(nextAt).toLocaleDateString("tr-TR")}</span>;
 }
 
@@ -81,204 +81,113 @@ export default function AssetsPage() {
 
   const filterButtons = [
     { key: "ALL",     label: "Tümü",       count: assets.length },
-    { key: "YESIL",   label: "🟢 Yeşil",   count: assets.filter(a => a.inspectionLabel === "YESIL").length },
-    { key: "MAVI",    label: "🔵 Mavi",    count: assets.filter(a => a.inspectionLabel === "MAVI").length },
-    { key: "SARI",    label: "🟡 Sarı",    count: yellowCount },
-    { key: "KIRMIZI", label: "🔴 Kırmızı", count: redCount },
-    { key: "YOK",     label: "⚪ Kayıt yok", count: noLabelCount },
+    { key: "YESIL",   label: "Yeşil",   count: assets.filter(a => a.inspectionLabel === "YESIL").length },
+    { key: "MAVI",    label: "Mavi",    count: assets.filter(a => a.inspectionLabel === "MAVI").length },
+    { key: "SARI",    label: "Sarı",    count: yellowCount },
+    { key: "KIRMIZI", label: "Kırmızı", count: redCount },
+    { key: "YOK",     label: "Kontrol kaydı yok", count: noLabelCount },
   ];
 
+  const DOT: Record<string,string> = { YESIL:"#2E7D4F", MAVI:"#1A5C96", SARI:"#C87800", KIRMIZI:"#C0311A", YOK:"#B8B0A0" };
+  const FIELDS: {k:string;l:string;ph?:string;type?:string;sel?:boolean;req?:boolean}[] = [
+    { k:"customerId", l:"Müşteri *", sel:true, req:true },
+    { k:"name", l:"Asansör adı *", ph:"A Blok yolcu asansörü", req:true },
+    { k:"buildingName", l:"Bina / blok", ph:"A Blok" },
+    { k:"elevatorIdNo", l:"Asansör kimlik no", ph:"Tescil / seri no" },
+    { k:"locationNote", l:"Konum notu", ph:"Giriş katı, sağda" },
+  ];
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Page header */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+    <div className="pg">
+      <div className="ph">
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em", color: "#9C9080", marginBottom: 6 }}>Servisim Filo</div>
-          <h1 style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.04em", color: "#1A1510", lineHeight: 1.05 }}>Asansör portföyü</h1>
-          <p style={{ marginTop: 6, fontSize: 14, lineHeight: 1.65, color: "#6E6455", maxWidth: 560 }}>
-            Bina, müşteri, risk ve muayene etiketi. Etiket rengi A-Tipi muayene sonucunu yansıtır.
-          </p>
+          <div className="ph-eyebrow">Portföy</div>
+          <h1 className="ph-title">Asansörler</h1>
+          <p className="ph-sub">Her asansörün muayene etiketi, kontrol tarihi ve QR etiketi burada.</p>
         </div>
-        <button onClick={() => setShowForm(v => !v)} style={{
-          display: "inline-flex", alignItems: "center", gap: 6, background: "#1B1F2B", color: "#fff",
-          fontSize: 13, fontWeight: 700, padding: "9px 18px", borderRadius: 10, border: "none",
-          cursor: "pointer", boxShadow: "0 4px 16px rgba(37,99,235,0.3)", fontFamily: "inherit"
-        }}>
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
-          {showForm ? "Formu kapat" : "Yeni asansör"}
-        </button>
+        <div className="ph-actions">
+          <button className={`b ${showForm?"b-line":"b-ink"}`} onClick={()=>setShowForm(v=>!v)}>{showForm?"Formu kapat":<><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>Yeni asansör</>}</button>
+        </div>
       </div>
 
-      {error && (
-        <div style={{ background: "#FCECE8", border: "1px solid #fecaca", color: "#C0311A", padding: "12px 16px", borderRadius: 12, fontSize: 13 }}>
-          {error}
-        </div>
-      )}
-
-      {/* Alert strips */}
-      {(redCount > 0 || yellowCount > 0 || overdueCount > 0) && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {redCount > 0 && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "#FCECE8", border: "1px solid #fca5a5", borderRadius: 14, padding: "12px 16px" }}>
-              <span style={{ fontSize: 20, flexShrink: 0 }}>🔴</span>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#991b1b" }}>{redCount} asansör GÜVENSİZ etiket taşıyor — 30 gün içinde durdurulmalı.</div>
-              </div>
-            </div>
-          )}
-          {yellowCount > 0 && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "#FFF3DC", border: "1px solid #fcd34d", borderRadius: 14, padding: "12px 16px" }}>
-              <span style={{ fontSize: 20, flexShrink: 0 }}>🟡</span>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>{yellowCount} asansör Sarı etiketli — takip muayenesi gerekli.</div>
-            </div>
-          )}
-          {overdueCount > 0 && (
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 12, background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 14, padding: "12px 16px" }}>
-              <span style={{ fontSize: 20, flexShrink: 0 }}>⏰</span>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#9a3412" }}>{overdueCount} asansörün periyodik kontrol tarihi geçti.</div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* KPI cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-        {[
-          { label: "Toplam asansör", value: assets.length, color: "#1B1F2B", bg: "#E4EFF9" },
-          { label: "Kırmızı etiket", value: redCount, color: "#dc2626", bg: "#FCECE8" },
-          { label: "Yüksek risk", value: riskyCount, color: "#d97706", bg: "#FFF3DC" },
-          { label: "Kontrol kaydı yok", value: noLabelCount, color: "#6E6455", bg: "#F0EDE6" },
-        ].map((k, i) => (
-          <div key={i} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 18, padding: "20px 22px", position: "relative" }}>
-            <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#9C9080", marginBottom: 10 }}>{k.label}</div>
-            <div style={{ fontSize: "2.4rem", fontWeight: 900, letterSpacing: "-0.06em", lineHeight: 1, color: k.color }}>{k.value}</div>
-          </div>
-        ))}
+      <div className="kpis stagger">
+        <div className="kpi"><span>Asansör</span><b>{assets.length}</b></div>
+        <div className="kpi"><span>Kırmızı etiket</span><b style={{color:redCount?"#C0311A":undefined}}>{redCount}</b></div>
+        <div className="kpi"><span>Kontrolü geçen</span><b style={{color:overdueCount?"#B86800":undefined}}>{overdueCount}</b></div>
+        <div className="kpi"><span>Yüksek risk</span><b style={{color:riskyCount?"#B86800":undefined}}>{riskyCount}</b></div>
       </div>
 
-      {/* Filter buttons */}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {filterButtons.map(f => (
-          <button key={f.key} onClick={() => setLabelFilter(f.key)} style={{
-            display: "inline-flex", alignItems: "center", gap: 6,
-            padding: "7px 14px", borderRadius: 999, fontSize: 12, fontWeight: 700,
-            cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
-            background: labelFilter === f.key ? "#1A1510" : "#fff",
-            color:      labelFilter === f.key ? "#fff"    : "#334155",
-            border:     `1.5px solid ${labelFilter === f.key ? "#1A1510" : "#D6D0C4"}`,
-            boxShadow:  labelFilter === f.key ? "0 2px 8px rgba(0,0,0,0.12)" : "none",
-          }}>
-            {f.label}
-            <span style={{ background: labelFilter === f.key ? "rgba(255,255,255,0.18)" : "#E8E3D8", color: labelFilter === f.key ? "#fff" : "#6E6455", borderRadius: 999, padding: "1px 7px", fontSize: 11 }}>
-              {f.count}
-            </span>
-          </button>
-        ))}
-      </div>
+      {redCount>0&&<div className="alert" role="alert">{redCount} asansör kırmızı (güvensiz) etiketli. Kullanıma kapatılması ve düzeltilmesi gerekiyor.</div>}
+      {error&&<div className="alert" role="alert">{error}</div>}
 
-      {/* New asset form */}
-      {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#1A1510", marginBottom: 14, letterSpacing: "-0.02em" }}>Yeni asansör ekle</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-            {[
-              { k: "customerId", l: "Müşteri",        type: "select" },
-              { k: "name",       l: "Asansör adı",    type: "text" },
-              { k: "buildingName", l: "Bina adı",     type: "text" },
-              { k: "elevatorIdNo", l: "Kimlik no",     type: "text", ph: "TR-IST-2024-0042" },
-              { k: "locationNote", l: "Konum notu",   type: "text", ph: "B Blok, zemin kat" },
-              { k: "riskScore",  l: "Risk skoru",     type: "number" },
-            ].map(f => (
-              <div key={f.k} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: "#6E6455", textTransform: "uppercase", letterSpacing: "0.12em" }}>{f.l}</label>
-                {f.type === "select" ? (
-                  <select value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e2e8f0", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
-                    <option value="">Müşteri seçin</option>
-                    {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                ) : (
-                  <input type={f.type} placeholder={f.ph || ""} value={(form as any)[f.k]} onChange={e => setForm(p => ({ ...p, [f.k]: e.target.value }))} style={{ width: "100%", height: 40, padding: "0 12px", border: "1.5px solid #e2e8f0", borderRadius: 9, fontSize: 14, fontFamily: "inherit", outline: "none" }} />
-                )}
-              </div>
+      {showForm&&(
+        <form onSubmit={e=>{e.preventDefault();void submit();}} className="card2 reveal" style={{padding:"16px 18px",display:"grid",gap:12}}>
+          <div style={{fontSize:14,fontWeight:750,letterSpacing:"-.02em"}}>Yeni asansör</div>
+          <div className="fgrid">
+            {FIELDS.map(f=>(
+              <label key={f.k} className="fl">{f.l}
+                {f.sel
+                  ? <select className="inp" required value={(form as any)[f.k]} onChange={e=>setForm(p=>({...p,[f.k]:e.target.value}))}><option value="">Seçin</option>{customers.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select>
+                  : <input className="inp" required={f.req} placeholder={f.ph} value={(form as any)[f.k]} onChange={e=>setForm(p=>({...p,[f.k]:e.target.value}))}/>}
+              </label>
             ))}
           </div>
-          <div style={{ background: "#E4EFF9", border: "1px solid #bfdbfe", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginTop: 14 }}>
-            💡 Muayene etiketini (Yeşil/Mavi/Sarı/Kırmızı) Periyodik Kontrol menüsünden ekleyin.
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            <button type="submit" className="b b-ink" disabled={saving||!form.customerId||!form.name.trim()}>{saving?"Kaydediliyor…":"Asansörü kaydet"}</button>
+            <button type="button" className="b b-line" onClick={()=>setShowForm(false)}>Vazgeç</button>
           </div>
-          <button onClick={submit} disabled={saving || !form.customerId || !form.name} style={{
-            marginTop: 14, width: "100%", padding: "12px 20px", background: saving || !form.customerId || !form.name ? "#9C9080" : "#1B1F2B",
-            color: "#fff", fontSize: 14, fontWeight: 700, border: "none", borderRadius: 10, cursor: saving ? "wait" : "pointer", fontFamily: "inherit",
-          }}>
-            {saving ? "Kaydediliyor..." : "Asansörü oluştur →"}
-          </button>
-        </div>
+          <p style={{margin:0,fontSize:12,color:"var(--muted)"}}>Kaydettiğinizde QR etiketi otomatik oluşur; asansör sayfasından yazdırabilirsiniz.</p>
+        </form>
       )}
 
-      {/* Search */}
-      <input type="text" placeholder="Bina, müşteri veya asansör adı ara..." value={query} onChange={e => setQuery(e.target.value)} style={{
-        width: "100%", height: 44, padding: "0 16px", background: "#fff", border: "1.5px solid #e2e8f0",
-        borderRadius: 10, fontSize: 14, fontFamily: "inherit", outline: "none",
-      }} />
-
-      {/* Asset cards grid */}
-      {filtered.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px dashed #e2e8f0", borderRadius: 16, padding: 40, textAlign: "center" }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>🏢</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#1A1510" }}>Asansör bulunamadı</div>
-          <div style={{ fontSize: 13, color: "#9C9080", marginTop: 6 }}>Arama kriterini değiştirin veya yeni asansör ekleyin.</div>
+      <div className="bar">
+        <div className="chips" role="tablist" aria-label="Etikete göre süz">
+          {filterButtons.map(b=>(
+            <button key={b.key} role="tab" aria-selected={labelFilter===b.key} className={`chipb${labelFilter===b.key?" on":""}`} onClick={()=>setLabelFilter(b.key)}>
+              {b.key!=="ALL"&&<span className="sdot" style={{display:"inline-block",width:7,height:7,marginRight:6,background:DOT[b.key]}}/>}{b.label}{b.count>0&&<em>{b.count}</em>}
+            </button>
+          ))}
         </div>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-          {filtered.map(asset => {
-            const risk = asset.riskScore ?? 0;
-            const riskColor = risk >= 70 ? "#dc2626" : risk >= 45 ? "#d97706" : "#059669";
-            const riskBg    = risk >= 70 ? "#FCECE8" : risk >= 45 ? "#FFF3DC" : "#ecfdf5";
-            const riskBd    = risk >= 70 ? "#E8A090" : risk >= 45 ? "#F0C060" : "#a7f3d0";
-            const labelCfg  = asset.inspectionLabel ? LABEL_CFG[asset.inspectionLabel] : null;
+        <label className="srch">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Asansör, bina ya da müşteri" aria-label="Asansör ara"/>
+        </label>
+      </div>
+
+      {filtered.length===0?(
+        <div className="empty2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="5" y="2" width="14" height="20" rx="1.5"/><path d="M12 2v20"/></svg>
+          <b>{query||labelFilter!=="ALL"?"Eşleşen asansör yok":"Henüz asansör yok"}</b>
+          <p>{query||labelFilter!=="ALL"?"Farklı bir filtre deneyin.":"İlk asansörü ekleyin; QR etiketi kendiliğinden hazırlanır."}</p>
+          {!query&&labelFilter==="ALL"&&<button className="b b-ink" style={{marginTop:8}} onClick={()=>setShowForm(true)}>Yeni asansör</button>}
+        </div>
+      ):(
+        <div className="as-grid">
+          {filtered.map((a,i)=>{
+            const key=a.inspectionLabel??"YOK";
             return (
-              <Link key={asset.id} href={`/app/assets/${asset.id}`} className="asset-card" style={{
-                background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16,
-                padding: 18, textDecoration: "none", color: "inherit", transition: "all 0.18s",
-                display: "block",
-              }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
-                  <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#1A1510", letterSpacing: "-0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.name}</div>
-                    <div style={{ fontSize: 12, color: "#6E6455", marginTop: 3 }}>{asset.buildingName || "Bina yok"} · {asset.customer.name}</div>
-                  </div>
-                  <span style={{ padding: "3px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700, background: riskBg, color: riskColor, border: `1px solid ${riskBd}`, whiteSpace: "nowrap" }}>
-                    Risk {risk}
-                  </span>
+              <Link key={a.id} href={`/app/assets/${a.id}`} className="as-card lift" style={{["--c" as string]:DOT[key]??DOT.YOK,animationDelay:`${Math.min(i,12)*30}ms`}}>
+                <div className="as-top">
+                  <span className="as-ic" aria-hidden><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"><rect x="5" y="2" width="14" height="20" rx="1.5"/><path d="M12 2v20M8.5 8l1.5-1.5L11.5 8M12.5 16l1.5 1.5 1.5-1.5"/></svg></span>
+                  <div className="lt-main"><b>{a.name}</b><small>{[a.buildingName,a.customer.name].filter(Boolean).join(" · ")}</small></div>
                 </div>
-                <div style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
-                  background: labelCfg ? labelCfg.bg : "#f9f9fb",
-                  border: `1px solid ${labelCfg ? labelCfg.border : "#D6D0C4"}`,
-                  borderRadius: 12, padding: "8px 12px", marginBottom: 10,
-                }}>
-                  <LabelBadge label={asset.inspectionLabel} />
-                  <Countdown nextAt={asset.nextInspectionAt} />
+                <div className="as-foot">
+                  <LabelBadge label={a.inspectionLabel}/>
+                  <Countdown nextAt={a.nextInspectionAt}/>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9C9080" }}>Kimlik</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#1A1510", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.elevatorIdNo || "—"}</div>
-                  </div>
-                  <div style={{ background: "#f9f9fb", borderRadius: 10, padding: "8px 11px" }}>
-                    <div style={{ fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#9C9080" }}>Konum</div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#1A1510", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{asset.locationNote || "—"}</div>
-                  </div>
-                </div>
+                {a.elevatorIdNo&&<span className="code">{a.elevatorIdNo}</span>}
               </Link>
             );
           })}
         </div>
       )}
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        .asset-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.07); border-color: #c7d2fe !important; }
-        input:focus, select:focus { border-color: #2563eb !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.10); }
-      `}} />
+      <style>{`
+        .as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+        .as-card{position:relative;display:grid;gap:10px;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:inherit;overflow:hidden;animation:fadeUp .4s var(--ease-out) both}
+        .as-card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c)}
+        .as-top{display:flex;gap:10px;align-items:center;min-width:0}
+        .as-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;background:var(--surface-2);color:var(--foreground-2)}
+        .as-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+      `}</style>
     </div>
   );
 }

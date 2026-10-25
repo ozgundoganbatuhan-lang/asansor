@@ -19,8 +19,8 @@ const S_CFG:Record<string,{bg:string;color:string;dot:string}>={
   URGENT:{bg:"#FCECE8",color:"#C0311A",dot:"#dc2626"},IN_PROGRESS:{bg:"#FFF3DC",color:"#B86800",dot:"#d97706"},
   DONE:{bg:"#E8F5EE",color:"#2E7D4F",dot:"#2E7D4F"},PENDING:{bg:"#E4EFF9",color:"#0F121A",dot:"#C87800"},CANCELED:{bg:"#F0EDE6",color:"#6E6455",dot:"#9C9080"},
 };
-const LABEL_DOT:Record<string,string>={YESIL:"#2E7D4F",MAVI:"#C87800",SARI:"#C87800",KIRMIZI:"#dc2626"};
-const PLAN_L:Record<string,string>={PERIODIC:"🔧 Periyodik",ANNUAL_INSPECTION:"📋 Yıllık Muayene",CUSTOM:"⚙️ Özel"};
+const LABEL_DOT:Record<string,string>={YESIL:"#2E7D4F",MAVI:"#1A5C96",SARI:"#C87800",KIRMIZI:"#dc2626"};
+const PLAN_L:Record<string,string>={PERIODIC:"Periyodik",ANNUAL_INSPECTION:"Yıllık Muayene",CUSTOM:"Özel"};
 
 function InfoRow({label,value}:{label:string;value:string}) {
   return (
@@ -104,7 +104,7 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
       </div>
 
       {/* Instructions */}
-      <div style={{background:"#E4EFF9",border:"1px solid #bfdbfe",borderRadius:8,padding:"10px 12px",marginBottom:14}}>
+      <div style={{background:"#E4EFF9",border:"1px solid #D6D0C4",borderRadius:8,padding:"10px 12px",marginBottom:14}}>
         <div style={{fontSize:11,fontWeight:700,color:"#0F121A",display:"flex",alignItems:"center",gap:5,marginBottom:6}}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -124,7 +124,7 @@ function QRSection({ asset, publicUrl }: { asset: Asset; publicUrl: string }) {
         {sizes.map(s => (
           <button key={s.key} onClick={() => setSelectedSize(s.key)}
             style={{flex:1,padding:"7px 4px",borderRadius:8,cursor:"pointer",textAlign:"center",
-              border: selectedSize===s.key ? "1.5px solid #3b82f6" : "1.5px solid #e5e7eb",
+              border: selectedSize===s.key ? "1.5px solid #2A3142" : "1.5px solid #e5e7eb",
               background: selectedSize===s.key ? "#E4EFF9" : "#fff",
               transition:"all 0.12s"}}>
             <div style={{fontSize:12,fontWeight:700,color: selectedSize===s.key ? "#1B1F2B" : "#111827"}}>{s.key}</div>
@@ -240,13 +240,13 @@ export default function AssetDetailPage() {
           <a href={mapsUrl ?? "#"} target="_blank" rel="noopener noreferrer"
             style={{display:"inline-flex",alignItems:"center",gap:6,background:"#fff",color:"#374151",
               border:"1px solid #e5e7eb",fontSize:12.5,fontWeight:600,padding:"8px 14px",borderRadius:8,textDecoration:"none"}}>
-            🗺 Yol tarifi
+            Yol tarifi
           </a>
         </div>
       </div>
 
       {/* Main grid */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 296px",gap:16,alignItems:"start"}}>
+      <div className="r-split" style={{display:"grid",gridTemplateColumns:"1fr 296px",gap:16,alignItems:"start"}}>
 
         {/* Left column */}
         <div style={{display:"flex",flexDirection:"column",gap:16}}>
@@ -254,7 +254,7 @@ export default function AssetDetailPage() {
           {/* Teknik bilgiler */}
           <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:14,padding:"20px"}}>
             <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:14}}>Teknik Bilgiler</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 24px"}}>
+            <div className="r-two" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 24px"}}>
               {[
                 {l:"Kimlik No",v:asset.elevatorIdNo??"—"},
                 {l:"Müşteri",v:asset.customer.name},
@@ -270,7 +270,7 @@ export default function AssetDetailPage() {
               <a href={`tel:${asset.customer.phone}`}
                 style={{display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:600,
                   color:"#1B1F2B",textDecoration:"none",marginTop:12}}>
-                📞 {asset.customer.phone}
+                {asset.customer.phone}
               </a>
             )}
           </div>
@@ -279,9 +279,9 @@ export default function AssetDetailPage() {
           <div>
             <div style={{display:"flex",gap:4,background:"#E8E3D8",borderRadius:10,padding:4,marginBottom:14}}>
               {([
-                {k:"timeline",l:"📋 Servis Geçmişi"},
-                {k:"inspections",l:"🔍 Kontroller"},
-                {k:"plans",l:"🔧 Bakım Planları"},
+                {k:"timeline",l:"Servis Geçmişi"},
+                {k:"inspections",l:"Kontroller"},
+                {k:"plans",l:"Bakım Planları"},
               ] as const).map(t=>(
                 <button key={t.k} onClick={()=>setTab(t.k)}
                   style={{flex:1,padding:"8px",borderRadius:7,border:"none",cursor:"pointer",
@@ -305,7 +305,7 @@ export default function AssetDetailPage() {
                 </div>
                 {asset.workOrders.length===0 ? (
                   <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:14,padding:"40px 24px",textAlign:"center"}}>
-                    <div style={{fontSize:36,marginBottom:10}}>📋</div>
+                    <div style={{fontSize:36,marginBottom:10}}></div>
                     <div style={{fontSize:14,fontWeight:700,color:"#374151"}}>Servis kaydı yok</div>
                   </div>
                 ) : asset.workOrders.map(wo=>{
@@ -325,7 +325,7 @@ export default function AssetDetailPage() {
                         <span style={{fontSize:12,color:"#9ca3af"}}>{new Date(wo.createdAt).toLocaleDateString("tr-TR")}</span>
                       </div>
                       <div style={{fontSize:13.5,fontWeight:700,color:"#111827",marginBottom:2}}>{TYPE_L[wo.type]??wo.type}</div>
-                      {wo.technician && <div style={{fontSize:12,color:"#6b7280"}}>👤 {wo.technician.name}</div>}
+                      {wo.technician && <div style={{fontSize:12,color:"#6b7280"}}>{wo.technician.name}</div>}
                     </Link>
                   );
                 })}
@@ -337,7 +337,7 @@ export default function AssetDetailPage() {
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {asset.inspections.length===0 ? (
                   <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:14,padding:"40px 24px",textAlign:"center"}}>
-                    <div style={{fontSize:36,marginBottom:10}}>🔍</div>
+                    <div style={{fontSize:36,marginBottom:10}}></div>
                     <div style={{fontSize:14,fontWeight:700,color:"#374151"}}>Kontrol kaydı yok</div>
                   </div>
                 ) : asset.inspections.map(ins=>{
@@ -363,7 +363,7 @@ export default function AssetDetailPage() {
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {asset.maintenancePlans.length===0 ? (
                   <div style={{background:"#fff",border:"1px solid #e5e7eb",borderRadius:14,padding:"40px 24px",textAlign:"center"}}>
-                    <div style={{fontSize:36,marginBottom:10}}>🔧</div>
+                    <div style={{fontSize:36,marginBottom:10}}></div>
                     <div style={{fontSize:14,fontWeight:700,color:"#374151"}}>Bakım planı yok</div>
                   </div>
                 ) : asset.maintenancePlans.map(plan=>{
@@ -400,18 +400,18 @@ export default function AssetDetailPage() {
                 style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",
                   borderRadius:8,background:"#F5F2EC",border:"1px solid #f3f4f6",
                   textDecoration:"none",fontSize:13,fontWeight:500,color:"#374151",transition:"background 0.12s"}}>
-                👤 {asset.customer.name}
+                {asset.customer.name}
               </Link>
               <Link href={`/app/assets/${id}/label`}
                 style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",
                   borderRadius:8,background:"#F5F2EC",border:"1px solid #f3f4f6",
                   textDecoration:"none",fontSize:13,fontWeight:500,color:"#374151",transition:"background 0.12s"}}>
-                🏷 QR Etiket Sayfası
+                QR Etiket Sayfası
               </Link>
               {asset.locationNote && (
                 <div style={{padding:"8px 10px",borderRadius:8,background:"#F5F2EC",
                   border:"1px solid #f3f4f6",fontSize:12,color:"#6b7280"}}>
-                  📍 {asset.locationNote}
+                  {asset.locationNote}
                 </div>
               )}
             </div>

@@ -13,7 +13,7 @@ const CAT_L: Record<string,string> = {
   transport:"Ulaşım", tool:"Ekipman", other:"Diğer",
 };
 const CAT_ICON: Record<string,string> = {
-  fuel:"⛽", material:"🔧", food:"🍽", transport:"🚌", tool:"🔑", other:"📎",
+  fuel:"", material:"", food:"", transport:"", tool:"", other:"",
 };
 const STATUS_CFG: Record<string,{label:string;bg:string;color:string;border:string}> = {
   PENDING:  {label:"Bekliyor",  bg:"#FFF3DC",color:"#B86800",border:"#F0C060"},
@@ -108,7 +108,7 @@ export default function ExpenseRequestsPage() {
       </div>
 
       {/* KPI strip */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
+      <div className="r-many" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
         {[
           {label:"Toplam Talep",    value:items.length,       sub:"adet",              color:"#1B1F2B"},
           {label:"Bekleyen Tutar",  value:money(totalPending), sub:`${items.filter(i=>i.status==="PENDING").length} talep`, color:"#B86800"},
@@ -124,7 +124,7 @@ export default function ExpenseRequestsPage() {
 
       {success && (
         <div style={{background:"#E8F5EE",border:"1.5px solid #9DCFB0",color:"#2E7D4F",padding:"12px 18px",borderRadius:10,fontSize:13,fontWeight:700}}>
-          ✓ Gider talebiniz gönderildi. Yönetici onayı bekleniyor.
+          Gider talebiniz gönderildi. Yönetici onayı bekleniyor.
         </div>
       )}
 
@@ -156,7 +156,7 @@ export default function ExpenseRequestsPage() {
               </div>
             </div>
             {/* Tarih */}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            <div className="r-two" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
               <div>
                 <label style={{fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase" as const,letterSpacing:"0.6px",display:"block",marginBottom:6}}>Tarih</label>
                 <input type="date" value={date} onChange={e=>setDate(e.target.value)} style={F}/>
@@ -187,21 +187,21 @@ export default function ExpenseRequestsPage() {
 
       {/* Tablo */}
       <div style={{background:"#fff",borderRadius:12,border:"1px solid #D6D0C4",overflow:"hidden",boxShadow:"0 2px 0 rgba(27,21,16,0.05)"}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 100px 120px 120px 140px",gap:12,padding:"10px 18px",fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase" as const,letterSpacing:"0.6px",borderBottom:"1px solid #E8E3D8",background:"#F5F2EC"}}>
+        <div className="r-head" style={{display:"grid",gridTemplateColumns:"1fr 100px 120px 120px 140px",gap:12,padding:"10px 18px",fontSize:10,fontWeight:700,color:"#9C9080",textTransform:"uppercase" as const,letterSpacing:"0.6px",borderBottom:"1px solid #E8E3D8",background:"#F5F2EC"}}>
           <span>Personel / Kategori</span><span>Tarih</span><span>Tutar</span><span>Durum</span><span>İşlem</span>
         </div>
         {loading ? (
           <div style={{padding:40,textAlign:"center" as const,color:"#9C9080"}}>Yükleniyor...</div>
         ) : filtered.length === 0 ? (
           <div style={{padding:48,textAlign:"center" as const}}>
-            <div style={{fontSize:32,marginBottom:12}}>🧾</div>
+            <div style={{fontSize:32,marginBottom:12}}></div>
             <div style={{fontSize:15,fontWeight:700,color:"#1A1510"}}>Gider talebi bulunamadı</div>
             <div style={{fontSize:13,color:"#6E6455",marginTop:4}}>Henüz gider talebi yok.</div>
           </div>
         ) : filtered.map(item=>{
           const st = STATUS_CFG[item.status] ?? STATUS_CFG.PENDING;
           return (
-            <div key={item.id} style={{display:"grid",gridTemplateColumns:"1fr 100px 120px 120px 140px",gap:12,padding:"14px 18px",borderBottom:"1px solid #F0EDE6",alignItems:"center"}}>
+            <div key={item.id} className="r-row" style={{display:"grid",gridTemplateColumns:"1fr 100px 120px 120px 140px",gap:12,padding:"14px 18px",borderBottom:"1px solid #F0EDE6",alignItems:"center"}}>
               <div>
                 <div style={{fontSize:13,fontWeight:700,color:"#1A1510"}}>{item.technician?.name ?? "Bilinmiyor"}</div>
                 <div style={{fontSize:11,color:"#6E6455",marginTop:2}}>{CAT_ICON[item.category]} {CAT_L[item.category]??item.category}</div>

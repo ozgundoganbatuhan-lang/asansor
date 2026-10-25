@@ -25,75 +25,75 @@ type DashStep = {
 };
 
 const SETUP: SetupStep[] = [
-  { phase:"setup", id:"welcome", emoji:"🎉", color:"#1B1F2B", bg:"#E4EFF9",
+  { phase:"setup", id:"welcome", emoji:"", color:"#1B1F2B", bg:"#E4EFF9",
     title:"Servisim'e Hoş Geldiniz!",
     desc:"Asansör bakım operasyonunuzu birkaç dakikada dijitale taşıyalım. Kısa bir kurulum turu ile her şeyi hazır hale getirelim.",
     href:null },
-  { phase:"setup", id:"customer", emoji:"👥", color:"#0ea5e9", bg:"#f0f9ff",
+  { phase:"setup", id:"customer", emoji:"", color:"#0ea5e9", bg:"#f0f9ff",
     title:"Adım 1 — Müşteri Ekleyin",
     desc:"Bina sahibi, site yönetimi veya kurumsal firmayı müşteri olarak kaydedin. Her asansör ve sözleşme bu müşteriye bağlanacak.",
     tip:"Bir müşteriye birden fazla asansör tanımlayabilirsiniz.",
     href:"/app/customers",
     beaconSelector:"[data-tour='new-customer-btn']",
-    beaconLabel:"👆 Yeni müşteri ekleyin",
+    beaconLabel:"Yeni müşteri ekleyin",
     pageGuideTitle:"İlk müşteriyi ekleyin",
     pageGuideDesc:"Sağ üstteki + Yeni Müşteri butonuna tıklayın." },
-  { phase:"setup", id:"asset", emoji:"🛗", color:"#7c3aed", bg:"#f5f3ff",
+  { phase:"setup", id:"asset", emoji:"", color:"#1A5C96", bg:"#f5f3ff",
     title:"Adım 2 — Asansör Ekleyin",
     desc:"Müşteriye ait asansörleri sisteme tanımlayın. Asansör Kimlik Numarası (AKN) yasal zorunluluktur — plak üzerinde bulunur.",
     tip:"Marka, kapasite ve hız bilgileri muayene raporlarında gereklidir.",
     href:"/app/assets",
     beaconSelector:"[data-tour='new-asset-btn']",
-    beaconLabel:"👆 Yeni asansör ekleyin",
+    beaconLabel:"Yeni asansör ekleyin",
     pageGuideTitle:"Asansör kaydedin",
     pageGuideDesc:"+ Yeni Asansör ile AKN ve teknik bilgileri girin." },
-  { phase:"setup", id:"contract", emoji:"📄", color:"#059669", bg:"#ecfdf5",
+  { phase:"setup", id:"contract", emoji:"", color:"#059669", bg:"#ecfdf5",
     title:"Adım 3 — Sözleşme Oluşturun",
     desc:"Asansör Bakım Yönetmeliği gereği yazılı sözleşme zorunludur. Teknik sorumlu beyanını eklemeyi unutmayın.",
     tip:"Otomatik yenileme açıksa sözleşme bitişinden 30 gün önce uyarı alırsınız.",
     href:"/app/contracts",
     beaconSelector:"[data-tour='new-contract-btn']",
-    beaconLabel:"👆 Yeni sözleşme oluşturun",
+    beaconLabel:"Yeni sözleşme oluşturun",
     pageGuideTitle:"Bakım sözleşmesi ekleyin",
     pageGuideDesc:"+ Yeni Sözleşme ile yasal sözleşmeyi dijitale taşıyın." },
-  { phase:"setup", id:"plan", emoji:"📅", color:"#d97706", bg:"#FFF3DC",
+  { phase:"setup", id:"plan", emoji:"", color:"#d97706", bg:"#FFF3DC",
     title:"Adım 4 — Bakım Planı Kurun",
     desc:"Türk hukuku gereği asansörlerin en az ayda bir bakımı zorunludur. Periyot ve asansörü seçip plan oluşturun.",
     tip:"Bir asansöre birden fazla plan eklenebilir (periyodik + yıllık muayene).",
     href:"/app/maintenance-plans",
     beaconSelector:"[data-tour='new-plan-btn']",
-    beaconLabel:"👆 Bakım planı oluşturun",
+    beaconLabel:"Bakım planı oluşturun",
     pageGuideTitle:"Periyodik bakım planı kurun",
     pageGuideDesc:"+ Yeni Bakım Planı ile hangi asansörün ne sıklıkla bakılacağını ayarlayın." },
-  { phase:"setup", id:"workorder", emoji:"🔧", color:"#dc2626", bg:"#fff5f5",
+  { phase:"setup", id:"workorder", emoji:"", color:"#dc2626", bg:"#fff5f5",
     title:"Adım 5 — İş Emri Açın",
     desc:"Arıza bildirimi geldi mi? İş emri açın, teknisyen atayın, tamamlandığında faturaya dönüştürün.",
     tip:"Bakım planından 'İş Emri Oluştur →' ile tek tıkla da açabilirsiniz.",
     href:"/app/work-orders",
     beaconSelector:"[data-tour='new-wo-btn']",
-    beaconLabel:"👆 İş emri açın",
+    beaconLabel:"İş emri açın",
     pageGuideTitle:"İlk iş emrini açın",
     pageGuideDesc:"+ Yeni İş Emri ile kayıt oluşturun ve teknisyen atayın." },
 ];
 
 const DASH: DashStep[] = [
-  { phase:"dashboard", id:"stats", emoji:"📊", color:"#1B1F2B",
+  { phase:"dashboard", id:"stats", emoji:"", color:"#1B1F2B",
     title:"Özet Kartlar",
     desc:"Müşteri, asansör, iş emri, acil ve gecikmiş sayılarınızı anlık görün. Her karta tıklayarak ilgili listeye gidebilirsiniz.",
     selector:"stat-cards", placement:"below" },
-  { phase:"dashboard", id:"calendar", emoji:"📅", color:"#7c3aed",
+  { phase:"dashboard", id:"calendar", emoji:"", color:"#1A5C96",
     title:"Bakım Takvimi",
     desc:"Yaklaşan bakımlarınızı günlük takvimde görün. Tarihe tıklayarak Google Calendar'a ekleyebilir, toplu ICS olarak dışa aktarabilirsiniz.",
     selector:"mini-calendar", placement:"right" },
-  { phase:"dashboard", id:"recent-wo", emoji:"🔧", color:"#0ea5e9",
+  { phase:"dashboard", id:"recent-wo", emoji:"", color:"#0ea5e9",
     title:"Son İş Emirleri",
     desc:"Durumlar renkli etiketlerle: kırmızı = acil, sarı = devam ediyor, yeşil = tamamlandı. Tümü → ile tam listeye geçin.",
     selector:"recent-wo", placement:"left" },
-  { phase:"dashboard", id:"low-stock", emoji:"📦", color:"#ea580c",
+  { phase:"dashboard", id:"low-stock", emoji:"", color:"#ea580c",
     title:"Azalan Stoklar",
     desc:"Minimum stok limitine yaklaşan parçalar burada görünür. Doluluk barı: kırmızı = tükendi, turuncu = kritik, sarı = düşük.",
     selector:"low-stock", placement:"above" },
-  { phase:"dashboard", id:"invoices", emoji:"💰", color:"#16a34a",
+  { phase:"dashboard", id:"invoices", emoji:"", color:"#16a34a",
     title:"Aylık Fatura Özeti",
     desc:"Bu ayın toplam fatura tutarı ve 6 aylık trend grafik. Koyu yeşil çubuk bu ayı, açık çubuklar geçmiş ayları gösterir.",
     selector:"invoice-summary", placement:"above" },
@@ -215,7 +215,7 @@ export default function OnboardingTour() {
                 <div style={{display:"flex",gap:7}}>
                   {st.di>0 && <button onClick={back} className="otour-btn-ghost" style={{fontSize:11.5,padding:"6px 11px"}}>← Geri</button>}
                   <button onClick={advDash} className="otour-btn-primary" style={{background:cd.color,fontSize:12,padding:"7px 14px"}}>
-                    {isLast?"🚀 Tamamla!":"İleri →"}
+                    {isLast?"Tamamla!":"İleri →"}
                   </button>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function OnboardingTour() {
         <style>{CSS}</style>
         <button onClick={()=>setOpen(true)} className="otour-fab otour-fab-pulse" title="Panel turuna devam et">
           <div className="otour-fab-ring" style={{"--pct":`${Math.round((st.di/(DASH.length-1))*100)}%`} as React.CSSProperties}/>
-          <div className="otour-fab-inner"><span style={{fontSize:18}}>{cd?.emoji??"📊"}</span><span style={{fontSize:9,fontWeight:800,color:"#fff"}}>{st.di+1}/{DASH.length}</span></div>
+          <div className="otour-fab-inner"><span style={{fontSize:18}}>{cd?.emoji??""}</span><span style={{fontSize:9,fontWeight:800,color:"#fff"}}>{st.di+1}/{DASH.length}</span></div>
         </button>
       </>
     );
@@ -261,10 +261,10 @@ export default function OnboardingTour() {
           </div>
           <div style={{display:"flex",gap:8,flexShrink:0}}>
             <button onClick={()=>setOpen(true)} className="otour-btn-ghost" style={{fontSize:11.5,padding:"6px 10px"}}>?</button>
-            <button onClick={advSetup} className="otour-btn-primary" style={{background:cs.color,fontSize:12,padding:"8px 16px"}}>✓ Tamamladım</button>
+            <button onClick={advSetup} className="otour-btn-primary" style={{background:cs.color,fontSize:12,padding:"8px 16px"}}>Tamamladım</button>
           </div>
         </div>
-        {cs.beaconSelector && <BeaconStyle selector={cs.beaconSelector} color={cs.color} label={cs.beaconLabel??"👆 Buraya tıklayın"}/>}
+        {cs.beaconSelector && <BeaconStyle selector={cs.beaconSelector} color={cs.color} label={cs.beaconLabel??"Buraya tıklayın"}/>}
       </>
     );
   }
@@ -277,7 +277,7 @@ export default function OnboardingTour() {
         <button onClick={()=>setOpen(true)} className="otour-fab" title="Kurulum sihirbazı">
           <div className="otour-fab-ring" style={{"--pct":`${setupPct}%`} as React.CSSProperties}/>
           <div className="otour-fab-inner">
-            <span style={{fontSize:18,lineHeight:1}}>{cs?.emoji??"🎉"}</span>
+            <span style={{fontSize:18,lineHeight:1}}>{cs?.emoji??""}</span>
             <span style={{fontSize:9,fontWeight:800,color:"#fff"}}>{st.si}/{SETUP.length-1}</span>
           </div>
         </button>
@@ -318,7 +318,7 @@ export default function OnboardingTour() {
             <p style={{margin:0,fontSize:13.5,color:"#4b5a6e",lineHeight:1.75}}>{cs.desc}</p>
             {cs.tip && (
               <div style={{marginTop:12,display:"flex",gap:9,background:"#FFF3DC",border:"1px solid #fde68a",borderRadius:10,padding:"9px 13px"}}>
-                <span style={{fontSize:14,flexShrink:0}}>💡</span>
+                <span style={{fontSize:14,flexShrink:0}}></span>
                 <p style={{margin:0,fontSize:12,color:"#92400e",lineHeight:1.65}}>{cs.tip}</p>
               </div>
             )}
@@ -361,8 +361,8 @@ const CSS = `
   .otour-modal { background:#fff;border-radius:18px;width:100%;max-width:460px;box-shadow:0 32px 80px rgba(5,10,20,.22),0 0 0 1px rgba(5,10,20,.05);overflow:hidden;animation:otSlideUp .35s cubic-bezier(.16,1,.3,1); }
   .otour-guide-bar { position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9000;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 40px rgba(5,10,20,.13),0 0 0 1px rgba(5,10,20,.04);min-width:360px;max-width:560px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;animation:otSlideUp .3s cubic-bezier(.16,1,.3,1); }
   .otour-fab { position:fixed;bottom:24px;right:24px;z-index:9000;width:58px;height:58px;border:none;background:transparent;cursor:pointer;padding:0; }
-  .otour-fab-ring { position:absolute;inset:0;border-radius:50%;background:conic-gradient(#2563eb var(--pct,0%),#e2e8f0 0%);transition:background .5s; }
-  .otour-fab-inner { position:absolute;inset:4px;border-radius:50%;background:#1d4ed8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 4px 16px rgba(37,99,235,.45);transition:transform .15s; }
+  .otour-fab-ring { position:absolute;inset:0;border-radius:50%;background:conic-gradient(#1B1F2B var(--pct,0%),#e2e8f0 0%);transition:background .5s; }
+  .otour-fab-inner { position:absolute;inset:4px;border-radius:50%;background:#1B1F2B;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 4px 16px rgba(27,31,43,.45);transition:transform .15s; }
   .otour-fab:hover .otour-fab-inner { transform:scale(1.07); }
   .otour-fab-pulse .otour-fab-inner { animation:fabPulse 2.5s ease-in-out infinite; }
   .otour-btn-ghost { padding:8px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;font-size:12.5px;font-weight:600;color:#64748b;cursor:pointer;transition:all .1s;white-space:nowrap;font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
@@ -372,5 +372,5 @@ const CSS = `
   @keyframes otFadeIn { from{opacity:0}to{opacity:1} }
   @keyframes otSlideUp { from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none} }
   @keyframes tourRing { 0%,100%{opacity:1}50%{opacity:.45} }
-  @keyframes fabPulse { 0%,100%{box-shadow:0 4px 16px rgba(37,99,235,.45)}50%{box-shadow:0 4px 28px rgba(37,99,235,.75)} }
+  @keyframes fabPulse { 0%,100%{box-shadow:0 4px 16px rgba(27,31,43,.45)}50%{box-shadow:0 4px 28px rgba(27,31,43,.75)} }
 `;

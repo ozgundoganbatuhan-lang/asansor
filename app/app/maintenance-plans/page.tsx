@@ -15,9 +15,9 @@ type Plan = {
 };
 
 const PT: Record<string, { label: string; icon: string; bg: string; color: string; border: string }> = {
-  PERIODIC:          { label: "Periyodik Bakım",    icon: "🔧", bg: "#E4EFF9", color: "#0F121A", border: "#90BEE0" },
-  ANNUAL_INSPECTION: { label: "Yıllık Muayene",     icon: "📋", bg: "#f5f3ff", color: "#1A5C96", border: "#ddd6fe" },
-  CUSTOM:            { label: "Özel Bakım",          icon: "⚙️",  bg: "#F5F2EC", color: "#6b7280", border: "#e5e7eb" },
+  PERIODIC:          { label: "Aylık bakım",    icon: "", bg: "#E4EFF9", color: "#1A4F80", border: "#90BEE0" },
+  ANNUAL_INSPECTION: { label: "Yıllık muayene",     icon: "", bg: "#F0EDE6", color: "#1A5C96", border: "#ddd6fe" },
+  CUSTOM:            { label: "Özel bakım",          icon: "", bg: "#F5F2EC", color: "#6b7280", border: "#e5e7eb" },
 };
 
 function daysLeft(d: string) { return Math.ceil((new Date(d).getTime() - Date.now()) / 86400000); }
@@ -78,144 +78,84 @@ export default function MaintenancePlansPage() {
   const thisWeek = plans.filter(p => { const t = new Date(p.nextDueAt).getTime(); return t >= now && t <= in7; });
   const byAsset = useMemo(() => { const map = new Map<string, Plan[]>(); plans.forEach(p => { if (!map.has(p.asset.id)) map.set(p.asset.id, []); map.get(p.asset.id)!.push(p); }); return map; }, [plans]);
 
+  const sorted = [...plans].sort((a, b) => +new Date(a.nextDueAt) - +new Date(b.nextDueAt));
+  const COLS = "10px minmax(0,1.4fr) 110px 110px 150px";
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-
-      {/* Header */}
-      <OnboardingBeacon forStep={4} label="👆 Bakım planı oluşturun">
-          <button data-tour="new-plan-btn" onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
-            {showForm ? "✕ Kapat" : "+ Yeni Plan"}
-          </button>
-        </OnboardingBeacon>
-
-      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A" }}>{err}</div>}
-
-      {/* Alerts */}
-      {overdue.length > 0 && <div style={{ display: "flex", gap: 10, background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", alignItems: "flex-start" }}>
-        <span style={{ fontSize: 18 }}>⚠️</span>
-        <div><div style={{ fontSize: 13, fontWeight: 700, color: "#C0311A" }}>{overdue.length} bakım planı gecikti!</div>
-          <div style={{ fontSize: 11, color: "#C0311A", marginTop: 3 }}>{overdue.slice(0, 4).map((p, i) => <span key={p.id}>{i > 0 && " · "}{p.asset.name} — {new Date(p.nextDueAt).toLocaleDateString("tr-TR")}</span>)}</div></div>
-      </div>}
-      {thisWeek.length > 0 && <div style={{ display: "flex", gap: 10, background: "#fefce8", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 16px", alignItems: "center" }}>
-        <span style={{ fontSize: 18 }}>🔔</span>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>{thisWeek.length} bakım bu hafta yapılmalı</div>
-      </div>}
-
-      {/* KPIs */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
-        {[{ label: "Toplam Plan", val: plans.length, color: "#111827" }, { label: "Gecikmiş", val: overdue.length, color: overdue.length > 0 ? "#C0311A" : "#111827" }, { label: "Bu Hafta", val: thisWeek.length, color: thisWeek.length > 0 ? "#B86800" : "#111827" }, { label: "Asansör", val: byAsset.size, color: "#111827" }].map(k => (
-          <div key={k.label} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 6 }}>{k.label}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, color: k.color, letterSpacing: "-1px" }}>{k.val}</div>
-          </div>
-        ))}
+    <div className="pg">
+      <div className="ph">
+        <div>
+          <div className="ph-eyebrow">Saha</div>
+          <h1 className="ph-title">Bakım planı</h1>
+          <p className="ph-sub">Her asansörün bakım periyodu ve sıradaki bakım günü. Geciken bakımdan tek dokunuşla iş emri açın.</p>
+        </div>
+        <div className="ph-actions">
+          <OnboardingBeacon forStep={4} label="Bakım planı oluşturun">
+            <button data-tour="new-plan-btn" className={`b ${showForm?"b-line":"b-ink"}`} onClick={()=>setShowForm(!showForm)}>{showForm?"Formu kapat":"Yeni plan"}</button>
+          </OnboardingBeacon>
+        </div>
       </div>
 
-      {/* Create form */}
-      {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 22 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Yeni Bakım Planı</div>
-          <div style={{ background: "#E4EFF9", border: "1px solid #bfdbfe", borderRadius: 8, padding: "10px 14px", fontSize: 12, color: "#0F121A", marginBottom: 16 }}>
-            💡 Bir asansöre birden fazla plan ekleyebilirsiniz. Örneğin: Aylık periyodik bakım + Yıllık muayene hazırlığı.
+      {err&&<div className="alert" role="alert">{err}</div>}
+
+      <div className="kpis stagger">
+        <div className="kpi"><span>Plan</span><b>{plans.length}</b></div>
+        <div className="kpi"><span>Geciken</span><b style={{color:overdue.length?"#C0311A":undefined}}>{overdue.length}</b></div>
+        <div className="kpi"><span>Bu hafta</span><b style={{color:thisWeek.length?"#B86800":undefined}}>{thisWeek.length}</b></div>
+        <div className="kpi"><span>Asansör</span><b>{byAsset.size}</b></div>
+      </div>
+
+      {showForm&&(
+        <form onSubmit={create} className="card2 reveal" style={{padding:"16px 18px",display:"grid",gap:12}}>
+          <div style={{fontSize:14,fontWeight:750,letterSpacing:"-.02em"}}>Yeni bakım planı</div>
+          <div className="fgrid">
+            <label className="fl">Asansör *
+              <select required className="inp" value={fAsset} onChange={e=>setFAsset(e.target.value)}><option value="">Seçin</option>{assets.map(a=><option key={a.id} value={a.id}>{a.name} · {a.customer.name}</option>)}</select></label>
+            <label className="fl">Plan türü
+              <select className="inp" value={fType} onChange={e=>setFType(e.target.value)}>{Object.entries(PT).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}</select></label>
+            <label className="fl">Periyot
+              <select className="inp" value={fPeriodPreset} onChange={e=>setFPeriodPreset(e.target.value)}>{[["15","15 günde bir"],["30","Aylık"],["60","2 ayda bir"],["90","3 ayda bir"],["180","6 ayda bir"],["365","Yıllık"],["custom","Özel"]].map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
+            {fPeriodPreset==="custom"&&<label className="fl">Kaç günde bir
+              <input className="inp" type="number" min={1} value={fPeriodCustom} onChange={e=>setFPeriodCustom(e.target.value)} placeholder="45"/></label>}
+            <label className="fl">Sıradaki bakım
+              <input className="inp" type="date" value={fNext} onChange={e=>setFNext(e.target.value)}/></label>
+            <label className="fl">Aylık ücret (₺)
+              <input className="inp" type="number" min={0} value={fFee} onChange={e=>setFFee(e.target.value)} placeholder="1500"/></label>
+            <label className="fl">Sözleşme
+              <select className="inp" value={fContract} onChange={e=>setFContract(e.target.value)}><option value="">Bağlı değil</option>{contracts.map(c=><option key={c.id} value={c.id}>{c.contractNumber??"Sözleşme"} · {c.customer.name}</option>)}</select></label>
+            <label className="fl">Plan adı
+              <input className="inp" value={fName} onChange={e=>setFName(e.target.value)} placeholder="İsteğe bağlı"/></label>
           </div>
-          <form onSubmit={create} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Asansör *</label>
-                <select style={F} value={fAsset} onChange={e => setFAsset(e.target.value)} required>
-                  <option value="">— Seçin —</option>
-                  {assets.map(a => <option key={a.id} value={a.id}>{a.name} — {a.customer?.name}</option>)}
-                </select>
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Plan Adı</label>
-                <input style={F} value={fName} onChange={e => setFName(e.target.value)} placeholder="Aylık Bakım…" />
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Plan Türü</label>
-                <select style={F} value={fType} onChange={e => setFType(e.target.value)}>
-                  <option value="PERIODIC">Periyodik Bakım</option>
-                  <option value="ANNUAL_INSPECTION">Yıllık Muayene</option>
-                  <option value="CUSTOM">Özel</option>
-                </select>
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Periyot</label>
-                <select style={F} value={fPeriodPreset} onChange={e => setFPeriodPreset(e.target.value)}>
-                  {[["15","15 günde bir"],["30","Aylık (30 gün)"],["60","2 Aylık"],["90","3 Aylık"],["180","6 Aylık"],["365","Yıllık"],["custom","Özel…"]].map(([v,l])=><option key={v} value={v}>{l}</option>)}
-                </select>
-                {fPeriodPreset === "custom" && <input style={{ ...F, marginTop: 6 }} type="number" value={fPeriodCustom} onChange={e => setFPeriodCustom(e.target.value)} placeholder="Gün sayısı" min="1" />}
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Aylık Ücret (₺)</label>
-                <input style={F} type="number" value={fFee} onChange={e => setFFee(e.target.value)} placeholder="1500" />
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>İlk Bakım Tarihi *</label>
-                <input style={F} type="date" value={fNext} onChange={e => setFNext(e.target.value)} required />
-              </div>
-              <div>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Sözleşme</label>
-                <select style={F} value={fContract} onChange={e => setFContract(e.target.value)}>
-                  <option value="">— Bağlı yok —</option>
-                  {contracts.map(c => <option key={c.id} value={c.id}>{c.contractNumber ?? "Sözleşme"} — {c.customer.name}</option>)}
-                </select>
-              </div>
-              <div style={{ gridColumn: "1 / 4" }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>Notlar</label>
-                <textarea style={{ ...F, minHeight: 60, resize: "vertical" }} value={fNotes} onChange={e => setFNotes(e.target.value)} placeholder="Özel bakım talimatları…" />
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button type="submit" disabled={!fAsset || creating} style={{ background: "#1B1F2B", color: "#fff", border: "none", fontSize: 13, fontWeight: 700, padding: "9px 20px", borderRadius: 9, cursor: "pointer", opacity: (!fAsset || creating) ? 0.6 : 1 }}>{creating ? "Oluşturuluyor…" : "Plan Oluştur →"}</button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ background: "none", border: "1px solid #e5e7eb", color: "#6b7280", fontSize: 13, fontWeight: 600, padding: "9px 16px", borderRadius: 9, cursor: "pointer" }}>İptal</button>
-            </div>
-          </form>
-        </div>
+          <label className="fl">Not<textarea className="inp" rows={2} value={fNotes} onChange={e=>setFNotes(e.target.value)} placeholder="Bina giriş saati, anahtar kimde…"/></label>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            <button type="submit" className="b b-ink" disabled={creating||!fAsset}>{creating?"Kaydediliyor…":"Planı kaydet"}</button>
+            <button type="button" className="b b-line" onClick={()=>setShowForm(false)}>Vazgeç</button>
+          </div>
+        </form>
       )}
 
-      {/* Plans list */}
-      {loading ? (
-        <div style={{ display: "flex", justifyContent: "center", padding: 48 }}><div style={{ width: 28, height: 28, border: "3px solid #e5e7eb", borderTopColor: "#1B1F2B", borderRadius: "50%", animation: "spin .7s linear infinite" }} /></div>
-      ) : plans.length === 0 ? (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 48, textAlign: "center", color: "#9ca3af", fontSize: 13 }}>Henüz bakım planı yok.</div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {Array.from(byAsset.entries()).map(([assetId, assetPlans]) => {
-            const asset = assetPlans[0].asset;
+      {loading?(
+        <div className="lt">{[0,1,2].map(i=><div key={i} style={{padding:"12px 16px"}}><div className="skel" style={{height:30}}/></div>)}</div>
+      ):sorted.length===0?(
+        <div className="empty2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+          <b>Henüz bakım planı yok</b>
+          <p>Asansör için periyot seçin; bakım günleri takvime kendiliğinden dağılır.</p>
+          <button className="b b-ink" style={{marginTop:8}} onClick={()=>setShowForm(true)}>Yeni plan</button>
+        </div>
+      ):(
+        <div className="lt" style={{["--cols" as string]:COLS}}>
+          <div className="lt-head"><span/><span>Asansör</span><span>Periyot</span><span>Sıradaki</span><span/></div>
+          {sorted.map((p,i)=>{
+            const d=daysLeft(p.nextDueAt);
+            const tone=d<0?{bg:"#FCECE8",c:"#A8301A",dot:"#C0311A",t:`${Math.abs(d)} gün gecikti`}:d<=7?{bg:"#FFF3DC",c:"#8A5500",dot:"#C87800",t:d===0?"Bugün":`${d} gün kaldı`}:{bg:"#E8F5EE",c:"#226440",dot:"#2E7D4F",t:`${d} gün kaldı`};
             return (
-              <div key={assetId} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, overflow: "hidden" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 18px", background: "#F5F2EC", borderBottom: "1px solid #f3f4f6" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>🏢</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{asset.name}</span>
-                    {asset.elevatorIdNo && <span style={{ fontSize: 11, fontFamily: "monospace", color: "#9ca3af" }}>#{asset.elevatorIdNo}</span>}
-                    <span style={{ fontSize: 12, color: "#6b7280" }}>— {asset.customer.name}</span>
-                  </div>
-                  <span style={{ fontSize: 11, color: "#9ca3af" }}>{assetPlans.length} plan</span>
-                </div>
-                <div>
-                  {assetPlans.map((p, i) => {
-                    const days = daysLeft(p.nextDueAt);
-                    const isOverdue = days < 0; const isSoon = days >= 0 && days <= 7;
-                    const pt = PT[p.planType] ?? PT.PERIODIC;
-                    return (
-                      <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", borderBottom: i < assetPlans.length - 1 ? "1px solid #f3f4f6" : "none", background: isOverdue ? "#FCECE8" : isSoon ? "#fefce8" : "#fff", flexWrap: "wrap" }}>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: pt.bg, color: pt.color, border: `1px solid ${pt.border}`, borderRadius: 99, padding: "2px 10px", fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{pt.icon} {pt.label}</span>
-                        {p.name && <span style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>{p.name}</span>}
-                        <span style={{ fontSize: 12, color: "#9ca3af" }}>{periodLabel(p.periodDays)}</span>
-                        <div style={{ flex: 1 }} />
-                        <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: isOverdue ? "#C0311A" : isSoon ? "#B86800" : "#111827" }}>{isOverdue ? `${Math.abs(days)} gün gecikti` : days === 0 ? "Bugün!" : `${days} gün sonra`}</div>
-                          <div style={{ fontSize: 11, color: "#9ca3af" }}>{new Date(p.nextDueAt).toLocaleDateString("tr-TR")}</div>
-                        </div>
-                        {p.monthlyFee > 0 && <span style={{ fontSize: 12, fontWeight: 600, color: "#374151" }}>{new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(p.monthlyFee / 100)}/ay</span>}
-                        <button onClick={() => createWorkOrderFromPlan(p)} disabled={woCreating === p.id} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #bfdbfe", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", opacity: woCreating === p.id ? 0.6 : 1 }}>{woCreating === p.id ? "Oluşturuluyor…" : "İş Emri Oluştur →"}</button>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div key={p.id} className="lt-row mp-row" style={{animationDelay:`${Math.min(i,10)*25}ms`}}>
+                <span className="lt-dot sdot" style={{background:tone.dot}}/>
+                <div className="lt-main"><b>{p.asset.name}</b><small>{p.asset.customer.name} · {(PT[p.planType]??PT.CUSTOM).label}</small></div>
+                <div className="lt-cell">{periodLabel(p.periodDays)}</div>
+                <div className="lt-cell"><span className="st" style={{background:tone.bg,color:tone.c}}>{tone.t}</span></div>
+                <span className="lt-st"><button className={`b b-sm ${d<=7?"b-ink":"b-line"}`} disabled={woCreating===p.id} onClick={()=>createWorkOrderFromPlan(p)}>{woCreating===p.id?"Açılıyor…":"İş emri aç"}</button></span>
+                <div className="lt-meta"><span className="st" style={{background:tone.bg,color:tone.c,marginRight:8}}>{tone.t}</span>{periodLabel(p.periodDays)} · {new Date(p.nextDueAt).toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}</div>
               </div>
             );
           })}

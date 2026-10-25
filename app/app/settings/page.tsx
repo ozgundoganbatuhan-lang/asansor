@@ -12,7 +12,7 @@ function roleLabel(r: string) {
   if (r === "OFFICE") return "Ofis"; if (r === "TECHNICIAN") return "Teknisyen"; return r;
 }
 function roleDot(r: string) {
-  if (r === "OWNER") return "#7c3aed"; if (r === "ADMIN") return "#1B1F2B";
+  if (r === "OWNER") return "#1A5C96"; if (r === "ADMIN") return "#1B1F2B";
   if (r === "TECHNICIAN") return "#059669"; return "#6E6455";
 }
 function planLabel(ent: Ent | null) {
@@ -108,10 +108,10 @@ export default function SettingsPage() {
   const pl = planLabel(ent);
 
   const TABS: { key: "org"|"users"|"plan"|"security"; label: string; icon: string; admin?: boolean }[] = [
-    { key:"org",      label:"Organizasyon", icon:"🏢" },
-    { key:"users",    label:"Kullanıcılar", icon:"👥", admin:true },
-    { key:"plan",     label:"Abonelik",     icon:"💎" },
-    { key:"security", label:"Güvenlik",     icon:"🔒" },
+    { key:"org",      label:"Organizasyon", icon:"" },
+    { key:"users",    label:"Kullanıcılar", icon:"", admin:true },
+    { key:"plan",     label:"Abonelik",     icon:"" },
+    { key:"security", label:"Güvenlik",     icon:"" },
   ];
 
   const inputStyle: React.CSSProperties = { width:"100%", padding:"11px 14px", border:"1px solid #e2e8f0", borderRadius:12, fontSize:14, background:"#fff", outline:"none", fontFamily:"inherit", transition:"border-color 0.15s" };
@@ -124,10 +124,10 @@ export default function SettingsPage() {
         <h1 style={{ fontSize:28, fontWeight:900, letterSpacing:"-0.04em", color:"#1A1510", margin:0 }}>Ayarlar</h1>
       </div>
 
-      {err && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:12, padding:"12px 16px", marginBottom:20, fontSize:13.5, color:"#C0311A" }}>⚠️ {err}</div>}
+      {err && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:12, padding:"12px 16px", marginBottom:20, fontSize:13.5, color:"#C0311A" }}>{err}</div>}
 
       {/* Tabs */}
-      <div style={{ display:"flex", gap:4, background:"#F0EDE6", borderRadius:14, padding:4, marginBottom:24 }}>
+      <div className="chips" style={{ display:"flex", gap:4, background:"#F0EDE6", borderRadius:14, padding:4, marginBottom:24 }}>
         {TABS.filter(t => !t.admin || isAdmin).map(t => (
           <button key={t.key} onClick={() => setActiveTab(t.key as typeof activeTab)} style={{
             flex:1, display:"flex", alignItems:"center", justifyContent:"center", gap:7,
@@ -143,36 +143,36 @@ export default function SettingsPage() {
       {/* ── ORG ── */}
       {activeTab === "org" && (
         <Card>
-          <SectionHeader icon="🏢" title="Organizasyon Bilgileri" sub="Firma adı ve sektör yapılandırması" />
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:20 }}>
+          <SectionHeader icon="" title="Organizasyon Bilgileri" sub="Firma adı ve sektör yapılandırması" />
+          <div className="r-many" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr", gap:16, marginBottom:20 }}>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Firma Adı</label>
-              <input value={org?.name ?? ""} onChange={e => setOrg(o => o ? {...o, name:e.target.value} : o)} placeholder="Örn. Güvenli Asansör Ltd." disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
+              <input value={org?.name ?? ""} onChange={e => setOrg(o => o ? {...o, name:e.target.value} : o)} placeholder="Örn. Güvenli Asansör Ltd." disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#1A5C96"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Telefon (QR sayfasında görünür)</label>
-              <input value={org?.phone ?? ""} onChange={e => setOrg(o => o ? {...o, phone:e.target.value} : o)} placeholder="+90 212 000 00 00" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
+              <input value={org?.phone ?? ""} onChange={e => setOrg(o => o ? {...o, phone:e.target.value} : o)} placeholder="+90 212 000 00 00" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#1A5C96"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Web Sitesi (QR sayfasında görünür)</label>
-              <input value={org?.website ?? ""} onChange={e => setOrg(o => o ? {...o, website:e.target.value} : o)} placeholder="www.firmaniz.com" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
+              <input value={org?.website ?? ""} onChange={e => setOrg(o => o ? {...o, website:e.target.value} : o)} placeholder="www.firmaniz.com" disabled={!isAdmin} style={{...inputStyle, background:isAdmin?"#fff":"#f9f9fb"}} onFocus={e => e.target.style.borderColor="#1A5C96"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
             </div>
             <div>
               <label style={{ display:"block", fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080", marginBottom:8 }}>Slug / URL</label>
               <div style={{ display:"flex", alignItems:"center", border:"1px solid #e2e8f0", borderRadius:12, overflow:"hidden", background:"#f9f9fb" }}>
-                <span style={{ padding:"11px 12px", fontSize:13, color:"#9C9080", borderRight:"1px solid #e2e8f0", background:"#f1f1f4", whiteSpace:"nowrap" }}>servisim.app/</span>
+                <span style={{ padding:"11px 12px", fontSize:13, color:"#9C9080", borderRight:"1px solid #e2e8f0", background:"#f1f1f4", whiteSpace:"nowrap" }}>Firma kodu</span>
                 <span style={{ padding:"11px 14px", fontSize:14, color:"#6E6455", fontFamily:"monospace" }}>{org?.slug ?? "..."}</span>
               </div>
             </div>
           </div>
           <div style={{ padding:"14px 16px", background:"#f9f9fb", borderRadius:12, marginBottom:20, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
             <div><div style={{ fontSize:13, fontWeight:700, color:"#1A1510" }}>Sektör</div><div style={{ fontSize:12, color:"#6E6455", marginTop:2 }}>Asansör Servisi & Bakım</div></div>
-            <span style={{ background:"#E4EFF9", color:"#0F121A", border:"1px solid #bfdbfe", padding:"4px 12px", borderRadius:999, fontSize:12, fontWeight:700 }}>ELEVATOR</span>
+            <span style={{ background:"#E4EFF9", color:"#0F121A", border:"1px solid #D6D0C4", padding:"4px 12px", borderRadius:999, fontSize:12, fontWeight:700 }}>Asansör</span>
           </div>
-          {saved && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#2E7D4F" }}>✅ Değişiklikler kaydedildi.</div>}
+          {saved && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#2E7D4F" }}>Değişiklikler kaydedildi.</div>}
           <div style={{ display:"flex", alignItems:"center", gap:12 }}>
             <button onClick={saveOrg} disabled={saving || !isAdmin} style={{...btnPrimary, background:saving?"#9C9080":"#1A1510", cursor:saving||!isAdmin?"not-allowed":"pointer"}}>
-              {saving ? "⏳ Kaydediliyor..." : "💾 Kaydet"}
+              {saving ? "Kaydediliyor..." : "Kaydet"}
             </button>
             {!isAdmin && <span style={{ fontSize:12.5, color:"#9C9080" }}>Yalnızca OWNER / ADMIN düzenleyebilir</span>}
           </div>
@@ -183,10 +183,10 @@ export default function SettingsPage() {
       {activeTab === "users" && isAdmin && (
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <Card>
-            <SectionHeader icon="➕" title="Yeni Kullanıcı Ekle" sub="Ofis veya teknisyen hesabı oluştur" />
+            <SectionHeader icon="" title="Yeni Kullanıcı Ekle" sub="Ofis veya teknisyen hesabı oluştur" />
             <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(180px, 1fr))", gap:14, marginBottom:16 }}>
               {([
-                { label:"Rol", field:"role", type:"select", options:[{value:"OFFICE",label:"🏢 Ofis"},{value:"TECHNICIAN",label:"🔧 Teknisyen"}] },
+                { label:"Rol", field:"role", type:"select", options:[{value:"OFFICE",label:"Ofis"},{value:"TECHNICIAN",label:"Teknisyen"}] },
                 { label:"E-posta *", field:"email", type:"email" },
                 { label:"Şifre", field:"password", type:"password", placeholder:"Boş = otomatik" },
                 { label:"İsim Soyisim", field:"name", type:"text" },
@@ -199,35 +199,35 @@ export default function SettingsPage() {
                       {f.options?.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   ) : (
-                    <input type={f.type} value={userForm[f.field as keyof typeof userForm]} onChange={e => setUserForm(x => ({...x, [f.field]:e.target.value}))} placeholder={"placeholder" in f ? f.placeholder : ""} style={inputStyle} onFocus={e => e.target.style.borderColor="#7c3aed"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
+                    <input type={f.type} value={userForm[f.field as keyof typeof userForm]} onChange={e => setUserForm(x => ({...x, [f.field]:e.target.value}))} placeholder={"placeholder" in f ? f.placeholder : ""} style={inputStyle} onFocus={e => e.target.style.borderColor="#1A5C96"} onBlur={e => e.target.style.borderColor="#D6D0C4"} />
                   )}
                 </div>
               ))}
             </div>
-            {userErr && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#C0311A" }}>⚠️ {userErr}</div>}
-            {userSuccess && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#2E7D4F" }}>✅ {userSuccess}</div>}
+            {userErr && <div style={{ background:"#FCECE8", border:"1px solid #fecaca", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#C0311A" }}>{userErr}</div>}
+            {userSuccess && <div style={{ background:"#E8F5EE", border:"1px solid #bbf7d0", borderRadius:10, padding:"10px 14px", marginBottom:12, fontSize:13, color:"#2E7D4F" }}>{userSuccess}</div>}
             <div style={{ display:"flex", justifyContent:"flex-end" }}>
               <button onClick={createUser} disabled={!userForm.email.trim()} style={{...btnPrimary, background:userForm.email.trim()?"#1B1F2B":"#D6D0C4", color:userForm.email.trim()?"#fff":"#9C9080", cursor:userForm.email.trim()?"pointer":"not-allowed"}}>
-                👤 Kullanıcı Ekle
+                Kullanıcı Ekle
               </button>
             </div>
           </Card>
           <Card>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
               <div>
-                <div style={{ fontSize:15, fontWeight:800, color:"#1A1510" }}>👥 Mevcut Kullanıcılar</div>
+                <div style={{ fontSize:15, fontWeight:800, color:"#1A1510" }}>Mevcut Kullanıcılar</div>
                 <div style={{ fontSize:12.5, color:"#6E6455", marginTop:2 }}>{userLoading ? "Yükleniyor..." : `${users.length} hesap`}</div>
               </div>
-              <button onClick={loadUsers} style={{ background:"#F0EDE6", border:"none", borderRadius:9, padding:"8px 14px", fontSize:12.5, fontWeight:600, cursor:"pointer", color:"#6E6455", fontFamily:"inherit" }}>🔄 Yenile</button>
+              <button onClick={loadUsers} style={{ background:"#F0EDE6", border:"none", borderRadius:9, padding:"8px 14px", fontSize:12.5, fontWeight:600, cursor:"pointer", color:"#6E6455", fontFamily:"inherit" }}>Yenile</button>
             </div>
             <div style={{ border:"1px solid #e2e8f0", borderRadius:14, overflow:"hidden" }}>
-              <div style={{ display:"grid", gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"10px 16px", background:"#f9f9fb", borderBottom:"1px solid #e2e8f0" }}>
+              <div className="r-head" style={{display:"grid",gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"10px 16px", background:"#f9f9fb", borderBottom:"1px solid #e2e8f0" }}>
                 {["E-posta","İsim","Telefon","Rol","Kayıt"].map(h => <div key={h} style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#9C9080" }}>{h}</div>)}
               </div>
               {users.length === 0 ? (
                 <div style={{ padding:"32px 16px", textAlign:"center", color:"#9C9080", fontSize:14 }}>{userLoading ? "Yükleniyor..." : "Henüz kullanıcı yok."}</div>
               ) : users.map((u, i) => (
-                <div key={u.id} style={{ display:"grid", gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"13px 16px", fontSize:13, borderBottom:i<users.length-1?"1px solid #f1f5f9":"none", alignItems:"center" }}>
+                <div key={u.id} className="r-row" style={{display:"grid",gridTemplateColumns:"2fr 1.5fr 1fr 1fr 1fr", padding:"13px 16px", fontSize:13, borderBottom:i<users.length-1?"1px solid #f1f5f9":"none", alignItems:"center" }}>
                   <div style={{ color:"#1A1510", fontWeight:600, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
                   <div style={{ color:"#6E6455" }}>{u.name || "—"}</div>
                   <div style={{ color:"#6E6455" }}>{u.phone || "—"}</div>
@@ -244,35 +244,35 @@ export default function SettingsPage() {
       {activeTab === "plan" && (
         <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
           <Card>
-            <SectionHeader icon="💎" title="Abonelik Durumu" sub="Mevcut plan ve kullanım bilgileri" />
+            <SectionHeader icon="" title="Abonelik Durumu" sub="Mevcut plan ve kullanım bilgileri" />
             <div style={{ background:ent?.isExpired?"linear-gradient(135deg,#fff7ed,#ffedd5)":ent?.isTrial?"linear-gradient(135deg,#f5f3ff,#ede9fe)":"linear-gradient(135deg,#f0fdf4,#dcfce7)", border:`1px solid ${ent?.isExpired?"#fed7aa":ent?.isTrial?"#ddd6fe":"#9DCFB0"}`, borderRadius:16, padding:"20px 24px", marginBottom:20, display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, flexWrap:"wrap" }}>
               <div>
                 <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#6E6455", marginBottom:6 }}>Aktif Plan</div>
                 <div style={{ fontSize:26, fontWeight:900, letterSpacing:"-0.04em", color:"#1A1510" }}>{pl}</div>
-                {ent?.isTrial && !ent.isExpired && <div style={{ fontSize:13, color:"#7c3aed", marginTop:4, fontWeight:600 }}>⏳ {new Date(ent.trialEndsAt).toLocaleDateString("tr-TR")} tarihinde sona erer</div>}
-                {ent?.isExpired && <div style={{ fontSize:13, color:"#ea580c", marginTop:4, fontWeight:600 }}>🔒 Salt-okunur mod aktif</div>}
+                {ent?.isTrial && !ent.isExpired && <div style={{ fontSize:13, color:"#1A5C96", marginTop:4, fontWeight:600 }}>{new Date(ent.trialEndsAt).toLocaleDateString("tr-TR")} tarihinde sona erer</div>}
+                {ent?.isExpired && <div style={{ fontSize:13, color:"#ea580c", marginTop:4, fontWeight:600 }}>Salt-okunur mod aktif</div>}
               </div>
               {(ent?.isTrial || ent?.isExpired) && (
-                <Link href="/app/upgrade" style={{ display:"inline-flex", alignItems:"center", gap:8, background:ent.isExpired?"#ea580c":"#7c3aed", color:"#fff", borderRadius:12, padding:"12px 24px", fontSize:14, fontWeight:800, textDecoration:"none", boxShadow:"0 4px 14px rgba(0,0,0,0.15)" }}>
+                <Link href="/app/upgrade" style={{ display:"inline-flex", alignItems:"center", gap:8, background:ent.isExpired?"#ea580c":"#1A5C96", color:"#fff", borderRadius:12, padding:"12px 24px", fontSize:14, fontWeight:800, textDecoration:"none", boxShadow:"0 4px 14px rgba(0,0,0,0.15)" }}>
                   {ent.isExpired ? "Planı Yenile →" : "Yükselt →"}
                 </Link>
               )}
             </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            <div className="r-two" style={{display:"grid",gridTemplateColumns:"1fr 1fr", gap:12 }}>
               <div style={{ border:"1px solid #e2e8f0", borderRadius:14, padding:"16px 20px" }}>
                 <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9C9080", marginBottom:10 }}>WhatsApp</div>
-                <a href="https://wa.me/905551234567" target="_blank" rel="noopener noreferrer" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#059669", textDecoration:"none" }}>📱 +90 555 123 45 67</a>
+                <a href="https://wa.me/905551234567" target="_blank" rel="noopener noreferrer" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#059669", textDecoration:"none" }}>+90 555 123 45 67</a>
                 <div style={{ fontSize:12, color:"#9C9080", marginTop:6 }}>Hft içi 09:00 – 18:00</div>
               </div>
               <div style={{ border:"1px solid #e2e8f0", borderRadius:14, padding:"16px 20px" }}>
                 <div style={{ fontSize:10.5, fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", color:"#9C9080", marginBottom:10 }}>E-posta</div>
-                <a href="mailto:satis@servisim.app" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#1B1F2B", textDecoration:"none" }}>✉️ satis@servisim.app</a>
+                <a href="mailto:satis@servisim.app" style={{ display:"flex", alignItems:"center", gap:8, fontSize:14, fontWeight:700, color:"#1B1F2B", textDecoration:"none" }}>satis@servisim.app</a>
                 <div style={{ fontSize:12, color:"#9C9080", marginTop:6 }}>1 iş günü içinde yanıt</div>
               </div>
             </div>
           </Card>
           <Card>
-            <SectionHeader icon="📄" title="Belgeler & Şablonlar" sub="Bakım sözleşmesi ve teklif şablonları" />
+            <SectionHeader icon="" title="Belgeler & Şablonlar" sub="Bakım sözleşmesi ve teklif şablonları" />
             {[
               { title:"Teklif Şablonu", desc:"Bakım ve servis teklifleri için örnek PDF", href:"/docs/teklif-sablonu.pdf", editHref:"/app/docs/teklif" },
               { title:"Sözleşme Şablonu", desc:"Asansör bakım sözleşmesi için örnek PDF", href:"/docs/sozlesme-sablonu.pdf", editHref:"/app/docs/sozlesme" },
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                 <div><div style={{ fontSize:14, fontWeight:700, color:"#1A1510" }}>{doc.title}</div><div style={{ fontSize:12.5, color:"#6E6455", marginTop:2 }}>{doc.desc}</div></div>
                 <div style={{ display:"flex", gap:8 }}>
                   <a href={doc.href} target="_blank" rel="noopener noreferrer" style={{ background:"#1A1510", color:"#fff", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>⬇ İndir</a>
-                  <Link href={doc.editHref} style={{ border:"1px solid #e2e8f0", color:"#6E6455", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>✏️ Düzenle</Link>
+                  <Link href={doc.editHref} style={{ border:"1px solid #e2e8f0", color:"#6E6455", borderRadius:9, padding:"7px 14px", fontSize:12.5, fontWeight:700, textDecoration:"none" }}>Düzenle</Link>
                 </div>
               </div>
             ))}
@@ -292,7 +292,7 @@ export default function SettingsPage() {
       {/* ── SECURITY ── */}
       {activeTab === "security" && (
         <Card>
-          <SectionHeader icon="🔒" title="Güvenlik & Gizlilik" sub="Şifre yönetimi ve veri politikası" />
+          <SectionHeader icon="" title="Güvenlik & Gizlilik" sub="Şifre yönetimi ve veri politikası" />
           <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
             {[
               { title:"Şifre Değiştir", desc:"Güçlü şifre öneririz (en az 12 karakter)", btn:"Yakında", disabled:true },

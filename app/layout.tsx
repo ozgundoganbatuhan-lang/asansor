@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s | Servisim",
   },
   description:
-    "Asansör servis firmaları için bakım planı, iş emri, QR etiket, teknisyen mobil akışı ve sözleşme yönetimi. 14 gün ücretsiz deneyin.",
+    "Asansör servis firmaları için bakım planı, iş emri, QR etiket, teknisyen mobil akışı ve sözleşme yönetimi. 7 gün ücretsiz deneyin.",
   keywords: [
     "asansör servis yazılımı",
     "asansör bakım takibi",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#1B1F2B",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

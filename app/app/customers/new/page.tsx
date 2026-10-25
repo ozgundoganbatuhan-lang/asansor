@@ -41,7 +41,7 @@ export default function NewCustomerPage() {
     router.push(`/app/customers/${data.item?.id ?? ""}`);
   }
 
-  const inp = "mt-1 w-full rounded-xl border border-[#e2e8f0] bg-white px-3.5 py-2.5 text-sm text-[#0f1623] placeholder-[#c0c8d4] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/10 transition-colors";
+  const inp = "mt-1 w-full rounded-xl border border-[#e2e8f0] bg-white px-3.5 py-2.5 text-sm text-[#0f1623] placeholder-[#c0c8d4] focus:border-[#1B1F2B] focus:outline-none focus:ring-2 focus:ring-[#F0C060]/10 transition-colors";
   const lbl = "block text-[11px] font-bold uppercase tracking-[0.07em] text-[#94a3b8]";
 
   return (
@@ -62,7 +62,7 @@ export default function NewCustomerPage() {
           <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-3">Firma Bilgileri</div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className={lbl}>Firma / Müşteri Adı <span className="text-blue-500 normal-case">*</span></label>
+              <label className={lbl}>Firma / Müşteri Adı <span className="text-[#8A5500] normal-case">*</span></label>
               <input className={inp} value={name} onChange={e=>setName(e.target.value)} placeholder="ABC Apartman Yönetimi" required />
             </div>
             <div>
@@ -118,7 +118,7 @@ export default function NewCustomerPage() {
 
         <div className="flex gap-2 pt-1">
           <button type="submit" disabled={loading}
-            className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-60 shadow-sm transition-colors">
+            className="rounded-xl bg-[#1B1F2B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#1B1F2B] disabled:opacity-60 shadow-sm transition-colors">
             {loading ? "Kaydediliyor…" : "Müşteri Oluştur →"}
           </button>
           <button type="button" onClick={()=>router.back()}

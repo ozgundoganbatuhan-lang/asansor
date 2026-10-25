@@ -1,15 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
-<defs>
-<linearGradient id="g" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse"><stop stop-color="#07152d"/><stop offset="1" stop-color="#1456f0"/></linearGradient>
-</defs>
-<rect width="1200" height="675" rx="38" fill="url(#g)"/>
-<circle cx="1040" cy="120" r="180" fill="#5CA9FF" fill-opacity="0.15"/>
-<circle cx="180" cy="560" r="220" fill="#FFFFFF" fill-opacity="0.08"/>
-<rect x="74" y="74" width="1052" height="527" rx="32" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.14"/>
-<text x="114" y="170" fill="#AFC9FF" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4">SERVISIM BLOG</text>
-<text x="114" y="300" fill="white" font-family="Arial, sans-serif" font-size="62" font-weight="800">Mobil Uyum</text>
-<text x="114" y="372" fill="white" font-family="Arial, sans-serif" font-size="62" font-weight="800">Saha akışı</text>
-<text x="114" y="458" fill="#DCE8FF" font-family="Arial, sans-serif" font-size="24">Asansör servis firmaları için modern operasyon, QR ve saha deneyimi.</text>
-<rect x="114" y="504" width="212" height="56" rx="18" fill="white"/>
-<text x="148" y="540" fill="#1456F0" font-family="Arial, sans-serif" font-size="24" font-weight="700">servisim.app</text>
+<defs><radialGradient id="r" cx="0.85" cy="0" r="0.9"><stop stop-color="#F0B43C" stop-opacity=".22"/><stop offset="1" stop-color="#F0B43C" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="675" fill="#12151D"/><rect width="1200" height="675" fill="url(#r)"/>
+<g opacity=".9"><rect x="930" y="0" width="170" height="675" fill="#1C2130"/><rect x="950" y="0" width="3" height="675" fill="#3A4256"/><rect x="1077" y="0" width="3" height="675" fill="#3A4256"/>
+<rect x="968" y="250" width="94" height="120" rx="8" fill="#E9E4D9"/><rect x="980" y="262" width="32" height="96" rx="3" fill="#C9C1B0"/><rect x="1018" y="262" width="32" height="96" rx="3" fill="#C9C1B0"/><rect x="1014" y="0" width="2" height="250" fill="#6A7286"/></g>
+<text x="96" y="140" font-family="Menlo,monospace" font-size="24" font-weight="700" fill="#F0B43C" letter-spacing="4">SERVİSİM REHBER</text>
+<text x="96" y="216" font-family="Helvetica Neue,Arial,sans-serif" font-size="70" font-weight="800" fill="#F3F0EA" letter-spacing="-2">Asansör servis firmaları</text><text x="96" y="300" font-family="Helvetica Neue,Arial,sans-serif" font-size="70" font-weight="800" fill="#F3F0EA" letter-spacing="-2">için mobil uyum neden</text><text x="96" y="384" font-family="Helvetica Neue,Arial,sans-serif" font-size="70" font-weight="800" fill="#F3F0EA" letter-spacing="-2">kritik?</text>
+<rect x="96" y="560" width="120" height="6" rx="3" fill="#F0B43C"/>
 </svg>

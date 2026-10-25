@@ -64,7 +64,7 @@ export default function InvoicesPage() {
     const res = await fetch("/api/invoices", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ workOrderId, taxRate: Math.round((parseFloat(taxRatePct) || 0) * 100), dueAt: dueAt ? new Date(dueAt).toISOString() : undefined, notes: newNotes || undefined }) });
     const data = await res.json().catch(() => ({})); setCreating(false);
     if (!res.ok) { setErr(data.error ?? "Fatura oluşturulamadı"); return; }
-    setSuccess(`${data.item?.number} oluşturuldu ✓`); setWorkOrderId(""); setDueAt(""); setNewNotes(""); setShowForm(false);
+    setSuccess(`${data.item?.number} oluşturuldu `); setWorkOrderId(""); setDueAt(""); setNewNotes(""); setShowForm(false);
     setTimeout(() => setSuccess(null), 4000); await load();
   }
   async function updateStatus(id: string, status: string) {
@@ -87,14 +87,14 @@ export default function InvoicesPage() {
 
       {/* Header */}
       <button onClick={() => setShowForm(!showForm)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: showForm ? "#fff" : "#1B1F2B", color: showForm ? "#374151" : "#fff", border: showForm ? "1px solid #e5e7eb" : "none", fontSize: 13, fontWeight: 600, padding: "9px 18px", borderRadius: 9, cursor: "pointer" }}>
-          {showForm ? "✕ Kapat" : "+ Yeni Fatura"}
+          {showForm ? "Kapat" : "+ Yeni Fatura"}
         </button>
 
-      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#C0311A" }}>✕</button></div>}
+      {err && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{err}<button onClick={() => setErr(null)} style={{ background: "none", border: "none", cursor: "pointer", fontWeight: 700, color: "#C0311A" }}></button></div>}
       {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
       {/* KPIs */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
+      <div className="r-many" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)", gap: 12 }}>
         {[{ label: "Toplam Fatura", val: String(kpis.count), color: "#111827" }, { label: "Toplam Tutar", val: money(kpis.total), color: "#111827" }, { label: "Tahsil Edildi", val: money(kpis.paid), color: "#166534" }, { label: "Bekleyen", val: money(kpis.pending), color: kpis.pending > 0 ? "#B86800" : "#111827" }].map(k => (
           <div key={k.label} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: "16px 18px" }}>
             <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 6 }}>{k.label}</div>
@@ -105,7 +105,7 @@ export default function InvoicesPage() {
 
       {/* Create form */}
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #bfdbfe", borderRadius: 14, padding: 22 }}>
+        <div style={{ background: "#fff", border: "1px solid #D6D0C4", borderRadius: 14, padding: 22 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Yeni Fatura Oluştur</div>
           {workOrders.length === 0 ? (
             <div style={{ background: "#fefce8", border: "1px solid #fde68a", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#92400e" }}>
@@ -113,7 +113,7 @@ export default function InvoicesPage() {
             </div>
           ) : (
             <form onSubmit={createInvoice} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 12 }}>
+              <div className="r-many" style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr", gap: 12 }}>
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 5 }}>İş Emri *</label>
                   <select style={F} value={workOrderId} onChange={e => setWorkOrderId(e.target.value)} required>
@@ -134,7 +134,7 @@ export default function InvoicesPage() {
               {selectedWO && (
                 <div style={{ background: "#F5F2EC", border: "1px solid #e5e7eb", borderRadius: 10, padding: 16 }}>
                   <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", color: "#9ca3af", marginBottom: 10 }}>Önizleme</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 12 }}>
+                  <div className="r-many" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)", gap: 12, marginBottom: 12 }}>
                     {[{ l: "Parçalar", v: money(previewParts) }, { l: "İşçilik", v: money(selectedWO.laborCost ?? 0) }, { l: "Servis", v: money(selectedWO.serviceFee ?? 0) }, { l: `KDV ${taxRatePct}%`, v: money(previewTax) }].map(r => (
                       <div key={r.l}><div style={{ fontSize: 11, color: "#9ca3af" }}>{r.l}</div><div style={{ fontSize: 14, fontWeight: 600 }}>{r.v}</div></div>
                     ))}
@@ -198,9 +198,9 @@ export default function InvoicesPage() {
                   <div style={{ fontSize: 11, color: "#9ca3af" }}>KDV dahil</div>
                 </div>
                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {inv.status === "DRAFT" && <button onClick={() => updateStatus(inv.id, "SENT")} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #bfdbfe", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Gönderildi</button>}
-                  {(inv.status === "DRAFT" || inv.status === "SENT") && <button onClick={() => updateStatus(inv.id, "PAID")} style={{ background: "#E8F5EE", color: "#166534", border: "1px solid #bbf7d0", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Ödendi ✓</button>}
-                  <button onClick={() => { setEditingNoteId(isEditNote ? null : inv.id); setEditingNoteVal(inv.notes ?? ""); }} style={{ background: "#fff", color: "#6b7280", border: "1px solid #e5e7eb", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{isEditNote ? "↑ Kapat" : "📝 Not"}</button>
+                  {inv.status === "DRAFT" && <button onClick={() => updateStatus(inv.id, "SENT")} style={{ background: "#E4EFF9", color: "#0F121A", border: "1px solid #D6D0C4", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Gönderildi</button>}
+                  {(inv.status === "DRAFT" || inv.status === "SENT") && <button onClick={() => updateStatus(inv.id, "PAID")} style={{ background: "#E8F5EE", color: "#166534", border: "1px solid #bbf7d0", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Ödendi </button>}
+                  <button onClick={() => { setEditingNoteId(isEditNote ? null : inv.id); setEditingNoteVal(inv.notes ?? ""); }} style={{ background: "#fff", color: "#6b7280", border: "1px solid #e5e7eb", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{isEditNote ? "↑ Kapat" : "Not"}</button>
                   <a href={`/api/invoices/${inv.id}/pdf`} target="_blank" rel="noopener noreferrer" style={{ background: "#fff", color: "#6b7280", border: "1px solid #e5e7eb", borderRadius: 7, padding: "5px 12px", fontSize: 12, fontWeight: 600, display: "inline-flex", alignItems: "center" }}>PDF</a>
                 </div>
               </div>

@@ -14,7 +14,7 @@ const S_CFG:Record<string,{bg:string;c:string;dot:string}>={
 };
 
 const fi:React.CSSProperties={width:"100%",padding:"11px 14px",border:"1px solid #e2e8f0",borderRadius:12,fontSize:14,background:"#fff",outline:"none",fontFamily:"inherit",transition:"border-color 0.15s"};
-const AVATARS=["#1B1F2B","#7c3aed","#059669","#d97706","#dc2626","#0891b2"];
+const AVATARS=["#1B1F2B","#1A5C96","#059669","#d97706","#dc2626","#1A5C96"];
 
 export default function CustomerDetailPage() {
   const { id } = useParams<{id:string}>();
@@ -48,7 +48,7 @@ export default function CustomerDetailPage() {
     setAForm({name:"",building:"",stops:"",capacity:"",controller:"",serial:""}); setShowAssetForm(false); await load();
   }
 
-  if(loading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,gap:12,color:"#6E6455"}}><div style={{width:24,height:24,border:"3px solid #e2e8f0",borderTopColor:"#7c3aed",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>Yükleniyor...</div>;
+  if(loading) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:300,gap:12,color:"#6E6455"}}><div style={{width:24,height:24,border:"3px solid #e2e8f0",borderTopColor:"#1A5C96",borderRadius:"50%",animation:"spin 0.7s linear infinite"}}/>Yükleniyor...</div>;
   if(!customer) return <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:14,padding:"20px",color:"#C0311A"}}>Müşteri bulunamadı.</div>;
 
   const avtBg=AVATARS[customer.name.charCodeAt(0)%AVATARS.length];
@@ -69,9 +69,9 @@ export default function CustomerDetailPage() {
           <h1 style={{fontSize:24,fontWeight:900,letterSpacing:"-0.03em",color:"#1A1510",margin:"0 0 4px"}}>{customer.name}</h1>
           {customer.contactName && <div style={{fontSize:14,color:"#6E6455",marginBottom:12}}>{customer.contactName}</div>}
           <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-            {customer.phone && <a href={`tel:${customer.phone}`} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#E4EFF9",color:"#0F121A",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>📞 {customer.phone}</a>}
-            {customer.email && <a href={`mailto:${customer.email}`} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#f5f3ff",color:"#7c3aed",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>✉️ {customer.email}</a>}
-            {customer.address && <a href={`https://maps.google.com/?q=${encodeURIComponent(customer.address)}`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,background:"#F0EDE6",color:"#6E6455",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>📍 Haritada Gör</a>}
+            {customer.phone && <a href={`tel:${customer.phone}`} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#E4EFF9",color:"#0F121A",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>{customer.phone}</a>}
+            {customer.email && <a href={`mailto:${customer.email}`} style={{display:"inline-flex",alignItems:"center",gap:6,background:"#f5f3ff",color:"#1A5C96",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>{customer.email}</a>}
+            {customer.address && <a href={`https://maps.google.com/?q=${encodeURIComponent(customer.address)}`} target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:6,background:"#F0EDE6",color:"#6E6455",borderRadius:10,padding:"7px 14px",fontSize:13,fontWeight:700,textDecoration:"none"}}>Haritada Gör</a>}
           </div>
         </div>
         <div style={{display:"flex",gap:12}}>
@@ -84,12 +84,12 @@ export default function CustomerDetailPage() {
         </div>
       </div>
 
-      <div style={{display:"grid",gridTemplateColumns:"1fr 300px",gap:20,alignItems:"start"}}>
+      <div className="r-split" style={{display:"grid",gridTemplateColumns:"1fr 300px",gap:20,alignItems:"start"}}>
         {/* Main */}
         <div>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
             <div style={{display:"flex",gap:4,background:"#F0EDE6",borderRadius:14,padding:4}}>
-              {([{k:"assets",l:"🛗 Asansörler"},{k:"history",l:"📋 İş Emirleri"}] as const).map(t=>(
+              {([{k:"assets",l:"Asansörler"},{k:"history",l:"İş Emirleri"}] as const).map(t=>(
                 <button key={t.k} onClick={()=>setTab(t.k)} style={{padding:"8px 16px",borderRadius:10,border:"none",cursor:"pointer",fontSize:12.5,fontWeight:700,transition:"all 0.15s",background:tab===t.k?"#fff":"transparent",color:tab===t.k?"#1A1510":"#6E6455",boxShadow:tab===t.k?"0 1px 4px rgba(0,0,0,0.08)":"none",fontFamily:"inherit"}}>
                   {t.l}
                 </button>
@@ -97,23 +97,23 @@ export default function CustomerDetailPage() {
             </div>
             {tab==="assets" && (
               <button onClick={()=>setShowAssetForm(v=>!v)} style={{background:"#1A1510",color:"#fff",border:"none",borderRadius:10,padding:"8px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
-                {showAssetForm?"✕":"+ Asansör Ekle"}
+                {showAssetForm?"":"+ Asansör Ekle"}
               </button>
             )}
           </div>
 
           {showAssetForm && tab==="assets" && (
             <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"20px",marginBottom:14}}>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
+              <div className="r-two" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:14}}>
                 {([{l:"Asansör Adı *",f:"name"},{l:"Bina",f:"building"},{l:"Kat / Durak",f:"stops",t:"number"},{l:"Kapasite (kg)",f:"capacity",t:"number"},{l:"Kontrol Sistemi",f:"controller"},{l:"Seri No",f:"serial"}] as const).map(fld=>(
                   <div key={fld.f}>
                     <label style={{display:"block",fontSize:11,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",color:"#9C9080",marginBottom:6}}>{fld.l}</label>
                     <input value={aForm[fld.f as keyof typeof aForm]} onChange={e=>setAForm(x=>({...x,[fld.f]:e.target.value}))} type={"t" in fld?fld.t:"text"} style={fi}
-                      onFocus={e=>e.target.style.borderColor="#7c3aed"} onBlur={e=>e.target.style.borderColor="#D6D0C4"}/>
+                      onFocus={e=>e.target.style.borderColor="#1A5C96"} onBlur={e=>e.target.style.borderColor="#D6D0C4"}/>
                   </div>
                 ))}
               </div>
-              {err && <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:10,padding:"10px",marginBottom:10,fontSize:13,color:"#C0311A"}}>⚠️ {err}</div>}
+              {err && <div style={{background:"#FCECE8",border:"1px solid #fecaca",borderRadius:10,padding:"10px",marginBottom:10,fontSize:13,color:"#C0311A"}}>{err}</div>}
               <div style={{display:"flex",justifyContent:"flex-end",gap:8}}>
                 <button onClick={()=>setShowAssetForm(false)} style={{background:"#F0EDE6",border:"none",borderRadius:9,padding:"9px 16px",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit",color:"#6E6455"}}>İptal</button>
                 <button onClick={addAsset} disabled={!aForm.name.trim()||saving} style={{background:"#1B1F2B",color:"#fff",border:"none",borderRadius:9,padding:"9px 16px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit",opacity:!aForm.name.trim()||saving?0.6:1}}>
@@ -126,14 +126,14 @@ export default function CustomerDetailPage() {
           {tab==="assets" && (
             assets.length===0 ? (
               <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"48px 24px",textAlign:"center"}}>
-                <div style={{fontSize:48,marginBottom:12}}>🛗</div>
+                <div style={{fontSize:48,marginBottom:12}}></div>
                 <div style={{fontSize:15,fontWeight:700,color:"#1A1510"}}>Asansör kaydı yok</div>
               </div>
             ) : (
               <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:12}}>
                 {assets.map(a=>(
                   <Link key={a.id} href={`/app/assets/${a.id}`} style={{display:"block",background:"#fff",border:"1px solid #e2e8f0",borderRadius:16,padding:"18px",textDecoration:"none",transition:"all 0.15s"}}>
-                    <div style={{width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#eff6ff,#dbeafe)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:12}}>🛗</div>
+                    <div style={{width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#F0EDE6,#F0EDE6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:12}}></div>
                     <div style={{fontSize:14,fontWeight:800,color:"#1A1510",marginBottom:4}}>{a.name}</div>
                     {a.buildingName && <div style={{fontSize:12.5,color:"#6E6455",marginBottom:8}}>{a.buildingName}</div>}
                     <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
@@ -149,7 +149,7 @@ export default function CustomerDetailPage() {
           {tab==="history" && (
             wos.length===0 ? (
               <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"48px 24px",textAlign:"center"}}>
-                <div style={{fontSize:48,marginBottom:12}}>📋</div>
+                <div style={{fontSize:48,marginBottom:12}}></div>
                 <div style={{fontSize:15,fontWeight:700,color:"#1A1510"}}>İş emri yok</div>
               </div>
             ) : (
@@ -166,7 +166,7 @@ export default function CustomerDetailPage() {
                         <span style={{fontSize:12,color:"#6E6455"}}>{new Date(wo.createdAt).toLocaleDateString("tr-TR")}</span>
                       </div>
                       <div style={{fontSize:13,fontWeight:600,color:"#1A1510"}}>{TYPE_L[wo.type]??wo.type}</div>
-                      {wo.asset && <div style={{fontSize:12,color:"#6E6455",marginTop:2}}>🛗 {wo.asset.name}</div>}
+                      {wo.asset && <div style={{fontSize:12,color:"#6E6455",marginTop:2}}>{wo.asset.name}</div>}
                     </Link>
                   );
                 })}
@@ -177,7 +177,7 @@ export default function CustomerDetailPage() {
 
         {/* Info */}
         <div style={{background:"#fff",border:"1px solid #e2e8f0",borderRadius:18,padding:"20px"}}>
-          <div style={{fontSize:13,fontWeight:800,color:"#1A1510",marginBottom:14}}>📋 Müşteri Bilgileri</div>
+          <div style={{fontSize:13,fontWeight:800,color:"#1A1510",marginBottom:14}}>Müşteri Bilgileri</div>
           {[
             {l:"Vergi No",v:customer.taxId??"—"},
             {l:"TC No",v:customer.identityNo??"—"},

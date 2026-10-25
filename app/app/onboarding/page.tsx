@@ -8,14 +8,14 @@ type StepId = "welcome"|"customer"|"asset"|"maintenance"|"workorder"|"done";
 const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: string; href?: string; }[] = [
   {
     id:    "welcome",
-    icon:  "👋",
+    icon:  "",
     title: "Servisim'e Hoş Geldiniz!",
     desc:  "Bu sihirbaz sizi 5 adımda platforma tanıştıracak. İstediğiniz zaman atlayabilirsiniz.",
     cta:   "Başlayalım →",
   },
   {
     id:    "customer",
-    icon:  "🏢",
+    icon:  "",
     title: "1. İlk müşterinizi ekleyin",
     desc:  "Hizmet verdiğiniz bina veya firma bilgilerini girin. Müşteri kartına asansörler ve iş emirleri bağlanacak.",
     cta:   "Müşteri Ekle →",
@@ -23,7 +23,7 @@ const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: strin
   },
   {
     id:    "asset",
-    icon:  "🛗",
+    icon:  "",
     title: "2. Asansörü tanımlayın",
     desc:  "Müşteri kartından asansör ekleyin. Seri no, durak sayısı, taşıma kapasitesi ve kontrol markası gibi teknik bilgileri girin.",
     cta:   "Müşterilere Git →",
@@ -31,7 +31,7 @@ const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: strin
   },
   {
     id:    "maintenance",
-    icon:  "📅",
+    icon:  "",
     title: "3. Bakım planı oluşturun",
     desc:  "Asansör için aylık periyodik bakım takvimi kurun. Takip edilmesi gereken tarihler otomatik oluşturulur.",
     cta:   "Bakım Planlarına Git →",
@@ -39,7 +39,7 @@ const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: strin
   },
   {
     id:    "workorder",
-    icon:  "🔧",
+    icon:  "",
     title: "4. İlk iş emrini açın",
     desc:  "Arıza çağrısı veya planlı bakım için iş emri açın. Teknisyen atayın ve durumu anlık izleyin.",
     cta:   "İş Emirlerine Git →",
@@ -47,7 +47,7 @@ const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: strin
   },
   {
     id:    "done",
-    icon:  "🎉",
+    icon:  "",
     title: "Kurulum Tamamlandı!",
     desc:  "Tebrikler! Platform kullanıma hazır. İstediğiniz zaman bu sihirbaza ayarlar menüsünden ulaşabilirsiniz.",
     cta:   "Panele Dön →",
@@ -56,11 +56,11 @@ const STEPS: { id: StepId; icon: string; title: string; desc: string; cta: strin
 ];
 
 const TIPS = [
-  { icon: "📊", title: "Raporlar",         desc: "Aylık bakım ve gecikme analizleri için Raporlar sekmesine göz atın." },
-  { icon: "📄", title: "Sözleşmeler",      desc: "Müşteri sözleşmelerini dijital ortamda saklayın ve yenileme tarihlerini takip edin." },
-  { icon: "🧾", title: "Fatura Oluşturma", desc: "İş emirlerinden tek tıkla PDF fatura oluşturabilirsiniz." },
-  { icon: "👥", title: "Teknisyen Ekle",   desc: "Ekibinizdeki teknisyenleri tanımlayarak iş emirlerine atayın." },
-  { icon: "📱", title: "Excel Yükleme",    desc: "Mevcut müşteri listelerinizi Excel dosyasıyla toplu içe aktarın." },
+  { icon: "", title: "Raporlar",         desc: "Aylık bakım ve gecikme analizleri için Raporlar sekmesine göz atın." },
+  { icon: "", title: "Sözleşmeler",      desc: "Müşteri sözleşmelerini dijital ortamda saklayın ve yenileme tarihlerini takip edin." },
+  { icon: "", title: "Fatura Oluşturma", desc: "İş emirlerinden tek tıkla PDF fatura oluşturabilirsiniz." },
+  { icon: "", title: "Teknisyen Ekle",   desc: "Ekibinizdeki teknisyenleri tanımlayarak iş emirlerine atayın." },
+  { icon: "", title: "Excel Yükleme",    desc: "Mevcut müşteri listelerinizi Excel dosyasıyla toplu içe aktarın." },
 ];
 
 export default function OnboardingPage() {
@@ -101,20 +101,20 @@ export default function OnboardingPage() {
       <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-[#94a3b8]">İlerleme</span>
-          <span className="text-xs font-bold text-[#2563eb]">{Math.round(progress)}%</span>
+          <span className="text-xs font-bold text-[#1B1F2B]">{Math.round(progress)}%</span>
         </div>
         <div className="h-2 bg-[#f0f2f5] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-gradient-to-r from-[#F0EDE6]0 to-blue-600 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
         <div className="flex justify-between mt-3">
           {STEPS.map((s, i) => (
             <button key={s.id} onClick={() => setCurrent(s.id)}
               className={`flex flex-col items-center gap-1 group ${i <= stepIndex ? "opacity-100" : "opacity-40"}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm border-2 transition-all
-                ${i < stepIndex ? "bg-blue-600 border-blue-600 text-white" :
-                  i === stepIndex ? "bg-white border-blue-600 text-blue-600 font-bold shadow-sm" :
+                ${i < stepIndex ? "bg-[#1B1F2B] border-[#1B1F2B] text-white" :
+                  i === stepIndex ? "bg-white border-[#1B1F2B] text-[#8A5500] font-bold shadow-sm" :
                   "bg-white border-[#e2e8f0] text-[#94a3b8]"}`}>
-                {i < stepIndex ? "✓" : s.icon === "👋" ? "★" : i}
+                {i < stepIndex ? "" : s.icon === "" ? "" : i}
               </div>
             </button>
           ))}
@@ -134,17 +134,17 @@ export default function OnboardingPage() {
         <div className="px-8 pb-8 flex flex-col gap-3">
           {step.href ? (
             <button onClick={() => goTo(step.href!)}
-              className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700 shadow-sm transition-all hover:-translate-y-0.5">
+              className="w-full rounded-xl bg-[#1B1F2B] px-5 py-3 text-sm font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-all hover:-translate-y-0.5">
               {step.cta}
             </button>
           ) : isLast ? (
             <Link href="/app/dashboard"
-              className="block text-center w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700 shadow-sm transition-all hover:-translate-y-0.5">
+              className="block text-center w-full rounded-xl bg-[#1B1F2B] px-5 py-3 text-sm font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-all hover:-translate-y-0.5">
               {step.cta}
             </Link>
           ) : (
             <button onClick={next}
-              className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700 shadow-sm transition-all hover:-translate-y-0.5">
+              className="w-full rounded-xl bg-[#1B1F2B] px-5 py-3 text-sm font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-all hover:-translate-y-0.5">
               {step.cta}
             </button>
           )}
@@ -167,10 +167,10 @@ export default function OnboardingPage() {
       {/* Quick tips (only on done step) */}
       {isLast && (
         <div className="rounded-2xl border border-[#e2e8f0] bg-white p-5 shadow-[0_1px_4px_rgba(15,22,35,.06)]">
-          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-4">💡 İpuçları</div>
+          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-4">İpuçları</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {TIPS.map(t => (
-              <div key={t.title} className="flex gap-3 p-3 rounded-xl border border-[#f0f2f5] hover:border-blue-200 hover:bg-[#f0f7ff] transition-all">
+              <div key={t.title} className="flex gap-3 p-3 rounded-xl border border-[#f0f2f5] hover:border-[#D6D0C4] hover:bg-[#f0f7ff] transition-all">
                 <span className="text-xl flex-shrink-0 mt-0.5">{t.icon}</span>
                 <div>
                   <div className="text-xs font-bold text-[#0f1623] mb-0.5">{t.title}</div>
@@ -193,16 +193,16 @@ export default function OnboardingPage() {
             return (
               <button key={s.id} onClick={() => setCurrent(s.id)}
                 className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all
-                  ${active ? "bg-[#eff6ff] border border-blue-200" : "hover:bg-[#f8f9fb] border border-transparent"}`}>
+                  ${active ? "bg-[#F0EDE6] border border-[#D6D0C4]" : "hover:bg-[#f8f9fb] border border-transparent"}`}>
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
-                  ${done ? "bg-green-100 text-green-700" : active ? "bg-blue-600 text-white" : "bg-[#f0f2f5] text-[#94a3b8]"}`}>
-                  {done ? "✓" : i + 1}
+                  ${done ? "bg-green-100 text-green-700" : active ? "bg-[#1B1F2B] text-white" : "bg-[#f0f2f5] text-[#94a3b8]"}`}>
+                  {done ? "" : i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className={`text-sm font-semibold ${active ? "text-blue-700" : done ? "text-[#64748b]" : "text-[#0f1623]"}`}>{s.title}</div>
+                  <div className={`text-sm font-semibold ${active ? "text-[#8A5500]" : done ? "text-[#64748b]" : "text-[#0f1623]"}`}>{s.title}</div>
                 </div>
                 {s.href && (
-                  <svg className={`w-4 h-4 flex-shrink-0 ${active ? "text-blue-400" : "text-[#c0c8d4]"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <svg className={`w-4 h-4 flex-shrink-0 ${active ? "text-[#C99A3A]" : "text-[#c0c8d4]"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 )}
               </button>
             );

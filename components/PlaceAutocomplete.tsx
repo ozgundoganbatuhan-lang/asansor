@@ -112,12 +112,11 @@ export function PlaceAutocomplete({ value, onChange, placeholder = "Adres girin.
           fontSize: 16, pointerEvents: "none",
           color: ready ? "#1B1F2B" : "#9ca3af",
         }}>
-          📍
-        </div>
+                  </div>
       </div>
       {!API_KEY && (
         <div style={{ fontSize: 11, color: "#C87800", marginTop: 4 }}>
-          ⚠️ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY tanımlı değil — manuel adres girişi aktif
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY tanımlı değil — manuel adres girişi aktif
         </div>
       )}
     </>

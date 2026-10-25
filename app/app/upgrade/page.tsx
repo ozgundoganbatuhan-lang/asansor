@@ -153,22 +153,22 @@ export default function UpgradePage() {
             className={[
               "relative flex flex-col rounded-2xl border p-5 text-left transition-all",
               selectedPlan === plan.id
-                ? "border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-offset-1"
+                ? "border-amber-500 bg-amber-50 ring-2 ring-amber-500 ring-offset-1"
                 : plan.highlight
-                ? "border-blue-200 bg-white shadow-sm"
+                ? "border-amber-200 bg-white shadow-sm"
                 : "border-slate-200 bg-white",
             ].join(" ")}
           >
             {plan.highlight && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <div className="rounded-full bg-blue-600 px-3 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase">
+                <div className="rounded-full bg-amber-600 px-3 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase">
                   Popüler
                 </div>
               </div>
             )}
             {selectedPlan === plan.id && (
               <div className="absolute right-3 top-3">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600">
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-600">
                   <svg className="h-3 w-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>

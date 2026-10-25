@@ -35,7 +35,7 @@ export default function KVKKPage() {
         </Link>
         <div style={S.card}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:18, marginBottom:8 }}>
-            <div style={{ width:52, height:52, borderRadius:14, background:"#eff6ff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>🔒</div>
+            <div style={{ width:52, height:52, borderRadius:14, background:"#F0EDE6", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}></div>
             <div>
               <h1 style={S.h1}>KVKK Aydınlatma Metni</h1>
               <p style={S.meta}>6698 Sayılı Kişisel Verilerin Korunması Kanunu m.10 — Son güncelleme: Ocak 2025</p>
@@ -52,7 +52,7 @@ export default function KVKKPage() {
           <div style={{ background:"#f8fafc", borderRadius:12, border:"1px solid #e4e8ee", padding:"14px 18px", fontSize:13, color:"#4b5a6e", lineHeight:1.8 }}>
             <strong style={{ color:"#0f1623" }}>Veri Sorumlusu:</strong> Servisim Yazılım Teknolojileri Ltd. Şti.<br/>
             <strong style={{ color:"#0f1623" }}>Adres:</strong> İstanbul, Türkiye<br/>
-            <strong style={{ color:"#0f1623" }}>E-posta:</strong> <a href="mailto:kvkk@servisim.app" style={{ color:"#2563eb" }}>kvkk@servisim.app</a><br/>
+            <strong style={{ color:"#0f1623" }}>E-posta:</strong> <a href="mailto:kvkk@servisim.app" style={{ color:"#1B1F2B" }}>kvkk@servisim.app</a><br/>
             <strong style={{ color:"#0f1623" }}>KVKK Kayıt No:</strong> VERBİS kaydı tamamlanma sürecindedir.
           </div>
 
@@ -135,7 +135,7 @@ export default function KVKKPage() {
             <li>Kanuna aykırı işlenme nedeniyle zarara uğraması hâlinde zararın giderilmesini talep etme</li>
           </ul>
           <p style={S.p}>
-            Başvurularınızı <a href="mailto:kvkk@servisim.app" style={{ color:"#2563eb" }}>kvkk@servisim.app</a> adresine
+            Başvurularınızı <a href="mailto:kvkk@servisim.app" style={{ color:"#1B1F2B" }}>kvkk@servisim.app</a> adresine
             yazılı olarak iletebilirsiniz. Başvurular 30 gün içinde yanıtlanır. Yanıt tatmin edici bulunmazsa
             <strong> Kişisel Verileri Koruma Kurulu</strong>'na şikâyette bulunma hakkınız saklıdır.
           </p>
@@ -155,11 +155,11 @@ export default function KVKKPage() {
           <h2 style={S.h2}>8. Değişiklikler</h2>
           <p style={S.p}>
             Bu metin zaman zaman güncellenebilir. Önemli değişikliklerde kayıtlı e-posta adresinize bildirim yapılır.
-            Güncel metne her zaman <a href="/kvkk" style={{ color:"#2563eb" }}>servisim.app/kvkk</a> adresinden ulaşabilirsiniz.
+            Güncel metne her zaman <a href="/kvkk" style={{ color:"#1B1F2B" }}>servisim.app/kvkk</a> adresinden ulaşabilirsiniz.
           </p>
 
           <div style={{ marginTop:40, padding:"16px 20px", background:"#f0fdf4", borderRadius:12, border:"1px solid #bbf7d0", fontSize:13, color:"#15803d", lineHeight:1.7 }}>
-            <strong>📧 Veri Sorumlusuna Ulaşın:</strong><br/>
+            <strong>Veri Sorumlusuna Ulaşın:</strong><br/>
             KVKK başvuruları için: <a href="mailto:kvkk@servisim.app" style={{ color:"#15803d", fontWeight:600 }}>kvkk@servisim.app</a><br/>
             Genel destek için: <a href="mailto:destek@servisim.app" style={{ color:"#15803d", fontWeight:600 }}>destek@servisim.app</a>
           </div>

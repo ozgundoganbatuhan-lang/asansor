@@ -11,7 +11,7 @@ const STATUS_CFG: Record<string, { bg: string; color: string; dot: string; borde
   müsait:  { bg: "#E8F5EE", color: "#2E7D4F", dot: "#2E7D4F", border: "#9DCFB0" },
   saha:    { bg: "#FFF3DC", color: "#B86800", dot: "#C87800", border: "#F0C060" },
   ofis:    { bg: "#E4EFF9", color: "#0F121A", dot: "#C87800", border: "#90BEE0" },
-  izinli:  { bg: "#f5f3ff", color: "#1A5C96", dot: "#8b5cf6", border: "#ddd6fe" },
+  izinli:  { bg: "#f5f3ff", color: "#1A5C96", dot: "#1A5C96", border: "#ddd6fe" },
   default: { bg: "#F0EDE6", color: "#6E6455", dot: "#9C9080", border: "#D6D0C4" },
 };
 
@@ -28,7 +28,7 @@ function initials(name: string) {
   return name.split(" ").map(w => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
 }
 
-const AVATAR_COLORS = ["#1B1F2B","#7c3aed","#059669","#d97706","#dc2626","#0891b2","#9333ea","#16a34a"];
+const AVATAR_COLORS = ["#1B1F2B","#1A5C96","#059669","#d97706","#dc2626","#1A5C96","#9333ea","#16a34a"];
 function avatarBg(name: string) { return AVATAR_COLORS[name.charCodeAt(0) % AVATAR_COLORS.length]; }
 
 const I = ({ d, size = 15 }: { d: string; size?: number }) => (
@@ -83,7 +83,7 @@ export default function TechniciansPage() {
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         .tech-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }
-        .tech-inp:focus { border-color: #2563eb !important; box-shadow: 0 0 0 3px rgba(37,99,235,0.10) !important; }
+        .tech-inp:focus { border-color: #1B1F2B !important; box-shadow: 0 0 0 3px rgba(27,31,43,0.10) !important; }
       `}</style>
 
       {/* Header */}
@@ -102,10 +102,10 @@ export default function TechniciansPage() {
           </div>
           <Link href="/technician" target="_blank" style={{
             display: "inline-flex", alignItems: "center", gap: 7,
-            background: "#E4EFF9", border: "1px solid #bfdbfe",
+            background: "#E4EFF9", border: "1px solid #D6D0C4",
             color: "#0F121A", borderRadius: 10, padding: "9px 15px", fontSize: 13, fontWeight: 700, textDecoration: "none",
           }}>
-            🛗 Teknisyen Portalı
+            Teknisyen Portalı
           </Link>
           <button onClick={() => setShowForm(v => !v)} style={{
             display: "inline-flex", alignItems: "center", gap: 7,
@@ -113,7 +113,7 @@ export default function TechniciansPage() {
             border: showForm ? "1.5px solid #e2e8f0" : "none",
             borderRadius: 10, padding: "9px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
           }}>
-            {showForm ? "✕ Kapat" : "+ Teknisyen Ekle"}
+            {showForm ? "Kapat" : "+ Teknisyen Ekle"}
           </button>
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function TechniciansPage() {
           {error && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#C0311A" }}>{error}</div>}
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={() => setShowForm(false)} style={{ background: "#F0EDE6", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer", color: "#6E6455", fontFamily: "inherit" }}>İptal</button>
-            <button onClick={create} disabled={!form.name.trim() || saving} style={{ background: "#1B1F2B", color: "#fff", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: "0 3px 12px rgba(37,99,235,0.28)", opacity: saving ? 0.7 : 1 }}>
+            <button onClick={create} disabled={!form.name.trim() || saving} style={{ background: "#1B1F2B", color: "#fff", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: "0 3px 12px rgba(27,31,43,0.28)", opacity: saving ? 0.7 : 1 }}>
               {saving ? "Ekleniyor..." : "Ekle"}
             </button>
           </div>
@@ -169,7 +169,7 @@ export default function TechniciansPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ background: "#fff", border: "1.5px dashed #e2e8f0", borderRadius: 16, padding: "44px 24px", textAlign: "center" }}>
-          <div style={{ fontSize: 42, marginBottom: 12 }}>🔧</div>
+          <div style={{ fontSize: 42, marginBottom: 12 }}></div>
           <div style={{ fontSize: 15, fontWeight: 800, color: "#1A1510", marginBottom: 6 }}>{q ? "Sonuç bulunamadı" : "Henüz teknisyen yok"}</div>
           <div style={{ fontSize: 13, color: "#6E6455" }}>{q ? "Farklı bir arama deneyin." : "Ekibinizin ilk teknisyenini ekleyin."}</div>
         </div>

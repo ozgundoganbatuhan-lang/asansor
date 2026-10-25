@@ -1,17 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sessionFromRequest } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-// Simple endpoint to return the current authenticated session.  This exposes
-// the user's id, organization id and role so that client components can
-// display role-specific UI (e.g. a role badge).  If no session exists
-// the endpoint returns a 401 status.
+// Current user for the app shell: name, e-mail, role and company name (safe fields only).
 export async function GET(req: NextRequest) {
   const session = sessionFromRequest(req);
   if (!session) {
     return NextResponse.json({ error: "Oturum açmanız gerekiyor." }, { status: 401 });
   }
-  // We intentionally only return safe fields (userId, orgId, role, email) to
-  // avoid leaking sensitive data.  The client can use this to display
-  // the current role.
-  return NextResponse.json({ session, ok: true });
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { name: true, email: true, role: true, organization: { select: { name: true } } },
+  }).catch(() => null);
+  return NextResponse.json({
+    ok: true,
+    session,
+    role: user?.role ?? session.role,
+    name: user?.name ?? null,
+    email: user?.email ?? null,
+    orgName: user?.organization?.name ?? null,
+  });
 }

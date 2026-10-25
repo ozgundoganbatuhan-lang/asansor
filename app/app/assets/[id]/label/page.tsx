@@ -40,7 +40,7 @@ export default async function AssetLabelPage({ params }: { params: Promise<{ id:
 
         {/* Brand */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 24 }}>
-          <div style={{ width: 32, height: 32, background: "linear-gradient(135deg,#2563eb,#1d4ed8)",
+          <div style={{ width: 32, height: 32, background: "linear-gradient(135deg,#1B1F2B,#1B1F2B)",
             borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 14, fontWeight: 800, color: "#fff" }}>S</div>
           <div style={{ fontSize: 16, fontWeight: 800, color: "#111827", letterSpacing: "-0.03em" }}>Servisim</div>

@@ -53,7 +53,7 @@ export default function LoginPage() {
       {!isMobile && <AuthLeft variant="login" />}
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "40px 32px", background: "#f8fafc", overflowY: "auto" }}>
+        padding: "40px 32px", background: "#F5F2EC", overflowY: "auto" }}>
         <div className="auth-card" style={{ width: "100%", maxWidth: 400 }}>
 
           {isMobile && (
@@ -63,11 +63,11 @@ export default function LoginPage() {
           )}
 
           <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#0f172a",
+            <h1 style={{ fontSize: 24, fontWeight: 900, color: "#12151d",
               letterSpacing: "-0.04em", margin: "0 0 7px", lineHeight: 1.1 }}>
               Giriş Yapın
             </h1>
-            <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
+            <p style={{ fontSize: 14, color: "#6E6455", margin: 0 }}>
               Hesabınıza erişmek için bilgilerinizi girin.
             </p>
           </div>
@@ -75,7 +75,7 @@ export default function LoginPage() {
           <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label className="auth-lbl" style={{ display: "block", fontSize: 11.5, fontWeight: 700,
-                color: "#64748b", marginBottom: 7 }}>
+                color: "#6E6455", marginBottom: 7 }}>
                 E-posta Adresi
               </label>
               <input className="auth-inp" type="email" value={email} required autoFocus
@@ -84,7 +84,7 @@ export default function LoginPage() {
 
             <div>
               <label style={{ display: "block", fontSize: 11.5, fontWeight: 700,
-                color: "#64748b", marginBottom: 7 }}>
+                color: "#6E6455", marginBottom: 7 }}>
                 Şifre
               </label>
               <div style={{ position: "relative" }}>
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 <button type="button" tabIndex={-1} onClick={() => setShowPass(p => !p)}
                   style={{ position: "absolute", right: 13, top: "50%",
                     transform: "translateY(-50%)", background: "none", border: "none",
-                    cursor: "pointer", color: "#94a3b8", padding: 4, display: "flex" }}>
+                    cursor: "pointer", color: "#8a8272", padding: 4, display: "flex" }}>
                   <EyeIcon show={showPass} />
                 </button>
               </div>
@@ -127,9 +127,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p style={{ textAlign: "center", marginTop: 22, color: "#64748b", fontSize: 13.5 }}>
+          <p style={{ textAlign: "center", marginTop: 22, color: "#6E6455", fontSize: 13.5 }}>
             Hesabınız yok mu?{" "}
-            <Link href="/auth/register" style={{ color: "#2563eb", fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/auth/register" style={{ color: "#a8720a", fontWeight: 700, textDecoration: "none" }}>
               Ücretsiz başlayın →
             </Link>
           </p>

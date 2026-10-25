@@ -33,7 +33,7 @@ export default function PrivacyPage() {
         </Link>
         <div style={S.card}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:18, marginBottom:8 }}>
-            <div style={{ width:52, height:52, borderRadius:14, background:"#fdf4ff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>🔐</div>
+            <div style={{ width:52, height:52, borderRadius:14, background:"#fdf4ff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}></div>
             <div>
               <h1 style={S.h1}>Gizlilik Politikası</h1>
               <p style={S.meta}>Çerezler, veri toplama ve kullanıcı hakları — Son güncelleme: Ocak 2025</p>
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           </p>
           <p style={S.p}>
             KVKK kapsamındaki haklarınız ve veri sorumlusuna ilişkin ayrıntılı bilgi için{" "}
-            <Link href="/kvkk" style={{ color:"#2563eb" }}>KVKK Aydınlatma Metni</Link>'ni inceleyiniz.
+            <Link href="/kvkk" style={{ color:"#1B1F2B" }}>KVKK Aydınlatma Metni</Link>'ni inceleyiniz.
           </p>
 
           <h2 style={S.h2}>2. Topladığımız Veriler</h2>
@@ -149,11 +149,11 @@ export default function PrivacyPage() {
           <h2 style={S.h2}>10. Politika Güncellemeleri</h2>
           <p style={S.p}>
             Bu politika güncellendiğinde kayıtlı e-posta adresinize bildirim yapılır. Güncel politikaya her zaman
-            <a href="/privacy" style={{ color:"#2563eb" }}> servisim.app/privacy</a> adresinden ulaşabilirsiniz.
+            <a href="/privacy" style={{ color:"#1B1F2B" }}> servisim.app/privacy</a> adresinden ulaşabilirsiniz.
           </p>
 
           <div style={{ marginTop:40, padding:"16px 20px", background:"#fdf4ff", borderRadius:12, border:"1px solid #e9d5ff", fontSize:13, color:"#7e22ce", lineHeight:1.7 }}>
-            <strong>📧 Gizlilik ile ilgili talepleriniz için:</strong><br/>
+            <strong>Gizlilik ile ilgili talepleriniz için:</strong><br/>
             <a href="mailto:kvkk@servisim.app" style={{ color:"#7e22ce", fontWeight:600 }}>kvkk@servisim.app</a>
             {" "}— başvurular 30 gün içinde yanıtlanır.
           </div>

@@ -6,38 +6,38 @@ import * as XLSX from "xlsx";
 
 /* ─── Field definitions ──────────────────────────────────────────────────── */
 const CUSTOMER_FIELDS = [
-  { key: "customerName", label: "Bina / Müşteri Adı", emoji: "🏢", required: true,
+  { key: "customerName", label: "Bina / Müşteri Adı", emoji: "", required: true,
     aliases: ["bina","apt","apartman","müşteri","firma","customer","name","isim","ad "] },
-  { key: "contactName",  label: "Yönetici / Yetkili", emoji: "👤", required: false,
+  { key: "contactName",  label: "Yönetici / Yetkili", emoji: "", required: false,
     aliases: ["yönetici","yetkili","contact","sorumlu","müdür","ilgili"] },
-  { key: "phone",        label: "Telefon",             emoji: "📞", required: false,
+  { key: "phone",        label: "Telefon",             emoji: "", required: false,
     aliases: ["telefon","tel","phone","gsm","cep","yön tel","yön telefon"] },
-  { key: "district",     label: "İlçe",                emoji: "📍", required: false,
+  { key: "district",     label: "İlçe",                emoji: "", required: false,
     aliases: ["ilçe","ilce","district","semt","bölge"] },
-  { key: "address",      label: "Adres",               emoji: "🗺️", required: false,
+  { key: "address",      label: "Adres",               emoji: "", required: false,
     aliases: ["adres","address","sokak","cadde","mah","mahalle"] },
-  { key: "email",        label: "E-posta",             emoji: "✉️", required: false,
+  { key: "email",        label: "E-posta",             emoji: "", required: false,
     aliases: ["email","e-posta","eposta","mail"] },
-  { key: "taxId",        label: "Vergi No",            emoji: "🔢", required: false,
+  { key: "taxId",        label: "Vergi No",            emoji: "", required: false,
     aliases: ["vergi","tax","vkn","vergi no","vergi kimlik"] },
-  { key: "notes",        label: "Notlar",              emoji: "📝", required: false,
+  { key: "notes",        label: "Notlar",              emoji: "", required: false,
     aliases: ["not","notes","açıklama","aciklama","yorum"] },
 ];
 
 const ASSET_FIELDS = [
-  { key: "elevatorIdNo", label: "Asansör Kimlik No (AKN)", emoji: "🏷️", required: false,
+  { key: "elevatorIdNo", label: "Asansör Kimlik No (AKN)", emoji: "", required: false,
     aliases: ["kimlik no","akn","asansör kimlik","elevator id","serial","seri","tescil"] },
-  { key: "stops",        label: "Durak Sayısı",            emoji: "🔢", required: false,
+  { key: "stops",        label: "Durak Sayısı",            emoji: "", required: false,
     aliases: ["durak","kat","floor","stop","katlı"] },
-  { key: "driveType",    label: "Cins / Tahrik Tipi",      emoji: "⚙️", required: false,
+  { key: "driveType",    label: "Cins / Tahrik Tipi",      emoji: "", required: false,
     aliases: ["cins","tür","tip","drive","type","tahrik","elektrik","hidrolik"] },
-  { key: "brand",        label: "Marka",                   emoji: "🏷️", required: false,
+  { key: "brand",        label: "Marka",                   emoji: "", required: false,
     aliases: ["marka","brand","make","üretici","firma marka"] },
-  { key: "capacityKg",   label: "Kapasite (kg)",           emoji: "⚖️", required: false,
+  { key: "capacityKg",   label: "Kapasite (kg)",           emoji: "", required: false,
     aliases: ["kapasite","kg","capacity","yük","yük kapasitesi"] },
-  { key: "locationNote", label: "Konum Notu",              emoji: "📌", required: false,
+  { key: "locationNote", label: "Konum Notu",              emoji: "", required: false,
     aliases: ["konum","kat bilgisi","blok","lokasyon","location"] },
-  { key: "assetName",    label: "Asansör Adı (opsiyonel)", emoji: "🛗", required: false,
+  { key: "assetName",    label: "Asansör Adı (opsiyonel)", emoji: "", required: false,
     aliases: ["asansör adı","asset name","lift name"] },
 ];
 
@@ -115,7 +115,7 @@ function applyMapping(rows: ParsedRow[], mapping: Mapping): Record<string, strin
 /* ─── Pill component ─────────────────────────────────────────────────────── */
 function Pill({ children, color }: { children: React.ReactNode; color: "blue"|"green"|"gray"|"red"|"amber" }) {
   const map = {
-    blue:  "bg-blue-50 text-blue-700 border-blue-200",
+    blue:  "bg-[#F0EDE6] text-[#8A5500] border-[#D6D0C4]",
     green: "bg-green-50 text-green-700 border-green-200",
     gray:  "bg-[#f4f5f7] text-[#64748b] border-[#e2e8f0]",
     red:   "bg-red-50 text-red-600 border-red-200",
@@ -209,7 +209,7 @@ export default function ImportPage() {
         <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-4">Desteklenen Sütunlar</div>
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <div className="text-[11px] font-bold text-blue-600 uppercase tracking-wide mb-2">MÜŞTERİ BİLGİLERİ</div>
+            <div className="text-[11px] font-bold text-[#8A5500] uppercase tracking-wide mb-2">MÜŞTERİ BİLGİLERİ</div>
             {CUSTOMER_FIELDS.map(f => (
               <div key={f.key} className="flex items-center gap-2 py-1 border-b border-[#f4f5f7] last:border-0">
                 <span className="text-sm w-5">{f.emoji}</span>
@@ -232,8 +232,8 @@ export default function ImportPage() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-blue-50 border border-blue-100 p-3 text-xs text-blue-800 leading-relaxed">
-          <strong>💡 HDS / Mevcut Excel formatı desteklenmektedir.</strong><br/>
+        <div className="rounded-xl bg-[#F0EDE6] border border-[#D6D0C4] p-3 text-xs text-[#8A5500] leading-relaxed">
+          <strong>HDS / Mevcut Excel formatı desteklenmektedir.</strong><br/>
           Başlık satırı hangi sütun olursa olsun otomatik eşleştirilir.
           Her satır = 1 asansör + bağlı müşteri (aynı bina adı tekrar ederse müşteri tek kayıt olarak tutulur).
         </div>
@@ -241,14 +241,14 @@ export default function ImportPage() {
 
       {/* Drop zone */}
       <div
-        className="rounded-2xl border-2 border-dashed border-[#d0d7e2] bg-white p-12 text-center hover:border-blue-300 hover:bg-[#f0f7ff] transition-all cursor-pointer"
+        className="rounded-2xl border-2 border-dashed border-[#d0d7e2] bg-white p-12 text-center hover:border-[#D6D0C4] hover:bg-[#f0f7ff] transition-all cursor-pointer"
         onClick={() => fileRef.current?.click()}
         onDragOver={e => e.preventDefault()}
         onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}>
-        <div className="text-5xl mb-4">📂</div>
+        <div className="text-5xl mb-4"></div>
         <div className="text-sm font-bold text-[#0f1623] mb-1">Excel veya CSV sürükleyin</div>
         <div className="text-xs text-[#94a3b8]">.xlsx · .xls · .csv — maksimum 10 MB</div>
-        {fileName && <div className="mt-3 text-xs font-semibold text-blue-600">📄 {fileName}</div>}
+        {fileName && <div className="mt-3 text-xs font-semibold text-[#8A5500]">{fileName}</div>}
       </div>
       <input ref={fileRef} type="file" accept=".xlsx,.xls,.csv,.txt" className="hidden"
         onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
@@ -279,7 +279,7 @@ export default function ImportPage() {
             <div className="text-xs text-[#64748b] mt-0.5">Otomatik tespit yapıldı — değiştirmek için açılır menüden seçin</div>
           </div>
           <button onClick={() => setStage("preview")}
-            className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 shadow-sm transition-colors">
+            className="rounded-xl bg-[#1B1F2B] px-4 py-2 text-xs font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-colors">
             Önizlemeye Geç →
           </button>
         </div>
@@ -298,13 +298,13 @@ export default function ImportPage() {
                 <div className="flex items-center gap-2">
                   {isAuto && currentKey !== SKIP_KEY && (
                     <span className="text-[10px] text-green-600 font-bold bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
-                      ✓ Otomatik
+                      Otomatik
                     </span>
                   )}
                   <select
                     value={currentKey}
                     onChange={e => setMapping(m => ({ ...m, [h]: e.target.value }))}
-                    className="rounded-lg border border-[#e2e8f0] bg-white px-3 py-1.5 text-xs font-medium text-[#0f1623] focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px]">
+                    className="rounded-lg border border-[#e2e8f0] bg-white px-3 py-1.5 text-xs font-medium text-[#0f1623] focus:outline-none focus:ring-2 focus:ring-[#F0C060] min-w-[180px]">
                     <option value={SKIP_KEY}>— Atla —</option>
                     <optgroup label="MÜŞTERİ">
                       {CUSTOMER_FIELDS.map(f => <option key={f.key} value={f.key}>{f.emoji} {f.label}</option>)}
@@ -341,11 +341,11 @@ export default function ImportPage() {
           </div>
           {!hasCustomerName && (
             <div className="text-xs text-red-600 font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
-              ⚠ "Bina / Müşteri Adı" sütunu eşleştirilmedi
+              "Bina / Müşteri Adı" sütunu eşleştirilmedi
             </div>
           )}
           <button onClick={doImport} disabled={loading || !hasCustomerName}
-            className="rounded-xl bg-blue-600 px-5 py-2 text-sm font-bold text-white hover:bg-blue-700 disabled:opacity-50 shadow-sm transition-colors">
+            className="rounded-xl bg-[#1B1F2B] px-5 py-2 text-sm font-bold text-white hover:bg-[#1B1F2B] disabled:opacity-50 shadow-sm transition-colors">
             {loading ? "Yükleniyor…" : `${rawRows.length} Satırı Aktar →`}
           </button>
         </div>
@@ -410,14 +410,14 @@ export default function ImportPage() {
   return (
     <div className="max-w-xl">
       <div className="rounded-2xl border border-[#e2e8f0] bg-white p-8 shadow-[0_1px_4px_rgba(15,22,35,.06)] text-center space-y-6">
-        <div className="text-5xl">{r?.errors?.length === 0 ? "✅" : "⚠️"}</div>
+        <div className="text-5xl">{r?.errors?.length === 0 ? "" : ""}</div>
         <div>
           <h2 className="text-xl font-black text-[#0f1623] mb-4">
             {r?.errors?.length === 0 ? "İçe Aktarma Tamamlandı!" : "Kısmen Tamamlandı"}
           </h2>
           <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
             <div className="text-center">
-              <div className="text-2xl font-black text-blue-600">{r?.customersCreated ?? 0}</div>
+              <div className="text-2xl font-black text-[#8A5500]">{r?.customersCreated ?? 0}</div>
               <div className="text-xs text-[#64748b] font-medium mt-1">Yeni Müşteri</div>
             </div>
             <div className="text-center">
@@ -451,7 +451,7 @@ export default function ImportPage() {
             Yeni Yükleme
           </button>
           <button onClick={() => router.push("/app/customers")}
-            className="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700 shadow-sm transition-colors">
+            className="rounded-xl bg-[#1B1F2B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#1B1F2B] shadow-sm transition-colors">
             Müşterilere Git →
           </button>
           <button onClick={() => router.push("/app/assets")}

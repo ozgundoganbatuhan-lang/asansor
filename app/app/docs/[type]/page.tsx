@@ -85,7 +85,7 @@ function buildDoc(type: string, values: Record<string, string>): string {
           <div style="font-size:12px;color:#64748b;margin-top:3px;">${v("Açıklama")}</div>
         </td>
         <td style="padding:14px 16px;border-bottom:1px solid #e2e8f0;color:#374151;">${v("Asansör Sayısı")} adet</td>
-        <td style="padding:14px 16px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#2563eb;font-size:16px;">₺${v("Aylık Ücret")}/ay</td>
+        <td style="padding:14px 16px;border-bottom:1px solid #e2e8f0;text-align:right;font-weight:700;color:#1B1F2B;font-size:16px;">₺${v("Aylık Ücret")}/ay</td>
       </tr>
       <tr>
         <td colspan="2" style="padding:14px 16px;font-weight:700;font-size:15px;color:#0f172a;">TOPLAM (+ KDV)</td>
@@ -95,8 +95,8 @@ function buildDoc(type: string, values: Record<string, string>): string {
   </table>
 
   <!-- Legal notice -->
-  <div style="background:#eff6ff;border-left:3px solid #2563eb;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;font-size:12px;color:#1d4ed8;line-height:1.6;">
-    <strong>📋 Yasal Uyumluluk:</strong> Tüm bakımlar Asansör İşletme ve Bakım Yönetmeliği (RG-30411, 6 Nisan 2019) ve TS EN 13015 standardı kapsamında yürütülmektedir.
+  <div style="background:#F0EDE6;border-left:3px solid #1B1F2B;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;font-size:12px;color:#1B1F2B;line-height:1.6;">
+    <strong>Yasal Uyumluluk:</strong> Tüm bakımlar Asansör İşletme ve Bakım Yönetmeliği (RG-30411, 6 Nisan 2019) ve TS EN 13015 standardı kapsamında yürütülmektedir.
   </div>
 
   <!-- Signature -->
@@ -171,7 +171,7 @@ function buildDoc(type: string, values: Record<string, string>): string {
 
   <!-- Legal -->
   <div style="background:#f0fdf4;border-left:3px solid #22c55e;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:32px;font-size:12px;color:#166534;line-height:1.6;">
-    <strong>✓ Yasal Dayanak:</strong> Bu sözleşme Asansör İşletme ve Bakım Yönetmeliği (RG-30411, 6 Nisan 2019) ve TS EN 13015 standardı kapsamında hazırlanmıştır. Taraflarca imzalandıktan sonra hukuken geçerlilik kazanır.
+    <strong>Yasal Dayanak:</strong> Bu sözleşme Asansör İşletme ve Bakım Yönetmeliği (RG-30411, 6 Nisan 2019) ve TS EN 13015 standardı kapsamında hazırlanmıştır. Taraflarca imzalandıktan sonra hukuken geçerlilik kazanır.
   </div>
 
   <!-- Signatures -->
@@ -226,7 +226,7 @@ export default function DocEditorPage() {
         body: JSON.stringify({ type, to, subject: template?.subject, html }),
       });
       const data = await res.json();
-      if (res.ok) { setStatus({ ok: true, msg: `✓ Belge ${to} adresine gönderildi.` }); setTo(""); }
+      if (res.ok) { setStatus({ ok: true, msg: `Belge ${to} adresine gönderildi.` }); setTo(""); }
       else setStatus({ ok: false, msg: data.error ?? "Hata oluştu" });
     } catch (err: unknown) {
       setStatus({ ok: false, msg: err instanceof Error ? err.message : "Hata" });
@@ -243,9 +243,9 @@ export default function DocEditorPage() {
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
         .doc-field-input { transition: border-color .15s, box-shadow .15s; }
-        .doc-field-input:focus { border-color: #2563eb !important; box-shadow: 0 0 0 3px rgba(37,99,235,.15) !important; outline: none; }
+        .doc-field-input:focus { border-color: #1B1F2B !important; box-shadow: 0 0 0 3px rgba(27,31,43,.15) !important; outline: none; }
         .doc-field-input::placeholder { color: #cbd5e1; }
-        .send-btn:hover:not(:disabled) { background: #1d4ed8 !important; }
+        .send-btn:hover:not(:disabled) { background: #1B1F2B !important; }
         .send-btn:disabled { opacity: .55; cursor: not-allowed; }
         ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
@@ -317,10 +317,10 @@ export default function DocEditorPage() {
       </div>
 
       {/* ── Body ── */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <div className="r-docs" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
 
         {/* LEFT — fields panel */}
-        <div style={{ width: 320, flexShrink: 0, background: "#fff",
+        <div className="r-docs-side" style={{ width: 320, flexShrink: 0, background: "#fff",
           borderRight: "1px solid #e2e8f0",
           overflowY: "auto", display: "flex", flexDirection: "column" }}>
 
@@ -339,7 +339,7 @@ export default function DocEditorPage() {
           <div style={{ padding: "20px 16px 0" }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase",
               letterSpacing: "0.1em", color: "#9C9080", marginBottom: 16 }}>
-              📝 Belge Alanları
+              Belge Alanları
             </div>
             {fields.map((f, i) => (
               <div key={f.key}
@@ -396,7 +396,7 @@ export default function DocEditorPage() {
               borderTop: "1px solid #f1f5f9", marginTop: 8 }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase",
               letterSpacing: "0.1em", color: "#9C9080", marginBottom: 14 }}>
-              📧 E-posta ile Gönder
+              E-posta ile Gönder
             </div>
             <input
               className="doc-field-input"
@@ -415,7 +415,7 @@ export default function DocEditorPage() {
                 padding: "10px 16px", borderRadius: 9, cursor: "pointer" }}>
               {sending ? (
                 <><div style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,.35)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin .6s linear infinite" }} />Gönderiliyor…</>
-              ) : "📤 Belgeyi Gönder"}
+              ) : "Belgeyi Gönder"}
             </button>
           </form>
         </div>

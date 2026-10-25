@@ -118,7 +118,7 @@ export default function CalendarPage() {
               return (
                 <button key={i} onClick={()=>setSelected(k)} style={{
                   border:"none",cursor:"pointer",padding:"6px 4px",borderRadius:10,
-                  outline: isSel ? "2px solid #2563eb" : "none",
+                  outline: isSel ? "2px solid #1B1F2B" : "none",
                   background: isSel ? "#E4EFF9" : isToday ? "#f5f3ff" : "transparent",
                   transition:"all 0.12s", fontFamily:"inherit",
                 }}>
@@ -149,7 +149,7 @@ export default function CalendarPage() {
               <div style={{color:"#9C9080",fontSize:13}}>Yükleniyor...</div>
             ) : selectedWOs.length===0 ? (
               <div style={{textAlign:"center",padding:"24px 0"}}>
-                <div style={{fontSize:32,marginBottom:8}}>📅</div>
+                <div style={{fontSize:32,marginBottom:8}}></div>
                 <div style={{fontSize:13,fontWeight:600,color:"#6E6455"}}>Bu gün iş emri yok</div>
                 <div style={{fontSize:12,color:"#9C9080",marginTop:4}}>Farklı bir gün seçin</div>
               </div>
@@ -168,7 +168,7 @@ export default function CalendarPage() {
                       </div>
                       <div style={{fontSize:13,fontWeight:700,color:"#1A1510",marginBottom:2}}>{w.customer.name}</div>
                       <div style={{fontSize:12,color:"#6E6455"}}>{TYPE_L[w.type]??w.type}{w.asset?` · ${w.asset.name}`:""}</div>
-                      {w.technician && <div style={{fontSize:11.5,color:"#9C9080",marginTop:4}}>👤 {w.technician.name}</div>}
+                      {w.technician && <div style={{fontSize:11.5,color:"#9C9080",marginTop:4}}>{w.technician.name}</div>}
                     </Link>
                   );
                 })}

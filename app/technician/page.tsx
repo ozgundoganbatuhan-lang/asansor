@@ -2,320 +2,201 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import InstallApp from "@/components/InstallApp";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type Session = { userId: string; orgId: string; role: string; email: string };
 type WO = {
   id: string; code: string; type: string; status: string; priority?: string | null;
   note?: string | null; scheduledAt?: string | null; createdAt: string;
-  customer: { name: string; address?: string | null };
-  asset?: { name: string; floor?: string | null; serialNumber?: string | null } | null;
+  customer: { name: string; address?: string | null; phone?: string | null };
+  asset?: { name: string } | null;
   technician?: { name: string } | null;
 };
 
-// ─── Config ───────────────────────────────────────────────────────────────────
 const TYPE_LABEL: Record<string, string> = {
-  FAULT: "⚠️ Arıza", PERIODIC_MAINTENANCE: "🔧 Periyodik Bakım",
-  ANNUAL_INSPECTION: "📋 Yıllık Kontrol", REVISION: "🔄 Revizyon", INSTALLATION: "🏗 Kurulum",
+  FAULT: "Arıza", PERIODIC_MAINTENANCE: "Aylık bakım", ANNUAL_INSPECTION: "Yıllık kontrol", REVISION: "Revizyon", INSTALLATION: "Kurulum",
 };
-const STATUS_CFG: Record<string, { label: string; bg: string; color: string; next?: string; nextLabel?: string }> = {
-  PENDING:     { label: "📅 Planlı",    bg: "#eff6ff", color: "#1d4ed8", next: "IN_PROGRESS", nextLabel: "Başlat" },
-  IN_PROGRESS: { label: "🚗 Yolda",    bg: "#fffbeb", color: "#b45309", next: "DONE",        nextLabel: "Tamamla" },
-  URGENT:      { label: "🚨 Acil",     bg: "#fef2f2", color: "#b91c1c", next: "IN_PROGRESS", nextLabel: "Başlat" },
-  DONE:        { label: "✅ Tamam",    bg: "#f0fdf4", color: "#15803d" },
-  CANCELED:    { label: "❌ İptal",    bg: "#f1f5f9", color: "#475569" },
+const STATUS: Record<string, { label: string; bg: string; color: string; bar: string; next?: string; nextLabel?: string }> = {
+  URGENT:      { label: "Acil",       bg: "#FCECE8", color: "#A8301A", bar: "#C0311A", next: "IN_PROGRESS", nextLabel: "Yola çıktım" },
+  PENDING:     { label: "Planlı",     bg: "#E4EFF9", color: "#1A4F80", bar: "#1A5C96", next: "IN_PROGRESS", nextLabel: "Yola çıktım" },
+  IN_PROGRESS: { label: "Sahada",     bg: "#FFF3DC", color: "#8A5500", bar: "#C87800", next: "DONE",        nextLabel: "İşi tamamla" },
+  DONE:        { label: "Tamamlandı", bg: "#E8F5EE", color: "#226440", bar: "#2E7D4F" },
+  CANCELED:    { label: "İptal",      bg: "#F0EDE6", color: "#6E6455", bar: "#9C9080" },
 };
-const PRIORITY_COLORS: Record<string, string> = { Acil: "#dc2626", Yüksek: "#d97706", Normal: "#059669" };
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-function fmtDate(d?: string | null) {
-  if (!d) return null;
-  return new Date(d).toLocaleDateString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const ORDER: Record<string, number> = { URGENT: 0, IN_PROGRESS: 1, PENDING: 2, DONE: 3, CANCELED: 4 };
+const Ic = ({ d, size = 16 }: { d: string; size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={d} /></svg>
+);
+const I = {
+  pin: "M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z",
+  phone: "M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.4 1.8.7 2.7a2 2 0 01-.5 2.1L8 9.8a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.5c.9.3 1.8.6 2.7.7a2 2 0 011.7 2z",
+  doc: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M9 13h6M9 17h4",
+  refresh: "M21 12a9 9 0 11-3-6.7L21 8M21 3v5h-5",
+  out: "M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9",
+  lift: "M6 2h12a1 1 0 011 1v18a1 1 0 01-1 1H6a1 1 0 01-1-1V3a1 1 0 011-1zM12 2v20",
+  clock: "M12 7v5l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+};
+function when(wo: WO) {
+  const d = wo.scheduledAt ?? wo.createdAt;
+  const dt = new Date(d), now = new Date();
+  const sameDay = dt.toDateString() === now.toDateString();
+  const t = dt.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  return sameDay ? `Bugün ${t}` : dt.toLocaleDateString("tr-TR", { day: "numeric", month: "short" }) + ` ${t}`;
 }
 
-// ─── Compact Work Order Card ──────────────────────────────────────────────────
-function WOCard({ wo, onStatusChange }: { wo: WO; onStatusChange: (id: string, status: string) => void }) {
-  const cfg = STATUS_CFG[wo.status] ?? { label: wo.status, bg: "#f1f5f9", color: "#64748b" };
-  const [updating, setUpdating] = useState(false);
+function JobCard({ wo, i, onStatusChange }: { wo: WO; i: number; onStatusChange: (id: string, status: string) => void }) {
+  const cfg = STATUS[wo.status] ?? STATUS.PENDING;
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
 
   async function advance() {
     if (!cfg.next) return;
-    setUpdating(true);
+    setBusy(true); setError(false);
     try {
-      await fetch(`/api/work-orders/${wo.id}`, {
-        method: "PATCH",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ status: cfg.next }),
-      });
+      const r = await fetch(`/api/work-orders/${wo.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: cfg.next }) });
+      if (!r.ok) throw new Error();
+      if ("vibrate" in navigator) navigator.vibrate?.(15);
       onStatusChange(wo.id, cfg.next);
-    } finally { setUpdating(false); }
+    } catch { setError(true); } finally { setBusy(false); }
   }
 
   return (
-    <div style={{
-      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 18,
-      overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-      borderLeft: `4px solid ${cfg.color}`,
-      transition: "transform 0.15s, box-shadow 0.15s",
-    }}>
-      {/* Header */}
-      <div style={{ padding: "16px 18px 12px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-            <span style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 700, color: "#94a3b8" }}>{wo.code}</span>
-            <span style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}20`, borderRadius: 999, padding: "2px 10px", fontSize: 11.5, fontWeight: 700 }}>{cfg.label}</span>
-            {wo.priority && wo.priority !== "Normal" && (
-              <span style={{ background: `${PRIORITY_COLORS[wo.priority] ?? "#64748b"}15`, color: PRIORITY_COLORS[wo.priority] ?? "#64748b", borderRadius: 999, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>
-                {wo.priority}
-              </span>
-            )}
-          </div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", letterSpacing: "-0.02em", marginBottom: 4 }}>{wo.customer.name}</div>
-          <div style={{ fontSize: 13, color: "#64748b" }}>{TYPE_LABEL[wo.type] ?? wo.type}</div>
-        </div>
-        {cfg.next && (
-          <button onClick={advance} disabled={updating} style={{
-            background: cfg.next === "DONE" ? "#059669" : "#2563eb",
-            color: "#fff", border: "none", borderRadius: 10,
-            padding: "9px 16px", fontSize: 12.5, fontWeight: 800,
-            cursor: updating ? "not-allowed" : "pointer", whiteSpace: "nowrap",
-            opacity: updating ? 0.7 : 1, fontFamily: "inherit", transition: "all 0.15s",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          }}>
-            {updating ? "..." : (cfg.next === "DONE" ? "✅ " : "▶ ") + cfg.nextLabel}
-          </button>
-        )}
+    <article className="tj" style={{ ["--bar" as string]: cfg.bar, animationDelay: `${Math.min(i, 8) * 40}ms` }}>
+      <div className="tj-top">
+        <span className="st" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+        <span className="tj-type">{TYPE_LABEL[wo.type] ?? wo.type}</span>
+        <span className="tj-when"><Ic d={I.clock} size={12} />{when(wo)}</span>
       </div>
-
-      {/* Details */}
-      <div style={{ padding: "0 18px 14px", display: "flex", flexDirection: "column", gap: 7 }}>
-        {wo.customer.address && (
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13 }}>
-            <span style={{ fontSize: 16, flexShrink: 0, marginTop: 0 }}>📍</span>
-            <a href={`https://maps.google.com/?q=${encodeURIComponent(wo.customer.address)}`} target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "underline", lineHeight: 1.4 }}>
-              {wo.customer.address}
-            </a>
-          </div>
-        )}
-        {wo.asset && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#475569" }}>
-            <span style={{ fontSize: 15 }}>🛗</span>
-            <span><b style={{ color: "#0f172a" }}>{wo.asset.name}</b>{wo.asset.floor ? ` · ${wo.asset.floor}` : ""}{wo.asset.serialNumber ? ` · S/N: ${wo.asset.serialNumber}` : ""}</span>
-          </div>
-        )}
-        {wo.note && (
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, background: "#fffbeb", border: "1px solid #fef3c7", borderRadius: 9, padding: "8px 12px" }}>
-            <span style={{ fontSize: 15, flexShrink: 0 }}>💬</span>
-            <span style={{ color: "#92400e", lineHeight: 1.5 }}>{wo.note}</span>
-          </div>
-        )}
-        {wo.scheduledAt && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#64748b" }}>
-            <span>🕐</span> <span>Planlanan: <b style={{ color: "#0f172a" }}>{fmtDate(wo.scheduledAt)}</b></span>
-          </div>
-        )}
+      <h3>{wo.customer.name}</h3>
+      <p className="tj-asset"><Ic d={I.lift} size={13} />{wo.asset?.name ?? "Asansör belirtilmedi"} <span className="code">{wo.code}</span></p>
+      {wo.note && <p className="tj-note">{wo.note}</p>}
+      <div className="tj-links">
+        {wo.customer.address && <a href={`https://maps.google.com/?q=${encodeURIComponent(wo.customer.address)}`} target="_blank" rel="noopener noreferrer"><Ic d={I.pin} size={14} />Yol tarifi</a>}
+        {wo.customer.phone && <a href={`tel:${wo.customer.phone.replace(/\s/g, "")}`}><Ic d={I.phone} size={14} />Ara</a>}
+        <Link href={`/app/work-orders/${wo.id}`}><Ic d={I.doc} size={14} />Servis formu</Link>
       </div>
-    </div>
+      {cfg.next && (
+        <button className={`tj-go${wo.status === "IN_PROGRESS" ? " done" : ""}`} onClick={advance} disabled={busy}>
+          {busy ? "Kaydediliyor…" : cfg.nextLabel}
+        </button>
+      )}
+      {error && <p className="tj-err" role="alert">Kaydedilemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.</p>}
+    </article>
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-export default function TechnicianPortalPage() {
+export default function TechnicianPortal() {
   const router = useRouter();
-  const [session, setSession] = useState<Session | null>(null);
+  const [name, setName] = useState<string>("");
   const [workOrders, setWorkOrders] = useState<WO[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"active" | "all" | "done">("active");
+  const [filter, setFilter] = useState<"active" | "done" | "all">("active");
   const [refreshing, setRefreshing] = useState(false);
-  const [time, setTime] = useState(new Date());
-
-  // Clock
-  useEffect(() => { const t = setInterval(() => setTime(new Date()), 30000); return () => clearInterval(t); }, []);
 
   const loadData = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    else setRefreshing(true);
+    if (silent) setRefreshing(true); else setLoading(true);
     try {
       const [meRes, woRes] = await Promise.all([fetch("/api/me"), fetch("/api/work-orders")]);
       if (!meRes.ok) { router.push("/auth/login"); return; }
-      const meJson = await meRes.json().catch(() => ({}));
-      setSession(meJson.session);
-      // Non-TECHNICIAN roles can still view but with a different message
-      if (woRes.ok) {
-        const woJson = await woRes.json().catch(() => ({}));
-        setWorkOrders(woJson.items ?? []);
-      }
-    } catch { setErr("Bağlantı hatası. Sayfayı yenileyin."); }
+      const me = await meRes.json().catch(() => ({}));
+      setName((me.name || me.email || "").split(/[\s@]/)[0]);
+      if (woRes.ok) { const j = await woRes.json().catch(() => ({})); setWorkOrders(j.items ?? []); }
+      setErr(null);
+    } catch { setErr("Bağlantı kurulamadı. İnternetinizi kontrol edip yenileyin."); }
     finally { setLoading(false); setRefreshing(false); }
   }, [router]);
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  function handleStatusChange(id: string, newStatus: string) {
-    setWorkOrders(prev => prev.map(w => w.id === id ? { ...w, status: newStatus } : w));
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/auth/login");
   }
 
-  const filtered = workOrders.filter(w => {
-    if (filter === "active") return ["PENDING", "IN_PROGRESS", "URGENT"].includes(w.status);
-    if (filter === "done") return w.status === "DONE";
-    return true;
-  });
-
-  const counts = {
-    active: workOrders.filter(w => ["PENDING","IN_PROGRESS","URGENT"].includes(w.status)).length,
-    done:   workOrders.filter(w => w.status === "DONE").length,
-    all:    workOrders.length,
-  };
-
-  const today = time.toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" });
-  const timeStr = time.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  const isActive = (w: WO) => ["PENDING", "IN_PROGRESS", "URGENT"].includes(w.status);
+  const list = workOrders
+    .filter(w => filter === "all" ? true : filter === "done" ? w.status === "DONE" : isActive(w))
+    .sort((a, b) => (ORDER[a.status] ?? 9) - (ORDER[b.status] ?? 9) || +new Date(a.scheduledAt ?? a.createdAt) - +new Date(b.scheduledAt ?? b.createdAt));
+  const counts = { active: workOrders.filter(isActive).length, done: workOrders.filter(w => w.status === "DONE").length, all: workOrders.length };
+  const urgent = workOrders.filter(w => w.status === "URGENT").length;
+  const hour = new Date().getHours();
+  const greet = hour < 11 ? "Günaydın" : hour < 18 ? "İyi çalışmalar" : "İyi akşamlar";
+  const today = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f1f2f5", fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
-      {/* ── HEADER ── */}
-      <header style={{ background: "#0f172a", color: "#fff", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: 680, margin: "0 auto", padding: "0 20px", height: 60, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: "linear-gradient(135deg,#2563eb,#7c3aed)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, flexShrink: 0,
-            }}>🛗</div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "-0.03em" }}>Servi<span style={{ color: "#60a5fa" }}>sim</span></div>
-              <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", marginTop: 1 }}>Teknisyen Portalı</div>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {refreshing && <div style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.2)", borderTopColor: "#60a5fa", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />}
-            <button onClick={() => loadData(true)} style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 9, padding: "7px 13px", color: "rgba(255,255,255,0.7)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-              🔄 Yenile
-            </button>
-            <Link href="/auth/logout" style={{ padding: "7px 13px", fontSize: 12.5, fontWeight: 600, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Çıkış</Link>
-          </div>
+    <div className="tp">
+      <style>{TP_CSS}</style>
+      <header className="tp-head">
+        <div className="tp-bar">
+          <span className="tp-logo" aria-hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="2.5" width="14" height="19" rx="2.5" stroke="#F5F2EC" strokeWidth="1.8" /><path d="M9 8.5l3-3 3 3M9 15.5l3 3 3-3" stroke="#F0C060" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </span>
+          <b>Saha ekranı</b>
+          <button className="tp-ic" onClick={() => loadData(true)} aria-label="Yenile" disabled={refreshing}><span className={refreshing ? "spin" : ""}><Ic d={I.refresh} size={17} /></span></button>
+          <button className="tp-ic" onClick={logout} aria-label="Çıkış yap"><Ic d={I.out} size={17} /></button>
+        </div>
+        <div className="tp-hello">
+          <small>{today}</small>
+          <h1>{greet}{name ? `, ${name}` : ""}</h1>
+          <p>{loading ? "İşleriniz yükleniyor…" : counts.active === 0 ? "Bekleyen işiniz yok." : `${counts.active} açık iş${urgent ? `, ${urgent} tanesi acil` : ""}.`}</p>
+        </div>
+        <div className="tp-seg" role="tablist">
+          {([["active", "Açık", counts.active], ["done", "Biten", counts.done], ["all", "Tümü", counts.all]] as const).map(([k, l, n]) => (
+            <button key={k} role="tab" aria-selected={filter === k} className={filter === k ? "on" : ""} onClick={() => setFilter(k)}>{l} <em>{n}</em></button>
+          ))}
         </div>
       </header>
 
-      <div style={{ maxWidth: 680, margin: "0 auto", padding: "20px 20px 100px" }}>
-        {/* ── GREETING ── */}
-        <div style={{ background: "linear-gradient(135deg,#0f172a,#1a1d2e)", borderRadius: 20, padding: "24px", color: "#fff", marginBottom: 20, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: -60, right: -60, width: 200, height: 200, background: "radial-gradient(circle,rgba(124,58,237,0.25),transparent 70%)", pointerEvents: "none" }} />
-          <div style={{ position: "relative" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>{today}</div>
-            <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.03em", marginBottom: 4 }}>
-              {session ? `Merhaba, ${session.email.split("@")[0]} 👋` : "Merhaba 👋"}
+      <main className="tp-list">
+        {err && <div className="alert" role="alert">{err}</div>}
+        {loading ? [0, 1, 2].map(i => <div key={i} className="skel" style={{ height: 150, borderRadius: 16 }} />)
+          : list.length === 0 ? (
+            <div className="empty2">
+              <Ic d="M5 12l5 5L20 7" size={28} />
+              <b>{filter === "active" ? "Açık iş yok" : "Kayıt yok"}</b>
+              <p>{filter === "active" ? "Yeni iş atandığında burada görünecek." : "Farklı bir sekme seçin."}</p>
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
-              Bugün <b style={{ color: "#60a5fa" }}>{counts.active}</b> aktif iş emrin var.
-            </div>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {[
-                { label: "Aktif", val: counts.active, color: "#60a5fa" },
-                { label: "Tamamlanan", val: counts.done, color: "#34d399" },
-                { label: "Toplam", val: counts.all, color: "rgba(255,255,255,0.5)" },
-              ].map(s => (
-                <div key={s.label} style={{ background: "rgba(255,255,255,0.07)", borderRadius: 12, padding: "10px 16px", minWidth: 80 }}>
-                  <div style={{ fontSize: 20, fontWeight: 900, color: s.color, letterSpacing: "-0.04em" }}>{s.val}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2, fontWeight: 600 }}>{s.label}</div>
-                </div>
-              ))}
-              <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: 12, padding: "10px 16px" }}>
-                <div style={{ fontSize: 20, fontWeight: 900, color: "rgba(255,255,255,0.85)", letterSpacing: "-0.04em" }}>{timeStr}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 2, fontWeight: 600 }}>Saat</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── QUICK ACTIONS ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
-          {[
-            { icon: "📞", label: "Müşteri Ara", desc: "İş emrindeki numarayı çevir", href: "#" },
-            { icon: "🗺", label: "Haritada Göster", desc: "Günlük rotanı görüntüle", href: "#" },
-          ].map(a => (
-            <Link key={a.label} href={a.href} style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 16, padding: "16px 18px", textDecoration: "none", display: "block", transition: "all 0.15s" }}>
-              <div style={{ fontSize: 24, marginBottom: 8 }}>{a.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: "#0f172a", marginBottom: 2 }}>{a.label}</div>
-              <div style={{ fontSize: 12, color: "#64748b" }}>{a.desc}</div>
-            </Link>
-          ))}
-        </div>
-
-        {/* ── FILTER TABS ── */}
-        <div style={{ display: "flex", gap: 4, background: "#e8e9ec", borderRadius: 12, padding: 4, marginBottom: 16 }}>
-          {([
-            { key: "active", label: `Aktif (${counts.active})` },
-            { key: "done",   label: `Bitti (${counts.done})` },
-            { key: "all",    label: `Tümü (${counts.all})` },
-          ] as const).map(f => (
-            <button key={f.key} onClick={() => setFilter(f.key)} style={{
-              flex: 1, padding: "9px 8px", borderRadius: 9, border: "none",
-              background: filter === f.key ? "#fff" : "transparent",
-              color: filter === f.key ? "#0f172a" : "#64748b",
-              fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
-              boxShadow: filter === f.key ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-              fontFamily: "inherit",
-            }}>{f.label}</button>
-          ))}
-        </div>
-
-        {/* ── CONTENT ── */}
-        {loading ? (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200, gap: 12, color: "#64748b", fontSize: 14 }}>
-            <div style={{ width: 24, height: 24, border: "3px solid #e2e8f0", borderTopColor: "#7c3aed", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-            Yükleniyor...
-          </div>
-        ) : err ? (
-          <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 14, padding: "20px 24px", textAlign: "center", color: "#b91c1c", fontSize: 14 }}>
-            ⚠️ {err}
-          </div>
-        ) : filtered.length === 0 ? (
-          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 20, padding: "40px 24px", textAlign: "center" }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>{filter === "done" ? "🎉" : "☀️"}</div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>
-              {filter === "active" ? "Aktif iş emrin yok!" : filter === "done" ? "Henüz tamamlanan yok" : "Hiç iş emri yok"}
-            </div>
-            <div style={{ fontSize: 13, color: "#64748b" }}>
-              {filter === "active" ? "Bugün planlanmış işlerin burada görünecek." : "Tamamlanan işler burada listelenir."}
-            </div>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {filtered.map(wo => (
-              <WOCard key={wo.id} wo={wo} onStatusChange={handleStatusChange} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── BOTTOM NAV ── */}
-      <nav style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-around", padding: "0 16px", height: 68, zIndex: 50, boxShadow: "0 -4px 20px rgba(0,0,0,0.06)" }}>
-        {[
-          { icon: "📋", label: "İş Emirleri", active: true, action: () => setFilter("active") },
-          { icon: "✅", label: "Tamamlananlar", active: false, action: () => setFilter("done") },
-          { icon: "📞", label: "Ofis", active: false, action: () => {} },
-          { icon: "👤", label: "Profil", active: false, action: () => {} },
-        ].map(n => (
-          <button key={n.label} onClick={n.action} style={{
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
-            background: "none", border: "none", cursor: "pointer", padding: "8px 12px",
-            color: n.active ? "#2563eb" : "#94a3b8", fontFamily: "inherit",
-          }}>
-            <span style={{ fontSize: 22 }}>{n.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 700 }}>{n.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-        * { box-sizing: border-box; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        body { -webkit-font-smoothing: antialiased; margin: 0; }
-        a:hover > div { box-shadow: 0 4px 16px rgba(0,0,0,0.1) !important; transform: translateY(-2px); }
-      `}</style>
+          ) : list.map((wo, i) => <JobCard key={wo.id} wo={wo} i={i} onStatusChange={(id, s) => setWorkOrders(p => p.map(w => w.id === id ? { ...w, status: s } : w))} />)}
+        <div className="tp-install"><InstallApp className="b b-line" label="Servisim'i telefona yükle" /></div>
+      </main>
     </div>
   );
 }
+
+const TP_CSS = `
+.tp{min-height:100dvh;background:var(--background);padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.tp-head{background:var(--sidebar-bg);color:#F5F2EC;padding:calc(10px + env(safe-area-inset-top)) 16px 14px;position:relative;overflow:hidden}
+.tp-head::after{content:"";position:absolute;right:-60px;top:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(240,192,96,.16),transparent 65%);pointer-events:none}
+.tp-bar{display:flex;align-items:center;gap:8px;max-width:640px;margin:0 auto}
+.tp-bar b{font-size:14px;font-weight:750;flex:1}
+.tp-logo{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.tp-ic{width:36px;height:36px;border-radius:10px;border:0;background:rgba(255,255,255,.07);color:#F5F2EC;display:grid;place-items:center}
+.tp-ic .spin{display:inline-flex;animation:spin .8s linear infinite}
+.tp-hello{max-width:640px;margin:16px auto 14px;position:relative;z-index:1}
+.tp-hello small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,242,236,.5);font-weight:700}
+.tp-hello h1{margin:4px 0 2px;font-size:24px;font-weight:800;letter-spacing:-.03em}
+.tp-hello p{margin:0;font-size:14px;color:rgba(245,242,236,.7)}
+.tp-seg{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:rgba(255,255,255,.07);position:relative;z-index:1}
+.tp-seg button{height:36px;border:0;border-radius:9px;background:transparent;color:rgba(245,242,236,.65);font:inherit;font-size:13px;font-weight:650;transition:background .2s,color .2s}
+.tp-seg button.on{background:#F5F2EC;color:#1B1F2B}
+.tp-seg em{font-style:normal;opacity:.55;margin-left:3px}
+.tp-list{max-width:640px;margin:0 auto;padding:14px 12px;display:grid;gap:10px}
+.tj{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 14px 14px 18px;display:grid;gap:6px;overflow:hidden;animation:fadeUp .4s var(--ease-out) both}
+.tj::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bar)}
+.tj-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tj-type{font-size:12px;font-weight:650;color:var(--muted)}
+.tj-when{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--muted-2);font-variant-numeric:tabular-nums}
+.tj h3{margin:2px 0 0;font-size:17px;font-weight:750;letter-spacing:-.02em}
+.tj-asset{margin:0;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--foreground-2)}
+.tj-asset .code{margin-left:auto}
+.tj-note{margin:2px 0 0;font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:9px;padding:8px 10px}
+.tj-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tj-links a{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:9px;background:var(--surface-2);font-size:13px;font-weight:650;color:var(--foreground)}
+.tj-links a:active{transform:scale(.97)}
+.tj-go{margin-top:6px;height:48px;border:0;border-radius:12px;background:var(--primary);color:#F5F2EC;font:inherit;font-size:15px;font-weight:750;transition:transform .15s var(--ease-out),opacity .2s}
+.tj-go.done{background:var(--success)}
+.tj-go:active{transform:scale(.98)}
+.tj-go:disabled{opacity:.6}
+.tj-err{margin:0;font-size:12.5px;color:var(--danger)}
+.tp-install{display:flex;justify-content:center;margin-top:8px}
+`;

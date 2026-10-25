@@ -13,7 +13,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%)",
+          background: "linear-gradient(135deg,#1B1F2B 0%,#2A3142 100%)",
           borderRadius: 110,
         }}
       >
@@ -32,7 +32,7 @@ export default function Icon() {
           {/* "S" harfi */}
           <path
             d="M15 16.2C15.3 15.3 16.2 15 18 15C19.8 15 21 15.8 21 16.7C21 17.5 20.1 18 18 18C15.9 18 15 18.5 15 19.5C15 20.5 16.2 21 18 21C19.8 21 21 20.2 21 20.2"
-            stroke="#2563eb"
+            stroke="#1B1F2B"
             strokeWidth="1.3"
             strokeLinecap="round"
             fill="none"

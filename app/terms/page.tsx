@@ -33,7 +33,7 @@ export default function TermsPage() {
         </Link>
         <div style={S.card}>
           <div style={{ display:"flex", alignItems:"flex-start", gap:18, marginBottom:8 }}>
-            <div style={{ width:52, height:52, borderRadius:14, background:"#f0fdf4", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}>📄</div>
+            <div style={{ width:52, height:52, borderRadius:14, background:"#f0fdf4", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26, flexShrink:0 }}></div>
             <div>
               <h1 style={S.h1}>Kullanım Koşulları</h1>
               <p style={S.meta}>Servisim Hizmet Sözleşmesi — Son güncelleme: Ocak 2025</p>
@@ -58,7 +58,7 @@ export default function TermsPage() {
           <p style={S.p}>
             Kullanıcı, hesap kimlik bilgilerinin gizliliğini korumakla yükümlüdür. Hesap üzerinden gerçekleştirilen
             tüm eylemlerden Kullanıcı sorumludur. Güvenlik ihlalinin fark edilmesi hâlinde
-            <a href="mailto:destek@servisim.app" style={{ color:"#2563eb" }}> destek@servisim.app</a> adresine
+            <a href="mailto:destek@servisim.app" style={{ color:"#1B1F2B" }}> destek@servisim.app</a> adresine
             derhal bildirilmelidir.
           </p>
 
@@ -77,7 +77,7 @@ export default function TermsPage() {
             </tbody>
           </table>
           <ul style={S.ul}>
-            <li>Yeni hesaplar için <strong>14 günlük ücretsiz deneme</strong> sunulur; kredi kartı gerekmez.</li>
+            <li>Yeni hesaplar için <strong>7 günlük ücretsiz deneme</strong> sunulur; kredi kartı gerekmez.</li>
             <li>Ödemeler Stripe üzerinden güvenli biçimde gerçekleştirilir; kart bilgisi Servisim sunucularında saklanmaz.</li>
             <li>Abonelik her dönem başında otomatik yenilenir.</li>
             <li>İptal işlemi mevcut dönem bitmeden gerçekleştirilirse ücret iadesi yapılmaz; dönem sonuna kadar hizmet sağlanmaya devam eder.</li>
@@ -144,10 +144,10 @@ export default function TermsPage() {
             yetkilidir. 6502 sayılı TKHK kapsamındaki tüketiciler için tüketici hakem heyeti başvuru hakkı saklıdır.
           </p>
 
-          <div style={{ marginTop:40, padding:"16px 20px", background:"#eff6ff", borderRadius:12, border:"1px solid #bfdbfe", fontSize:13, color:"#1e40af", lineHeight:1.7 }}>
-            <strong>📧 Sorularınız için:</strong><br/>
-            Hukuki talepler: <a href="mailto:legal@servisim.app" style={{ color:"#1e40af", fontWeight:600 }}>legal@servisim.app</a><br/>
-            Genel destek: <a href="mailto:destek@servisim.app" style={{ color:"#1e40af", fontWeight:600 }}>destek@servisim.app</a>
+          <div style={{ marginTop:40, padding:"16px 20px", background:"#F0EDE6", borderRadius:12, border:"1px solid #D6D0C4", fontSize:13, color:"#1B1F2B", lineHeight:1.7 }}>
+            <strong>Sorularınız için:</strong><br/>
+            Hukuki talepler: <a href="mailto:legal@servisim.app" style={{ color:"#1B1F2B", fontWeight:600 }}>legal@servisim.app</a><br/>
+            Genel destek: <a href="mailto:destek@servisim.app" style={{ color:"#1B1F2B", fontWeight:600 }}>destek@servisim.app</a>
           </div>
         </div>
       </div>

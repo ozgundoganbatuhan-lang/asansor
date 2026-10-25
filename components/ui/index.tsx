@@ -114,7 +114,7 @@ export function Pill({
     green:   "bg-emerald-50 text-emerald-700 border border-emerald-100",
     amber:   "bg-amber-50  text-amber-700   border border-amber-100",
     red:     "bg-red-50    text-red-700      border border-red-100",
-    blue:    "bg-blue-50   text-blue-700     border border-blue-100",
+    blue:    "bg-[#F0EDE6]   text-[#8A5500]     border border-[#D6D0C4]",
     gray:    "bg-slate-100 text-slate-500    border border-slate-200",
     warning: "bg-amber-50  text-amber-700   border border-amber-100",
   } as const;

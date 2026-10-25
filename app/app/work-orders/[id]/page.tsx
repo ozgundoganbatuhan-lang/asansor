@@ -93,13 +93,13 @@ function EmbeddedMap({ address, label, lat, lng }: { address?: string | null; la
         />
         <a href={gmapsLink} target="_blank" rel="noreferrer"
           style={{ position: "absolute", bottom: 10, right: 10, background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 11, fontWeight: 700, padding: "5px 10px", borderRadius: 7, textDecoration: "none" }}>
-          ↗ Tam ekran
+          Tam ekran
         </a>
       </div>
       {/* Address + actions */}
       <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderTop: "1px solid #f3f4f6", flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "#374151", flex: 1, minWidth: 0 }}>
-          <span>📍</span>
+          <span></span>
           <span style={{ fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {[label, address].filter(Boolean).join("  ·  ")}
           </span>
@@ -107,11 +107,11 @@ function EmbeddedMap({ address, label, lat, lng }: { address?: string | null; la
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <a href={gmapsLink} target="_blank" rel="noreferrer"
             style={{ fontSize: 12, fontWeight: 600, color: "#374151", padding: "6px 14px", background: "#E8E3D8", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
-            🗺️ Haritada Gör
+            Haritada Gör
           </a>
           <a href={directionsLink} target="_blank" rel="noreferrer"
             style={{ fontSize: 12, fontWeight: 700, color: "#fff", padding: "6px 14px", background: "#1B1F2B", borderRadius: 8, textDecoration: "none", whiteSpace: "nowrap" }}>
-            🧭 Yol Tarifi
+            Yol Tarifi
           </a>
         </div>
       </div>
@@ -191,7 +191,7 @@ export default function WorkOrderDetailPage() {
     const res = await fetch(`/api/work-orders/${params.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status: form.status, technicianId: form.technicianId || null, assetId: form.assetId || null, scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null, note: form.note || null, laborCost: Math.round(Number(form.laborCost) * 100), serviceFee: Math.round(Number(form.serviceFee) * 100), completedAt: form.status === "DONE" ? new Date().toISOString() : null }) });
     const data = await res.json(); setSaving(false);
     if (!res.ok) { setError(data.error ?? "Kaydedilemedi."); return; }
-    setSuccess("İş emri güncellendi ✓"); await load();
+    setSuccess("İş emri güncellendi "); await load();
   }
 
   async function saveEv() {
@@ -199,7 +199,7 @@ export default function WorkOrderDetailPage() {
     const res = await fetch(`/api/work-orders/${params.id}/evidence`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(evidence) });
     const data = await res.json(); setSavEv(false);
     if (!res.ok) { setError(data.error ?? "Kaydedilemedi."); return; }
-    setSuccess("Servis kanıtı kaydedildi ✓");
+    setSuccess("Servis kanıtı kaydedildi ");
   }
 
   if (!item) return (
@@ -212,7 +212,7 @@ export default function WorkOrderDetailPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}} input:focus,select:focus,textarea:focus{border-color:#2563eb!important;outline:none!important;}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}} input:focus,select:focus,textarea:focus{border-color:#1B1F2B!important;outline:none!important;}`}</style>
 
       {/* ── Breadcrumb ── */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#9ca3af" }}>
@@ -238,8 +238,8 @@ export default function WorkOrderDetailPage() {
             </div>
             <div style={{ marginTop: 6, fontSize: 12, color: "#9ca3af" }}>
               {TYPE_LABEL[item.type] ?? item.type}
-              {item.scheduledAt && <><span style={{ margin: "0 8px" }}>·</span>📅 {fmtDate(item.scheduledAt)}</>}
-              {item.technician?.name && <><span style={{ margin: "0 8px" }}>·</span>👷 {item.technician.name}</>}
+              {item.scheduledAt && <><span style={{ margin: "0 8px" }}>·</span>{fmtDate(item.scheduledAt)}</>}
+              {item.technician?.name && <><span style={{ margin: "0 8px" }}>·</span>{item.technician.name}</>}
             </div>
           </div>
           {/* Completion ring */}
@@ -258,12 +258,11 @@ export default function WorkOrderDetailPage() {
         <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
           <a href={`/service-forms/${item.id}`} target="_blank" rel="noreferrer"
             style={{ fontSize: 12, fontWeight: 700, padding: "7px 14px", background: "#111827", color: "#fff", borderRadius: 8, textDecoration: "none" }}>
-            Servis Formu ↗
-          </a>
+            Servis Formu           </a>
           {item.customer.phone && (
             <a href={`tel:${item.customer.phone}`}
               style={{ fontSize: 12, fontWeight: 600, padding: "7px 14px", background: "#E8E3D8", color: "#374151", borderRadius: 8, textDecoration: "none" }}>
-              📞 {item.customer.phone}
+              {item.customer.phone}
             </a>
           )}
           <PrintButton className="print-btn-dark" />
@@ -271,16 +270,16 @@ export default function WorkOrderDetailPage() {
       </div>
 
       {/* Alerts */}
-      {error && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{error}<button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#C0311A", fontWeight: 700 }}>✕</button></div>}
+      {error && <div style={{ background: "#FCECE8", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#C0311A", display: "flex", justifyContent: "space-between" }}>{error}<button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#C0311A", fontWeight: 700 }}></button></div>}
       {success && <div style={{ background: "#E8F5EE", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 16px", fontSize: 13, color: "#166534" }}>{success}</div>}
 
       {/* ── Tab bar ── */}
       <div style={{ display: "flex", gap: 2, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 5 }}>
         {([
-          { key: "detay",  label: "📋 Detay" },
-          { key: "kanit",  label: "✅ Servis Kanıtı" },
-          { key: "fotolar",label: "📷 Fotoğraflar" },
-          { key: "imza",   label: "✍️ İmza" },
+          { key: "detay",  label: "Detay" },
+          { key: "kanit",  label: "Servis Kanıtı" },
+          { key: "fotolar",label: "Fotoğraflar" },
+          { key: "imza",   label: "İmza" },
         ] as const).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             style={{ flex: 1, padding: "8px 14px", borderRadius: 9, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, background: tab === t.key ? "#111827" : "transparent", color: tab === t.key ? "#fff" : "#6b7280", transition: "all .15s" }}>
@@ -291,14 +290,14 @@ export default function WorkOrderDetailPage() {
 
       {/* ══════════ DETAY TAB ══════════ */}
       {tab === "detay" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 20, alignItems: "start" }}>
+        <div className="r-split" style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 20, alignItems: "start" }}>
           {/* LEFT */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
 
             {/* Map — always on top */}
             {(mapAddress || mapLabel) && (
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#9ca3af", marginBottom: 8 }}>📍 KONUM</div>
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.6px", color: "#9ca3af", marginBottom: 8 }}>KONUM</div>
                 <EmbeddedMap address={mapAddress} label={mapLabel} lat={mapLat} lng={mapLng} />
               </div>
             )}
@@ -306,7 +305,7 @@ export default function WorkOrderDetailPage() {
             {/* Operasyon kartı */}
             <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 20 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 16 }}>Operasyon Güncelle</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="r-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 <Field label="Durum">
                   <select style={F} value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
                     {Object.entries(ST).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
@@ -359,7 +358,7 @@ export default function WorkOrderDetailPage() {
             {/* Finance */}
             <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 20 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 14 }}>Finans</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
+              <div className="r-many" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
                 {[{ label: "İşçilik", val: money(item.laborCost) }, { label: "Servis", val: money(item.serviceFee) }, { label: "Parçalar", val: money(item.partsUsed.reduce((s, u) => s + (u.part.price ?? 0) * u.quantity, 0)) }, { label: "Toplam", val: money(totalCost) }].map(k => (
                   <div key={k.label} style={{ background: "#F5F2EC", borderRadius: 10, padding: "12px 14px" }}>
                     <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px", color: "#9ca3af", marginBottom: 4 }}>{k.label}</div>
@@ -402,7 +401,7 @@ export default function WorkOrderDetailPage() {
                 {completionList.map(c => (
                   <div key={c.label} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "#F5F2EC", borderRadius: 8 }}>
                     <span style={{ fontSize: 12, color: "#374151" }}>{c.label}</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 99, background: c.done ? "#E8F5EE" : "#E8E3D8", color: c.done ? "#166534" : "#6b7280" }}>{c.done ? "✓" : "Eksik"}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 9px", borderRadius: 99, background: c.done ? "#E8F5EE" : "#E8E3D8", color: c.done ? "#166534" : "#6b7280" }}>{c.done ? "" : "Eksik"}</span>
                   </div>
                 ))}
               </div>
@@ -428,7 +427,7 @@ export default function WorkOrderDetailPage() {
       {tab === "kanit" && (
         <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 14, padding: 24 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111827", marginBottom: 18 }}>Servis Kanıtı ve Onay</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="r-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <Field label="Başlangıç Saati">
               <input style={F} type="datetime-local" value={evidence.startedAt?.slice(0, 16) ?? ""} onChange={e => setEvidence(ev => ({ ...ev, startedAt: e.target.value ? new Date(e.target.value).toISOString() : null }))} />
             </Field>
@@ -472,7 +471,7 @@ export default function WorkOrderDetailPage() {
           {attachments.length === 0 ? (
             <div style={{ textAlign: "center", padding: "32px 0", color: "#9ca3af", fontSize: 13 }}>Henüz fotoğraf yüklenmedi.</div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 16 }}>
+            <div className="r-many" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14, marginTop: 16 }}>
               {attachments.map(a => (
                 <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ borderRadius: 12, overflow: "hidden", border: "1px solid #e5e7eb", display: "block", textDecoration: "none" }}>
                   <img src={a.url} alt={a.originalName} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />

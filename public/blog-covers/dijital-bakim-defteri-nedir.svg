@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+<defs><radialGradient id="r" cx="0.85" cy="0" r="0.9"><stop stop-color="#F0B43C" stop-opacity=".22"/><stop offset="1" stop-color="#F0B43C" stop-opacity="0"/></radialGradient></defs>
+<rect width="1200" height="675" fill="#12151D"/><rect width="1200" height="675" fill="url(#r)"/>
+<g opacity=".9"><rect x="930" y="0" width="170" height="675" fill="#1C2130"/><rect x="950" y="0" width="3" height="675" fill="#3A4256"/><rect x="1077" y="0" width="3" height="675" fill="#3A4256"/>
+<rect x="968" y="250" width="94" height="120" rx="8" fill="#E9E4D9"/><rect x="980" y="262" width="32" height="96" rx="3" fill="#C9C1B0"/><rect x="1018" y="262" width="32" height="96" rx="3" fill="#C9C1B0"/><rect x="1014" y="0" width="2" height="250" fill="#6A7286"/></g>
+<text x="96" y="140" font-family="Menlo,monospace" font-size="24" font-weight="700" fill="#F0B43C" letter-spacing="4">SERVİSİM REHBER</text>
+<text x="96" y="258" font-family="Helvetica Neue,Arial,sans-serif" font-size="70" font-weight="800" fill="#F3F0EA" letter-spacing="-2">Dijital bakım defteri</text><text x="96" y="342" font-family="Helvetica Neue,Arial,sans-serif" font-size="70" font-weight="800" fill="#F3F0EA" letter-spacing="-2">nedir?</text>
+<rect x="96" y="560" width="120" height="6" rx="3" fill="#F0B43C"/>
+</svg>

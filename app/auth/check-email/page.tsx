@@ -21,17 +21,17 @@ function CheckEmail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f0f2f5] font-sans flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-[#E8E3D8] font-sans flex flex-col items-center justify-center p-6">
       <div className="mb-8"><AuthBrand /></div>
 
-      <div className="w-full max-w-[420px] bg-white border border-[#e2e8f0] rounded-2xl p-10 shadow-[0_2px_20px_rgba(15,22,35,.06)] text-center">
-        <div className="text-5xl mb-5">{expired ? "⏱" : "📧"}</div>
+      <div className="w-full max-w-[420px] bg-white border border-[#D6D0C4] rounded-2xl p-10 shadow-[0_2px_20px_rgba(15,22,35,.06)] text-center">
+        <div className="text-5xl mb-5">{expired ? "" : ""}</div>
 
-        <h1 className="text-xl font-black text-[#0f1623] tracking-tight mb-2">
+        <h1 className="text-xl font-black text-[#12151d] tracking-tight mb-2">
           {expired ? "Bağlantı süresi doldu" : "E-postanızı kontrol edin"}
         </h1>
 
-        <p className="text-sm text-[#64748b] leading-relaxed mb-7">
+        <p className="text-sm text-[#6E6455] leading-relaxed mb-7">
           {expired
             ? "Doğrulama bağlantısının süresi dolmuş. Yeni bir bağlantı göndermek için aşağıdaki butona tıklayın."
             : "Kayıt e-posta adresinize bir doğrulama bağlantısı gönderdik. Gelen kutunuzu ve spam klasörünü kontrol edin."}
@@ -44,14 +44,14 @@ function CheckEmail() {
           </div>
         ) : (
           <button onClick={resend} disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold text-sm rounded-xl py-3 transition-colors shadow-sm flex items-center justify-center gap-2">
+            className="w-full bg-[#1B1F2B] hover:bg-[#1B1F2B] disabled:opacity-60 text-white font-bold text-sm rounded-xl py-3 transition-colors shadow-sm flex items-center justify-center gap-2">
             {loading
               ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" style={{animation:"spin .6s linear infinite"}}/>Gönderiliyor…</>
               : "Yeni bağlantı gönder"}
           </button>
         )}
 
-        <Link href="/auth/login" className="block mt-5 text-sm text-[#94a3b8] hover:text-[#4b5a6e] transition-colors">
+        <Link href="/auth/login" className="block mt-5 text-sm text-[#8a8272] hover:text-[#5a5446] transition-colors">
           ← Giriş sayfasına dön
         </Link>
       </div>

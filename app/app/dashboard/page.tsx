@@ -15,352 +15,240 @@ type Resp = {
 };
 
 const fmt = (v:number) => new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY",maximumFractionDigits:0}).format((v??0)/100);
-
-const STATUS:{[k:string]:{label:string;bg:string;color:string;border:string;dot:string}} = {
-  PENDING:    {label:"Planlı",    bg:"#E4EFF9",color:"#1A5C96",border:"#90BEE0",dot:"#C87800"},
-  IN_PROGRESS:{label:"Yolda",    bg:"#FFF3DC",color:"#B86800",border:"#F0C060",dot:"#C87800"},
-  URGENT:     {label:"Acil",     bg:"#FCECE8",color:"#C0311A",border:"#E8A090",dot:"#C0311A"},
-  DONE:       {label:"Tamam",    bg:"#E8F5EE",color:"#2E7D4F",border:"#9DCFB0",dot:"#2E7D4F"},
-  CANCELED:   {label:"İptal",   bg:"#F0EDE6",color:"#6E6455",border:"#D6D0C4",dot:"#9C9080"},
+const TYPE_L:Record<string,string> = { FAULT:"Arıza", PERIODIC_MAINTENANCE:"Aylık bakım", ANNUAL_INSPECTION:"Yıllık kontrol", REVISION:"Revizyon", INSTALLATION:"Kurulum" };
+const STATUS:Record<string,{label:string;bg:string;color:string;dot:string}> = {
+  URGENT:     {label:"Acil",       bg:"#FCECE8",color:"#A8301A",dot:"#C0311A"},
+  IN_PROGRESS:{label:"Sahada",     bg:"#FFF3DC",color:"#8A5500",dot:"#C87800"},
+  PENDING:    {label:"Planlı",     bg:"#E4EFF9",color:"#1A4F80",dot:"#1A5C96"},
+  DONE:       {label:"Tamamlandı", bg:"#E8F5EE",color:"#226440",dot:"#2E7D4F"},
+  CANCELED:   {label:"İptal",      bg:"#F0EDE6",color:"#6E6455",dot:"#9C9080"},
+};
+const MONTHS = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+const Ic = ({d,size=16}:{d:string;size?:number}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={d}/></svg>
+);
+const I = {
+  alert:"M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z",
+  clock:"M12 7v5l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+  cal:"M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z",
+  shield:"M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM12 9v4M12 16h.01",
+  plus:"M12 5v14M5 12h14",
+  check:"M5 12l5 5L20 7",
+  arrow:"M5 12h14M13 6l6 6-6 6",
+  box:"M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8",
 };
 
-const Ic = ({d,size=16,stroke="currentColor"}:{d:string;size?:number;stroke?:string}) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke}
-    strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>
-);
-
 export default function DashboardPage() {
-  const [data, setData]       = useState<Resp|null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string|null>(null);
+  const [data, setData] = useState<Resp|null>(null);
+  const [techCount, setTechCount] = useState<number|null>(null);
+  const [error, setError] = useState<string|null>(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const r = await fetch("/api/dashboard");
+        const [r, t] = await Promise.all([fetch("/api/dashboard"), fetch("/api/technicians")]);
         const j = await r.json();
-        if (!r.ok) setError(j.error ?? "Yüklenemedi"); else setData(j);
-      } catch { setError("Bağlantı hatası"); }
-      finally { setLoading(false); }
+        if (!r.ok) setError(j.error ?? "Özet yüklenemedi. Sayfayı yenileyin."); else setData(j);
+        if (t.ok) { const tj = await t.json(); setTechCount((tj.items ?? []).length); }
+      } catch { setError("Bağlantı kurulamadı. İnternetinizi kontrol edip sayfayı yenileyin."); }
     })();
   }, []);
 
-  const monthlyTotal = useMemo(() => data?.invoiceSummary.thisMonthTotal ? fmt(data.invoiceSummary.thisMonthTotal) : "₺0", [data]);
-  const trendMax = useMemo(() => Math.max(...(data?.invoiceSummary.trend?.map(t=>t.total)??[1]),1), [data]);
-  const today = new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"});
+  const trend = useMemo(() => data?.invoiceSummary.trend ?? [], [data]);
+  const trendMax = Math.max(1, ...trend.map(t => t.total));
+  const today = new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"});
+  const hour = new Date().getHours();
+  const greet = hour < 11 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
 
-  if (loading) return (
-    <div style={{minHeight:"60vh",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:16}}>
-      <div style={{width:36,height:36,border:"3px solid #e2e8f0",borderTopColor:"#1B1F2B",borderRadius:"50%",animation:"spin .7s linear infinite"}}/>
-      <div style={{fontSize:13,color:"#9C9080"}}>Yükleniyor...</div>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+  if (error) return <div className="alert" role="alert">{error}</div>;
+  if (!data) return (
+    <div className="pg">
+      <div className="skel" style={{height:52,maxWidth:320}}/>
+      <div className="kpis">{[0,1,2,3].map(i=><div key={i} className="skel" style={{height:68}}/>)}</div>
+      <div className="skel" style={{height:260}}/>
     </div>
   );
-  if (error || !data) return (
-    <div style={{background:"#FCECE8",border:"1px solid #E8A090",color:"#C0311A",padding:"14px 18px",borderRadius:14,fontSize:13}}>
-      {error ?? "Veri alınamadı."}
-    </div>
-  );
+
+  const s = data.stats;
+  const open = data.recentWOs.filter(w => w.status !== "DONE" && w.status !== "CANCELED");
+  const steps = [
+    { done: s.customers > 0, label: "İlk müşterinizi (bina/site) ekleyin", href: "/app/customers/new", hint: "Excel listeniz varsa toplu aktarın." },
+    { done: s.assets > 0, label: "Asansörleri kaydedin", href: "/app/assets", hint: "Her asansöre QR etiket otomatik oluşur." },
+    { done: (techCount ?? 0) > 0, label: "Teknisyenlerinizi davet edin", href: "/app/technicians", hint: "Telefonlarına Servisim'i yüklesinler." },
+    { done: s.workOrders > 0, label: "İlk iş emrini oluşturun", href: "/app/work-orders", hint: "Arıza ya da bakım; teknisyen anında görür." },
+  ];
+  const doneCount = steps.filter(x => x.done).length;
+  const alerts = [
+    { n: s.urgent, label: "Acil arıza", sub: "Teknisyen bekliyor", icon: I.alert, tone: "red", href: "/app/work-orders" },
+    { n: s.overdue, label: "Geciken bakım", sub: "Bakım günü geçti", icon: I.clock, tone: "red", href: "/app/maintenance-plans" },
+    { n: s.dueSoon, label: "Bu hafta bakım", sub: "Önümüzdeki 7 gün", icon: I.cal, tone: "amber", href: "/app/maintenance-plans" },
+    { n: s.risky, label: "Etiketli asansör", sub: "Kırmızı / sarı", icon: I.shield, tone: "amber", href: "/app/inspections" },
+  ];
 
   return (
-    <div style={{display:"flex",flexDirection:"column",gap:20}}>
-      <style>{`
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .d-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(15,23,42,0.09)!important}
-        .d-wo:hover{background:#f8fafc!important}
-        @media(max-width:900px){.d-g2{grid-template-columns:1fr!important}}
-        @media(max-width:700px){.d-g3{grid-template-columns:1fr!important}}
-      `}</style>
-
-      {/* ── Hero ── */}
-      <div style={{background:"linear-gradient(140deg,#1B1F2B 0%,#0F121A 60%,#1d2d3e 100%)",
-        borderRadius:18,padding:"28px 32px",color:"#FFFFFF",position:"relative",overflow:"hidden",
-        boxShadow:"0 4px 24px rgba(15,23,42,0.18)"}}>
-        <div style={{position:"absolute",top:-120,right:-80,width:440,height:440,
-          background:"radial-gradient(circle,rgba(200,120,0,0.18),transparent 68%)",pointerEvents:"none"}}/>
-        <div style={{position:"absolute",bottom:-80,left:200,width:340,height:340,
-          background:"radial-gradient(circle,rgba(99,102,241,0.16),transparent 65%)",pointerEvents:"none"}}/>
-        <div style={{position:"relative",display:"flex",flexWrap:"wrap",alignItems:"flex-end",
-          justifyContent:"space-between",gap:18}}>
-          <div>
-            <div style={{fontSize:10.5,fontWeight:700,textTransform:"uppercase",
-              letterSpacing:"0.2em",color:"rgba(255,255,255,0.36)",marginBottom:10}}>
-              {today}
-            </div>
-            <h1 style={{fontSize:28,fontWeight:900,letterSpacing:"-0.05em",lineHeight:1.1,margin:0}}>
-              Günün özeti
-            </h1>
-            <p style={{marginTop:8,fontSize:13.5,lineHeight:1.7,color:"rgba(255,255,255,0.46)",
-              maxWidth:460,margin:"8px 0 0"}}>
-              Bakım ritmi, acil işler, tahsilat ve stok riski — tek bakışta.
-            </p>
-          </div>
-          <div style={{display:"flex",gap:8}}>
-            <Link href="/app/work-orders" style={{display:"inline-flex",alignItems:"center",gap:7,
-              background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.14)",
-              color:"#FFFFFF",fontSize:13,fontWeight:700,padding:"9px 17px",borderRadius:10,textDecoration:"none"}}>
-              İş emirleri →
-            </Link>
-            <Link href="/app/work-orders" style={{display:"inline-flex",alignItems:"center",gap:7,
-              background:"#FFFFFF",color:"#1A1510",fontSize:13,fontWeight:800,
-              padding:"9px 17px",borderRadius:10,textDecoration:"none",
-              boxShadow:"0 4px 18px rgba(0,0,0,0.2)"}}>
-              + Yeni iş emri
-            </Link>
-          </div>
+    <div className="pg db">
+      <style>{DB_CSS}</style>
+      <div className="ph">
+        <div>
+          <div className="ph-eyebrow">{today}</div>
+          <h1 className="ph-title">{greet}</h1>
+          <p className="ph-sub">{s.urgent + s.overdue > 0 ? `Bugün ilgilenmeniz gereken ${s.urgent + s.overdue} iş var.` : "Acil iş yok. Bakım planı yolunda."}</p>
+        </div>
+        <div className="ph-actions">
+          <Link href="/app/work-orders" className="b b-ink"><Ic d={I.plus} size={14}/>Yeni iş emri</Link>
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:12}}>
-        {[
-          {label:"Aktif İş Emirleri",value:data.stats.workOrders,color:"#1B1F2B",iconBg:"#E4EFF9",
-            icon:"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4",
-            trend:"+3 dünden",up:true,href:"/app/work-orders"},
-          {label:"Acil Müdahale",value:data.stats.urgent,color:"#dc2626",iconBg:"#FCECE8",
-            icon:"M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z M12 9v4 M12 17h.01",
-            trend:"Öncelikli",up:false,href:"/app/work-orders"},
-          {label:"Yaklaşan Bakım",value:data.stats.dueSoon,color:"#059669",iconBg:"#E8F5EE",
-            icon:"M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z",
-            trend:"Takvime bağlı",up:true,href:"/app/maintenance-plans"},
-          {label:"Aylık Gelir",value:monthlyTotal,color:"#7c3aed",iconBg:"#f5f3ff",
-            icon:"M12 1v22 M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6",
-            trend:`${data.invoiceSummary.thisMonthCount} fatura`,up:true,href:"/app/invoices"},
-        ].map((k,i) => (
-          <Link key={i} href={k.href} className="d-kpi" style={{
-            background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,
-            padding:"20px 22px",textDecoration:"none",color:"inherit",
-            transition:"all .18s",display:"block",boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
-              <div style={{width:38,height:38,borderRadius:11,background:k.iconBg,
-                display:"flex",alignItems:"center",justifyContent:"center"}}>
-                <Ic d={k.icon} size={17} stroke={k.color}/>
-              </div>
-              <span style={{fontSize:10.5,fontWeight:700,padding:"3px 9px",borderRadius:7,
-                background:k.up?"#dcfce7":"#fee2e2",color:k.up?"#2E7D4F":"#C0311A"}}>
-                {k.up?"↑":"↓"} {k.trend}
-              </span>
+      {doneCount < steps.length && (
+        <section className="card2 db-setup reveal" aria-labelledby="setup-t">
+          <div className="db-setup-head">
+            <div>
+              <h2 id="setup-t">Kurulum adımları</h2>
+              <p>{doneCount}/{steps.length} tamamlandı · Takıldığınız yerde 0545 169 63 88'i arayın, birlikte kuralım.</p>
             </div>
-            <div className="metric-label">{k.label}</div>
-            <div className="metric-value">{k.value}</div>
+            <div className="db-ring" style={{["--p" as string]: `${(doneCount/steps.length)*100}%`}}><span>{doneCount}/{steps.length}</span></div>
+          </div>
+          <ol className="db-steps">
+            {steps.map((st, i) => (
+              <li key={i} className={st.done ? "done" : ""}>
+                <span className="db-check">{st.done ? <Ic d={I.check} size={12}/> : i + 1}</span>
+                <div><b>{st.label}</b><small>{st.hint}</small></div>
+                {!st.done && <Link href={st.href} className="b b-sm b-line">Başla</Link>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <div className="db-alerts stagger">
+        {alerts.map(a => (
+          <Link key={a.label} href={a.href} className={`db-alert lift press ${a.n > 0 ? a.tone : "calm"}`}>
+            <span className="db-alert-ic"><Ic d={a.icon} size={16}/></span>
+            <b>{a.n}</b>
+            <span className="db-alert-t">{a.label}<small>{a.sub}</small></span>
           </Link>
         ))}
       </div>
 
-      {/* ── Chart + Fleet ── */}
-      <div className="d-g2" style={{display:"grid",gridTemplateColumns:"minmax(0,1.4fr) minmax(0,1fr)",gap:14}}>
-        {/* Revenue chart */}
-        <div style={{background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,
-          padding:"22px 24px",boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:22}}>
-            <div>
-              <div className="metric-label">Gelir Trendi</div>
-              <div style={{fontSize:26,fontWeight:900,letterSpacing:"-0.06em",color:"#1A1510",lineHeight:1}}>
-                {monthlyTotal}
-              </div>
-              <div style={{fontSize:12,color:"#6E6455",marginTop:5}}>
-                Bu ay · {data.invoiceSummary.thisMonthCount} fatura
-              </div>
-            </div>
-            <span style={{fontSize:10.5,fontWeight:700,padding:"4px 10px",borderRadius:8,
-              background:"#E8F5EE",color:"#2E7D4F",border:"1px solid #bbf7d0"}}>Son 6 ay</span>
-          </div>
-          {data.invoiceSummary.trend?.length > 0 ? (
-            <div style={{display:"flex",alignItems:"flex-end",gap:7,height:108}}>
-              {data.invoiceSummary.trend.map((t,i) => {
-                const h = Math.max(8,(t.total/trendMax)*100);
-                const isLast = i === data.invoiceSummary.trend.length-1;
+      <div className="db-grid">
+        <section className="card2 db-card" aria-labelledby="wo-t">
+          <header><h2 id="wo-t">Açık iş emirleri</h2><Link href="/app/work-orders">Tümü <Ic d={I.arrow} size={13}/></Link></header>
+          {open.length === 0 ? (
+            <div className="db-empty">Açık iş emri yok.</div>
+          ) : open.slice(0, 6).map(w => {
+            const st = STATUS[w.status] ?? STATUS.PENDING;
+            return (
+              <Link key={w.id} href={`/app/work-orders/${w.id}`} className="db-row">
+                <span className="sdot" style={{background: st.dot}}/>
+                <div className="lt-main"><b>{w.asset?.name ?? "Asansör seçilmedi"}</b><small>{w.customer.name} · {TYPE_L[w.type] ?? w.type} · {w.technician?.name ?? "Atanmadı"}</small></div>
+                <span className="st" style={{background: st.bg, color: st.color}}>{st.label}</span>
+              </Link>
+            );
+          })}
+        </section>
+
+        <div className="db-side">
+          <section className="card2 db-card" aria-labelledby="od-t">
+            <header><h2 id="od-t">Geciken bakımlar</h2><Link href="/app/maintenance-plans">Plan <Ic d={I.arrow} size={13}/></Link></header>
+            {data.overdueList.length === 0 ? <div className="db-empty">Geciken bakım yok.</div> :
+              data.overdueList.slice(0, 5).map(o => {
+                const days = Math.max(1, Math.round((Date.now() - new Date(o.nextDueAt).getTime()) / 864e5));
                 return (
-                  <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:7}}>
-                    <div style={{width:"100%",height:`${h}%`,
-                      background:isLast?"linear-gradient(180deg,#3b82f6,#1d4ed8)":"#e8edf3",
-                      borderRadius:"5px 5px 2px 2px",transition:"all .3s"}}
-                      title={`${t.month}: ${fmt(t.total)}`}/>
-                    <div style={{fontSize:9.5,color:"#9C9080",fontWeight:600}}>{t.month}</div>
+                  <div key={o.id} className="db-row">
+                    <div className="lt-main"><b>{o.asset.name}</b><small>{o.asset.customer.name}</small></div>
+                    <span className="st" style={{background:"#FCECE8",color:"#A8301A"}}>{days} gün</span>
                   </div>
                 );
               })}
-            </div>
-          ) : (
-            <div style={{height:108,display:"flex",alignItems:"center",justifyContent:"center",
-              color:"#9C9080",fontSize:13}}>Henüz veri yok</div>
+          </section>
+
+          <section className="card2 db-card" aria-labelledby="rev-t">
+            <header><h2 id="rev-t">Bu ay fatura</h2><Link href="/app/invoices">Faturalar <Ic d={I.arrow} size={13}/></Link></header>
+            <div className="db-rev"><b>{fmt(data.invoiceSummary.thisMonthTotal)}</b><span>{data.invoiceSummary.thisMonthCount} fatura</span></div>
+            {trend.length > 1 && (
+              <div className="db-bars" role="img" aria-label="Son aylara göre fatura toplamı">
+                {trend.map((t, i) => {
+                  const m = Number(t.month.slice(5, 7)) - 1;
+                  return (
+                    <div key={t.month} className="db-bar">
+                      <i style={{height: `${Math.max(4, (t.total / trendMax) * 100)}%`, animationDelay: `${i * 60}ms`}} title={fmt(t.total)}/>
+                      <span>{MONTHS[m] ?? t.month}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          {data.lowStockParts.length > 0 && (
+            <section className="card2 db-card" aria-labelledby="ls-t">
+              <header><h2 id="ls-t">Azalan parçalar</h2><Link href="/app/stock">Stok <Ic d={I.arrow} size={13}/></Link></header>
+              {data.lowStockParts.slice(0, 4).map(p => (
+                <div key={p.id} className="db-row">
+                  <span style={{color:"var(--warning)"}}><Ic d={I.box} size={15}/></span>
+                  <div className="lt-main"><b>{p.name}</b><small>En az {p.minStock} olmalı</small></div>
+                  <span className="st" style={{background:"#FFF3DC",color:"#8A5500"}}>{p.stock} adet</span>
+                </div>
+              ))}
+            </section>
           )}
         </div>
-
-        {/* Fleet */}
-        <div style={{background:"linear-gradient(145deg,#0d1526 0%,#1a3a8a 100%)",
-          borderRadius:16,padding:"22px 24px",color:"#FFFFFF",position:"relative",overflow:"hidden",
-          boxShadow:"0 4px 20px rgba(15,23,42,0.16)"}}>
-          <div style={{position:"absolute",top:-70,right:-70,width:220,height:220,
-            background:"radial-gradient(circle,rgba(99,102,241,0.3),transparent 70%)"}}/>
-          <div style={{position:"relative"}}>
-            <div className="metric-label" style={{color:"rgba(255,255,255,0.36)"}}>Toplam Filo</div>
-            <div style={{fontSize:"3rem",fontWeight:900,letterSpacing:"-0.08em",lineHeight:1}}>
-              {data.stats.assets}
-            </div>
-            <div style={{fontSize:13,color:"rgba(255,255,255,0.46)",marginTop:6}}>Kayıtlı asansör</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:18}}>
-              <div style={{background:"rgba(255,255,255,0.07)",borderRadius:11,padding:"12px 14px",
-                border:"1px solid rgba(255,255,255,0.06)"}}>
-                <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.14em",
-                  color:"rgba(255,255,255,0.34)",marginBottom:5}}>Riskli</div>
-                <div style={{fontSize:"1.5rem",fontWeight:900}}>{data.stats.risky}</div>
-              </div>
-              <div style={{background:"rgba(220,38,38,0.16)",borderRadius:11,padding:"12px 14px",
-                border:"1px solid rgba(220,38,38,0.2)"}}>
-                <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.14em",
-                  color:"rgba(252,165,165,0.52)",marginBottom:5}}>Geciken</div>
-                <div style={{fontSize:"1.5rem",fontWeight:900,color:"#fca5a5"}}>{data.stats.overdue}</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* ── Active WOs + Stats ── */}
-      <div className="d-g2" style={{display:"grid",gridTemplateColumns:"minmax(0,1.4fr) minmax(0,1fr)",gap:14}}>
-        <div style={{background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,overflow:"hidden",
-          boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-          <div style={{padding:"16px 22px",borderBottom:"1px solid #f1f5f9",
-            display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <div>
-              <div style={{fontSize:14,fontWeight:800,color:"#1A1510",letterSpacing:"-0.03em"}}>Aktif İş Emirleri</div>
-              <div style={{fontSize:12,color:"#6E6455",marginTop:2}}>
-                {data.stats.workOrders} açık · {data.stats.urgent} acil
-              </div>
-            </div>
-            <Link href="/app/work-orders" style={{fontSize:12,color:"#1B1F2B",fontWeight:700,textDecoration:"none"}}>
-              Tümü →
-            </Link>
-          </div>
-          <div>
-            {data.recentWOs.length === 0 ? (
-              <p style={{fontSize:13,color:"#9C9080",textAlign:"center",padding:32}}>Aktif iş emri yok.</p>
-            ) : data.recentWOs.slice(0,5).map((wo,i) => {
-              const sc = STATUS[wo.status] ?? STATUS.PENDING;
-              return (
-                <Link key={wo.id} href={`/app/work-orders/${wo.id}`} className="d-wo" style={{
-                  display:"flex",alignItems:"center",gap:14,padding:"12px 22px",
-                  borderBottom:i<Math.min(data.recentWOs.length,5)-1?"1px solid #f1f5f9":"none",
-                  textDecoration:"none",color:"inherit",transition:"all .12s"}}>
-                  <div style={{width:7,height:7,borderRadius:"50%",background:sc.dot,flexShrink:0,
-                    boxShadow:`0 0 0 3px ${sc.bg}`}}/>
-                  <span style={{fontFamily:"ui-monospace,monospace",fontSize:11,fontWeight:700,
-                    color:"#1B1F2B",width:52,flexShrink:0}}>{wo.code}</span>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:700,color:"#1A1510",
-                      overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-                      {wo.asset?.name ?? wo.customer.name}
-                    </div>
-                    <div style={{fontSize:11,color:"#9C9080",marginTop:2}}>
-                      {wo.customer.name} · {wo.technician?.name ?? "Atanmadı"}
-                    </div>
-                  </div>
-                  <span className="badge" style={{background:sc.bg,color:sc.color,borderColor:sc.border}}>
-                    {sc.label}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Quick stats */}
-        <div style={{background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,padding:"22px",
-          boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-          <div style={{fontSize:14,fontWeight:800,color:"#1A1510",letterSpacing:"-0.03em",marginBottom:16}}>
-            Operasyon Özeti
-          </div>
-          <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {[
-              {k:"Müşteri portföyü",v:data.stats.customers,d:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z",c:"#1B1F2B",bg:"#E4EFF9"},
-              {k:"Aktif iş akışı",v:data.stats.workOrders,d:"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4",c:"#7c3aed",bg:"#f5f3ff"},
-              {k:"Acil müdahale",v:data.stats.urgent,d:"M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z M12 9v4 M12 17h.01",c:"#dc2626",bg:"#FCECE8"},
-              {k:"Yaklaşan bakım",v:data.stats.dueSoon,d:"M8 2v4M16 2v4M3 10h18M5 6h14a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z",c:"#d97706",bg:"#FFF3DC"},
-            ].map((r,i) => (
-              <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",
-                background:"#F0EDE6",borderRadius:11,border:"1px solid #f1f5f9"}}>
-                <div style={{width:32,height:32,borderRadius:9,background:r.bg,
-                  display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <Ic d={r.d} size={14} stroke={r.c}/>
-                </div>
-                <div style={{flex:1,fontSize:13,color:"#6E6455",fontWeight:500}}>{r.k}</div>
-                <div style={{fontSize:17,fontWeight:900,color:r.c,letterSpacing:"-0.04em"}}>{r.v}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Overdue + Low Stock ── */}
-      <div className="d-g3" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
-        <div style={{background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,overflow:"hidden",
-          boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-          <div style={{padding:"16px 22px",borderBottom:"1px solid #f1f5f9",
-            display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <div>
-              <div style={{fontSize:14,fontWeight:800,color:"#1A1510",letterSpacing:"-0.03em"}}>Geciken Bakımlar</div>
-              <div style={{fontSize:12,color:"#6E6455",marginTop:2}}>Tarih kaçırılan asansörler</div>
-            </div>
-            {data.overdueList.length>0&&<span style={{fontSize:10.5,fontWeight:700,color:"#FFFFFF",
-              background:"#dc2626",padding:"3px 9px",borderRadius:999}}>{data.overdueList.length}</span>}
-          </div>
-          <div style={{padding:"6px 14px"}}>
-            {data.overdueList.length===0 ? (
-              <p style={{fontSize:13,color:"#9C9080",textAlign:"center",padding:28}}>Geciken bakım yok ✓</p>
-            ) : data.overdueList.slice(0,5).map((it,i) => {
-              const days=Math.floor((Date.now()-new Date(it.nextDueAt).getTime())/86400000);
-              return (
-                <div key={it.id} style={{display:"flex",alignItems:"center",gap:11,padding:"10px 8px",
-                  borderBottom:i<4?"1px solid #f1f5f9":"none"}}>
-                  <div style={{width:8,height:8,borderRadius:"50%",
-                    background:days>30?"#C0311A":"#C87800",flexShrink:0,
-                    boxShadow:`0 0 0 3px ${days>30?"rgba(239,68,68,.14)":"rgba(245,158,11,.14)"}`}}/>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:700,color:"#1A1510",
-                      overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{it.asset.name}</div>
-                    <div style={{fontSize:11,color:"#9C9080",marginTop:1}}>{it.asset.customer.name}</div>
-                  </div>
-                  <span style={{fontSize:10.5,fontWeight:700,padding:"3px 9px",borderRadius:7,
-                    background:days>30?"#FCECE8":"#FFF3DC",color:days>30?"#C0311A":"#B86800"}}>
-                    +{days}g
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div style={{background:"#FFFFFF",border:"1px solid #e2e8f0",borderRadius:16,overflow:"hidden",
-          boxShadow:"0 2px 8px rgba(15,23,42,0.04)"}}>
-          <div style={{padding:"16px 22px",borderBottom:"1px solid #f1f5f9"}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#1A1510",letterSpacing:"-0.03em"}}>Stok Uyarıları</div>
-            <div style={{fontSize:12,color:"#6E6455",marginTop:2}}>Minimum seviyenin altındaki parçalar</div>
-          </div>
-          <div style={{padding:"6px 14px"}}>
-            {data.lowStockParts.length===0 ? (
-              <p style={{fontSize:13,color:"#9C9080",textAlign:"center",padding:28}}>Stok riski yok ✓</p>
-            ) : data.lowStockParts.slice(0,5).map((p,i) => (
-              <div key={p.id} style={{display:"flex",alignItems:"center",gap:11,padding:"10px 8px",
-                borderBottom:i<4?"1px solid #f1f5f9":"none"}}>
-                <div style={{width:32,height:32,borderRadius:9,
-                  background:p.stock<=0?"#FCECE8":"#FFF3DC",
-                  display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                  <Ic d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"
-                    size={14} stroke={p.stock<=0?"#dc2626":"#d97706"}/>
-                </div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:13,fontWeight:700,color:"#1A1510"}}>{p.name}</div>
-                  <div style={{fontSize:11,color:"#9C9080",marginTop:1}}>Min: {p.minStock}</div>
-                </div>
-                <span style={{fontSize:14,fontWeight:900,color:p.stock<=0?"#C0311A":"#B86800"}}>
-                  {p.stock}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="db-foot">
+        <span>{s.customers} müşteri</span><span>{s.assets} asansör</span><span>{s.workOrders} iş emri</span>
       </div>
     </div>
   );
 }
+
+const DB_CSS = `
+.db-setup{padding:16px 18px;display:grid;gap:12px;background:linear-gradient(180deg,#fff, #FBF9F4)}
+.db-setup-head{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.db-setup h2{margin:0;font-size:15px;font-weight:750;letter-spacing:-.02em}
+.db-setup p{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+.db-ring{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:conic-gradient(var(--sidebar-accent) var(--p),var(--surface-3) 0)}
+.db-ring span{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+.db-steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.db-steps li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)}
+.db-steps li>div{flex:1;min-width:0}
+.db-steps b{display:block;font-size:13px;font-weight:650}
+.db-steps small{display:block;font-size:12px;color:var(--muted)}
+.db-steps li.done{opacity:.6}
+.db-steps li.done b{text-decoration:line-through}
+.db-check{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:11px;font-weight:800;background:var(--surface-2);color:var(--muted)}
+.done .db-check{background:var(--success);color:#fff}
+.db-alerts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.db-alert{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--border);color:inherit}
+.db-alert-ic{grid-row:span 2;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--surface-2);color:var(--muted)}
+.db-alert b{font-size:22px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.db-alert-t{font-size:12px;font-weight:650;color:var(--foreground-2)}
+.db-alert-t small{display:block;font-size:11px;font-weight:500;color:var(--muted-2)}
+.db-alert.red{border-color:var(--danger-border);background:#FFF8F6}.db-alert.red .db-alert-ic{background:var(--danger-soft);color:var(--danger)}.db-alert.red b{color:var(--danger)}
+.db-alert.amber{border-color:var(--warning-border);background:#FFFBF2}.db-alert.amber .db-alert-ic{background:var(--warning-soft);color:var(--warning)}.db-alert.amber b{color:var(--warning)}
+.db-alert.calm .db-alert-ic{background:var(--success-soft);color:var(--success)}
+.db-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px;align-items:start}
+.db-side{display:grid;gap:12px}
+.db-card{overflow:hidden}
+.db-card header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--surface-3)}
+.db-card h2{margin:0;font-size:13.5px;font-weight:750;letter-spacing:-.01em}
+.db-card header a{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;color:var(--muted)}
+.db-card header a:hover{color:var(--foreground)}
+.db-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--surface-3);color:inherit;transition:background .12s}
+.db-row:first-of-type{border-top:0}
+a.db-row:hover{background:#FAF8F4}
+.db-row .lt-main{flex:1}
+.db-empty{padding:22px 16px;font-size:13px;color:var(--muted);text-align:center}
+.db-rev{display:flex;align-items:baseline;gap:10px;padding:14px 16px 6px}
+.db-rev b{font-size:26px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.db-rev span{font-size:12px;color:var(--muted)}
+.db-bars{display:flex;align-items:flex-end;gap:8px;height:110px;padding:8px 16px 14px}
+.db-bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.db-bar i{display:block;width:100%;max-width:28px;border-radius:6px 6px 3px 3px;background:var(--sidebar-accent);transform-origin:bottom;animation:grow .7s var(--ease-out) both}
+.db-bar:last-child i{background:var(--primary)}
+.db-bar span{font-size:10.5px;color:var(--muted-2)}
+@keyframes grow{from{transform:scaleY(0)}}
+.db-foot{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted-2)}
+@media(max-width:900px){.db-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.db-alerts{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.db-alert{padding:10px 12px}.db-alert b{font-size:19px}}
+`;

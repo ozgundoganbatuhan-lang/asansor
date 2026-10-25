@@ -40,6 +40,9 @@ export default async function PublicAssetPage({
   }
 
   if(!asset) return <Err title="Asansör bulunamadı" desc="Bu QR koda ait asansör kaydı sistemde mevcut değil." />;
+  if(!org && asset.organizationId) {
+    org = await prisma.organization.findUnique({where:{id:asset.organizationId},select:{name:true,phone:true,email:true,website:true}}).catch(()=>null);
+  }
 
   // Load evidence for each work order (parallel, no throw)
   const evidenceMap: Record<string, any> = {};
@@ -79,14 +82,14 @@ export default async function PublicAssetPage({
   const nextDue = asset.maintenancePlans[0]?.nextDueAt ? new Date(asset.maintenancePlans[0].nextDueAt).toLocaleDateString("tr-TR") : null;
 
   // Org contact: use org fields, then env fallback
-  const orgName    = org?.name ?? (process.env.NEXT_PUBLIC_ORG_NAME ?? "Servis Firması");
-  const orgPhone   = org?.phone ?? (process.env.NEXT_PUBLIC_SUPPORT_PHONE_DISPLAY ?? "+90 555 000 00 00");
-  const orgPhoneRaw= (org?.phone ?? process.env.NEXT_PUBLIC_SUPPORT_PHONE ?? "+905550000000").replace(/\D/g,"");
-  const orgEmail   = org?.email ?? process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "info@servisim.app";
+  const orgName    = org?.name ?? "Asansör servisi";
+  const orgPhone   = org?.phone ?? null;
+  const orgPhoneRaw= (org?.phone ?? "").replace(/\D/g,"").replace(/^0/,"90");
+  const orgEmail   = org?.email ?? null;
   const orgWebsite = org?.website ?? process.env.NEXT_PUBLIC_ORG_WEBSITE ?? null;
   const waLink     = `https://wa.me/${orgPhoneRaw}?text=Servis%20bilgisi%20almak%20istiyorum`;
 
-  const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#3b82f6",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
+  const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#1A5C96",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
   const dotColor   = inspLabel ? (LABEL_COLOR[inspLabel]??"#94a3b8") : "#94a3b8";
 
   const documents  = (asset.contractAssets??[])
@@ -96,21 +99,21 @@ export default async function PublicAssetPage({
   const gl = {background:"rgba(255,255,255,0.09)",border:"1px solid rgba(255,255,255,0.10)",backdropFilter:"blur(12px)"} as const;
 
   return (
-    <main style={{minHeight:"100vh",background:"linear-gradient(180deg,#06142d 0%,#0b2553 38%,#102d63 100%)",padding:"24px 16px 60px",color:"#fff",fontFamily:"'Plus Jakarta Sans',-apple-system,system-ui,sans-serif"}}>
+    <main style={{minHeight:"100vh",background:"radial-gradient(700px 360px at 90% -10%,rgba(240,180,60,.14),transparent 60%),#12151d",padding:"24px 16px 60px",color:"#fff",fontFamily:"'DM Sans',-apple-system,system-ui,sans-serif"}}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');*{box-sizing:border-box}`}</style>
       <div style={{maxWidth:860,margin:"0 auto"}}>
 
         {/* Org header strip */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",marginBottom:20,...gl,borderRadius:14}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:32,height:32,borderRadius:9,background:"linear-gradient(135deg,#1d4ed8,#7c3aed)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>🛗</div>
+            <div style={{width:32,height:32,borderRadius:9,background:"linear-gradient(140deg,#2b3246,#151924)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"inset 0 0 0 1px rgba(255,255,255,.1)"}}><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="2.5" width="14" height="19" rx="2.5" stroke="#F5F2EC" strokeWidth="1.8"/><path d="M9 8.5l3-3 3 3M9 15.5l3 3 3-3" stroke="#F0B43C" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
             <div>
               <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>{orgName}</div>
               {orgWebsite && <a href={orgWebsite.startsWith("http")?orgWebsite:`https://${orgWebsite}`} target="_blank" rel="noopener noreferrer" style={{fontSize:11,color:"rgba(255,255,255,0.45)",textDecoration:"none"}}>{orgWebsite.replace(/^https?:\/\//,"")}</a>}
             </div>
           </div>
           <span style={{background:"rgba(34,197,94,0.15)",border:"1px solid rgba(34,197,94,0.3)",borderRadius:999,padding:"4px 12px",fontSize:11,fontWeight:700,color:"#86efac",display:"flex",alignItems:"center",gap:5}}>
-            <span style={{width:6,height:6,borderRadius:"50%",background:"#22c55e",display:"inline-block"}}/>QR Görünümü
+            <span style={{width:6,height:6,borderRadius:"50%",background:"#22c55e",display:"inline-block"}}/>Asansör kartı
           </span>
         </div>
 
@@ -209,22 +212,22 @@ export default async function PublicAssetPage({
                       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
                         {chk.length > 0 && (
                           <span style={{background:"rgba(34,197,94,0.15)",border:"1px solid rgba(34,197,94,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#86efac"}}>
-                            ✓ Kontrol %{chkPct}
+                            Kontrol %{chkPct}
                           </span>
                         )}
                         {hasCustomerSig && (
-                          <span style={{background:"rgba(59,130,246,0.15)",border:"1px solid rgba(59,130,246,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#93c5fd"}}>
-                            ✍️ Müşteri imzası
+                          <span style={{background:"rgba(59,130,246,0.15)",border:"1px solid rgba(59,130,246,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#C99A3A"}}>
+                            Müşteri imzası
                           </span>
                         )}
                         {hasTechSig && (
                           <span style={{background:"rgba(168,85,247,0.15)",border:"1px solid rgba(168,85,247,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#c4b5fd"}}>
-                            👷 Teknisyen imzası
+                            Teknisyen imzası
                           </span>
                         )}
                         {photos.length > 0 && (
                           <span style={{background:"rgba(251,191,36,0.15)",border:"1px solid rgba(251,191,36,0.3)",borderRadius:999,padding:"3px 10px",fontSize:11,fontWeight:700,color:"#fcd34d"}}>
-                            📷 {photos.length} fotoğraf
+                            {photos.length} fotoğraf
                           </span>
                         )}
                       </div>
@@ -253,7 +256,7 @@ export default async function PublicAssetPage({
                       <div style={{display:"flex",flexDirection:"column",gap:4}}>
                         {chk.map((item:string) => (
                           <div key={item} style={{display:"flex",alignItems:"center",gap:7,fontSize:12,color:"rgba(255,255,255,0.65)"}}>
-                            <span style={{color:"#86efac",fontWeight:700}}>✓</span>{item}
+                            <span style={{color:"#86efac",fontWeight:700}}></span>{item}
                           </div>
                         ))}
                       </div>
@@ -266,7 +269,7 @@ export default async function PublicAssetPage({
                           <div style={{background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"10px 14px",flex:1,minWidth:140}}>
                             <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.4)",marginBottom:6,textTransform:"uppercase",letterSpacing:"0.08em"}}>Müşteri İmzası</div>
                             <svg viewBox="0 0 320 80" style={{width:"100%",height:60,background:"rgba(255,255,255,0.04)",borderRadius:6}}>
-                              <path d={ev.signatureDataUrl} fill="none" stroke="#93c5fd" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d={ev.signatureDataUrl} fill="none" stroke="#C99A3A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                           </div>
                         )}
@@ -318,7 +321,7 @@ export default async function PublicAssetPage({
                     <div style={{fontSize:13,fontWeight:700}}>{d.number}</div>
                     {d.startDate&&<div style={{fontSize:11,color:"rgba(255,255,255,0.4)",marginTop:1}}>{new Date(d.startDate).toLocaleDateString("tr-TR")}</div>}
                   </div>
-                  <a href={d.fileUrl} target="_blank" rel="noopener noreferrer" style={{background:"#2563eb",color:"#fff",fontSize:12,fontWeight:700,padding:"7px 14px",borderRadius:9,textDecoration:"none"}}>Görüntüle</a>
+                  <a href={d.fileUrl} target="_blank" rel="noopener noreferrer" style={{background:"#1B1F2B",color:"#fff",fontSize:12,fontWeight:700,padding:"7px 14px",borderRadius:9,textDecoration:"none"}}>Görüntüle</a>
                 </div>
               ))}
             </div>
@@ -332,21 +335,22 @@ export default async function PublicAssetPage({
             Arıza bildirimi, bakım randevusu veya bilgi almak için aşağıdaki kanalları kullanabilirsiniz.
           </p>
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
-            <a href={`tel:${orgPhoneRaw}`} style={{display:"flex",alignItems:"center",gap:10,background:"#2563eb",color:"#fff",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:700,fontSize:14}}>
-              📞 {orgPhone}
-            </a>
-            <a href={waLink} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:10,background:"#25d366",color:"#fff",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:700,fontSize:14}}>
-              💬 WhatsApp ile Yaz
-            </a>
-            <a href={`mailto:${orgEmail}`} style={{display:"flex",alignItems:"center",gap:10,background:"#f3f4f6",color:"#334155",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:600,fontSize:14}}>
-              ✉️ {orgEmail}
-            </a>
+            {orgPhone && <a href={`tel:${orgPhoneRaw}`} style={{display:"flex",alignItems:"center",gap:10,background:"#1B1F2B",color:"#fff",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:700,fontSize:14}}>
+              Arayın: {orgPhone}
+            </a>}
+            {orgPhone && <a href={waLink} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",gap:10,background:"#25d366",color:"#fff",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:700,fontSize:14}}>
+              WhatsApp'tan yazın
+            </a>}
+            {orgEmail && <a href={`mailto:${orgEmail}`} style={{display:"flex",alignItems:"center",gap:10,background:"#f3f4f6",color:"#334155",borderRadius:12,padding:"13px 18px",textDecoration:"none",fontWeight:600,fontSize:14}}>
+              {orgEmail}
+            </a>}
+            {!orgPhone && !orgEmail && <p style={{margin:0,fontSize:13,color:"#6b7280"}}>Servis firmasının iletişim bilgisi henüz girilmemiş. Bina yönetiminize başvurun.</p>}
           </div>
           {/* Service firm footer */}
           <div style={{marginTop:20,paddingTop:16,borderTop:"1px solid #e5e7eb",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
             <div>
               <div style={{fontSize:12.5,fontWeight:700,color:"#0f172a"}}>{orgName}</div>
-              {orgWebsite && <a href={orgWebsite.startsWith("http")?orgWebsite:`https://${orgWebsite}`} target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#2563eb",textDecoration:"none"}}>{orgWebsite.replace(/^https?:\/\//,"")}</a>}
+              {orgWebsite && <a href={orgWebsite.startsWith("http")?orgWebsite:`https://${orgWebsite}`} target="_blank" rel="noopener noreferrer" style={{fontSize:12,color:"#1B1F2B",textDecoration:"none"}}>{orgWebsite.replace(/^https?:\/\//,"")}</a>}
             </div>
             <div style={{fontSize:11,color:"#94a3b8"}}>Servisim ile yönetiliyor</div>
           </div>
@@ -358,9 +362,9 @@ export default async function PublicAssetPage({
 
 function Err({title,desc}:{title:string;desc:string}) {
   return (
-    <main style={{minHeight:"100vh",background:"linear-gradient(180deg,#06142d,#0b2553)",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"system-ui,sans-serif"}}>
+    <main style={{minHeight:"100vh",background:"#12151d",display:"flex",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"system-ui,sans-serif"}}>
       <div style={{maxWidth:400,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:18,padding:"32px",textAlign:"center",color:"#fff"}}>
-        <div style={{fontSize:48,marginBottom:16}}>⚠️</div>
+        <div style={{fontSize:48,marginBottom:16}}></div>
         <h1 style={{fontSize:20,fontWeight:800,margin:"0 0 10px"}}>{title}</h1>
         <p style={{fontSize:14,color:"rgba(255,255,255,0.5)",lineHeight:1.7,margin:0}}>{desc}</p>
       </div>
@@ -369,4 +373,4 @@ function Err({title,desc}:{title:string;desc:string}) {
 }
 
 // avoid unused import error
-const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#3b82f6",SARI:"#f59e0b",KIRMIZI:"#dc2626"};
+const LABEL_COLOR:Record<string,string>={YESIL:"#22c55e",MAVI:"#1A5C96",SARI:"#f59e0b",KIRMIZI:"#dc2626"};

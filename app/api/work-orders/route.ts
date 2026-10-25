@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     },
     take: limit,
     include: {
-      customer: { select: { id: true, name: true } },
+      customer: { select: { id: true, name: true, address: true, phone: true } },
       technician: { select: { id: true, name: true, initials: true } },
       asset: { select: { id: true, name: true } },
       partsUsed: { include: { part: true } },
