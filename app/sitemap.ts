@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllBlogPosts } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://asansor.teknix.tech";
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${base}`, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
     { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },

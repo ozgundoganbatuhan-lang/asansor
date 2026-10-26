@@ -3,7 +3,7 @@ import "./globals.css";
 import PWARegister from "@/components/PWARegister";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://asansor.teknix.tech"),
   title: {
     default: "Servisim — Asansör Servis Yönetimi",
     template: "%s | Servisim",
